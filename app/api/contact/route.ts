@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
+// Route segment config - ensures proper runtime configuration for Vercel
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+// Handle unsupported HTTP methods
+export async function GET() {
+  return NextResponse.json(
+    { error: 'Method not allowed. Use POST to submit the contact form.' },
+    { status: 405 }
+  )
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
