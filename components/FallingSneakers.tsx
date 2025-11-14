@@ -11,28 +11,29 @@ interface Sneaker {
   startY: number
   endY: number
   scale: number
-  initialScale: number // Random initial scale for animation
+  initialScale: number
   colorFilter: string
-  rotation: number // Random rotation for each shoe
-  brightness: number // Random brightness variation
-  saturation: number // Random saturation variation
-  hueRotate: number // Random hue rotation
-  opacity: number // Random opacity
-  bouncePoints: { x: number; y: number }[]
-  isAnimating: boolean // Track if animation is complete
+  rotation: number
+  finalRotation: number // Final rotation after tumbling
+  brightness: number
+  saturation: number
+  hueRotate: number
+  opacity: number
+  bouncePoints: { x: number; y: number; rotation: number }[] // Include rotation in bounce points
+  isAnimating: boolean
 }
 
 const SHOE_SIZE = 80
-const SOURCE_X_PERCENT = 50 // Top center
+const SOURCE_X_PERCENT = 50
 const PILE_BOTTOM_OFFSET = 80
-const MAX_SNEAKERS = 100 // Increased for more accumulation
+const MAX_SNEAKERS = 100
 
 // Generate random color filter for each shoe
 const generateColorFilter = () => {
-  const brightness = 0.95 + Math.random() * 0.3 // 0.95-1.25
-  const saturation = 1.0 + Math.random() * 0.5 // 1.0-1.5
-  const hueRotate = (Math.random() - 0.5) * 40 // -20 to 20 degrees
-  const sepia = Math.random() * 0.4 // 0-0.4
+  const brightness = 0.95 + Math.random() * 0.3
+  const saturation = 1.0 + Math.random() * 0.5
+  const hueRotate = (Math.random() - 0.5) * 40
+  const sepia = Math.random() * 0.4
   
   return {
     brightness,
@@ -43,19 +44,82 @@ const generateColorFilter = () => {
   }
 }
 
-// Simple collision check
+// Circular collision check (treat shoes as circles)
 const checkCollision = (
-  x1: number, y1: number, w1: number, h1: number,
-  x2: number, y2: number, w2: number, h2: number
+  x1: number, y1: number, radius1: number,
+  x2: number, y2: number, radius2: number
 ): boolean => {
-  const margin = 12 // Increased margin for rigid structures
-  return (
-    Math.abs(x1 - x2) < (w1 + w2) / 2 + margin &&
-    Math.abs(y1 - y2) < (h1 + h2) / 2 + margin
-  )
+  const dx = x1 - x2
+  const dy = y1 - y2
+  const distance = Math.sqrt(dx * dx + dy * dy)
+  return distance < radius1 + radius2
 }
 
-// Simulate fall with real-time collision and bounce
+// Calculate bounce physics for circular objects
+const calculateBounce = (
+  fallingX: number,
+  fallingY: number,
+  fallingRadius: number,
+  hitX: number,
+  hitY: number,
+  hitRadius: number,
+  velocityX: number,
+  velocityY: number
+): { bounceX: number; bounceY: number; newVelocityX: number; newVelocityY: number; rotation: number } => {
+  // Calculate collision normal (direction from hit object to falling object)
+  const dx = fallingX - hitX
+  const dy = fallingY - hitY
+  const distance = Math.sqrt(dx * dx + dy * dy) || 1
+  
+  const normalX = dx / distance
+  const normalY = dy / distance
+  
+  // Calculate relative velocity
+  const relativeVelocityX = velocityX
+  const relativeVelocityY = velocityY
+  
+  // Calculate velocity along normal
+  const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY
+  
+  // Don't resolve if velocities are separating
+  if (velocityAlongNormal > 0) {
+    return {
+      bounceX: fallingX,
+      bounceY: fallingY,
+      newVelocityX: velocityX,
+      newVelocityY: velocityY,
+      rotation: 0,
+    }
+  }
+  
+  // Calculate restitution (bounciness) - less bouncy for more realistic settling
+  const restitution = 0.3 + Math.random() * 0.2 // 0.3-0.5
+  
+  // Calculate impulse
+  const impulse = -(1 + restitution) * velocityAlongNormal
+  
+  // Apply impulse
+  const newVelocityX = velocityX + impulse * normalX
+  const newVelocityY = velocityY + impulse * normalY
+  
+  // Calculate bounce position - move away from collision
+  const minSeparation = fallingRadius + hitRadius + 2
+  const bounceX = hitX + normalX * minSeparation
+  const bounceY = hitY + normalY * minSeparation
+  
+  // Add random tumbling rotation based on bounce
+  const rotation = (Math.random() - 0.5) * 30 * Math.abs(impulse) / 2
+  
+  return {
+    bounceX,
+    bounceY,
+    newVelocityX: newVelocityX * 0.7, // Damping
+    newVelocityY: newVelocityY * 0.7,
+    rotation,
+  }
+}
+
+// Simulate fall with realistic physics
 const simulateFall = (
   startX: number,
   startY: number,
@@ -63,88 +127,138 @@ const simulateFall = (
   viewportWidth: number,
   viewportHeight: number,
   scale: number
-): { endX: number; endY: number; bouncePoints: { x: number; y: number }[] } => {
-  const width = SHOE_SIZE * scale
-  const height = SHOE_SIZE * scale
+): { endX: number; endY: number; bouncePoints: { x: number; y: number; rotation: number }[] } => {
+  const radius = (SHOE_SIZE * scale) / 2
   const baseY = viewportHeight - PILE_BOTTOM_OFFSET
   
   let currentX = startX
   let currentY = startY
-  const bouncePoints: { x: number; y: number }[] = []
+  let velocityX = (Math.random() - 0.5) * 0.8 // Initial horizontal velocity
+  let velocityY = 0.5 + Math.random() * 0.3 // Initial vertical velocity (gravity)
+  const bouncePoints: { x: number; y: number; rotation: number }[] = []
   
-  // Simulate step-by-step fall with more randomization
-  const stepSize = 6 // Smaller steps for smoother simulation
-  // Each shoe disperses left or right - random direction and speed with more variation
-  const direction = Math.random() < 0.5 ? -1 : 1 // Left or right
-  const speed = 0.4 + Math.random() * 2.0 // More variation: 0.4-2.4
-  let velocityX = direction * speed // Horizontal velocity for dispersion
+  const gravity = 0.15 // Gravity acceleration
+  const damping = 0.98 // Air resistance
+  const stepSize = 4 // Smaller steps for smoother physics
   
-  // Add random wobble to horizontal movement
-  const wobbleAmount = Math.random() * 0.3 // Random wobble intensity
-  
-  for (let y = startY; y < baseY + 400; y += stepSize) {
-    currentY = y
-    // Apply horizontal drift with random wobble
-    const wobble = Math.sin(y * 0.1) * wobbleAmount * (Math.random() - 0.5)
-    currentX += velocityX + wobble // Apply horizontal drift with wobble
+  // Simulate physics step by step
+  for (let step = 0; step < 2000; step++) {
+    // Apply gravity
+    velocityY += gravity
     
-    // Check collision with all existing shoes
+    // Apply damping
+    velocityX *= damping
+    velocityY *= damping
+    
+    // Update position
+    currentX += velocityX
+    currentY += velocityY
+    
+    // Boundary checks
+    if (currentX < radius) {
+      currentX = radius
+      velocityX *= -0.5 // Bounce off left wall
+    }
+    if (currentX > viewportWidth - radius) {
+      currentX = viewportWidth - radius
+      velocityX *= -0.5 // Bounce off right wall
+    }
+    
+    // Check collision with existing shoes
     for (const existing of existingSneakers) {
       const existingX = existing.endX
       const existingY = existing.endY
-      const existingW = SHOE_SIZE * existing.scale
-      const existingH = SHOE_SIZE * existing.scale
+      const existingRadius = (SHOE_SIZE * existing.scale) / 2
       
-      if (checkCollision(currentX, currentY, width, height, existingX, existingY, existingW, existingH)) {
-        // Bounce off - calculate bounce direction
-        const dx = currentX - existingX
-        const dy = currentY - existingY
-        const distance = Math.sqrt(dx * dx + dy * dy) || 1
+      if (checkCollision(currentX, currentY, radius, existingX, existingY, existingRadius)) {
+        const bounce = calculateBounce(
+          currentX,
+          currentY,
+          radius,
+          existingX,
+          existingY,
+          existingRadius,
+          velocityX,
+          velocityY
+        )
         
-        // Bounce away from collision with more randomization
-        const bounceDistance = 15 + Math.random() * 20 // More variation: 15-35
-        const bounceX = currentX + (dx / distance) * bounceDistance
-        const bounceY = currentY - 6 - Math.random() * 12 // More variation: 6-18 bounce up
+        bouncePoints.push({
+          x: bounce.bounceX,
+          y: bounce.bounceY,
+          rotation: bounce.rotation,
+        })
         
-        bouncePoints.push({ x: bounceX, y: bounceY })
+        currentX = bounce.bounceX
+        currentY = bounce.bounceY
+        velocityX = bounce.newVelocityX
+        velocityY = bounce.newVelocityY
         
-        // Update position after bounce
-        currentX = bounceX
-        currentY = bounceY
-        
-        // Change velocity after bounce - maintain dispersion direction but adjust
-        const bounceDirection = dx > 0 ? 1 : -1
-        velocityX = bounceDirection * (0.6 + Math.random() * 0.9) // Continue dispersing after bounce
-        break
+        // If velocity is very small, settle
+        if (Math.abs(velocityX) < 0.1 && Math.abs(velocityY) < 0.1) {
+          break
+        }
+      }
+    }
+    
+    // Stop if we've reached the pile area and velocity is low
+    if (currentY >= baseY - 50 && Math.abs(velocityY) < 0.2) {
+      break
+    }
+    
+    // Stop if we've gone too far
+    if (currentY > baseY + 100) {
+      break
+    }
+  }
+  
+  // Final position - find the lowest point on the pile
+  let finalY = baseY
+  let finalX = Math.max(radius, Math.min(viewportWidth - radius, currentX))
+  
+  // Check all existing shoes to find the highest point
+  for (const existing of existingSneakers) {
+    const existingX = existing.endX
+    const existingY = existing.endY
+    const existingRadius = (SHOE_SIZE * existing.scale) / 2
+    
+    // If we're above this shoe, check if we should sit on it
+    if (Math.abs(finalX - existingX) < radius + existingRadius) {
+      const topOfExisting = existingY - existingRadius
+      if (topOfExisting < finalY) {
+        finalY = topOfExisting - radius - 1 // Sit on top
       }
     }
   }
   
-  // Final position - ensure it's on the pile and doesn't overlap
-  const pileHeight = existingSneakers.length * 12 // Each shoe adds height
-  const targetY = baseY - pileHeight
-  
-  // Ensure no overlap with existing shoes (rigid structures)
-  let finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX))
-  let finalY = targetY
-  
-  // Check for collisions at final position and adjust if needed
+  // Ensure no overlap with existing shoes
   let attempts = 0
-  while (attempts < 30) {
+  while (attempts < 50) {
     let hasCollision = false
     for (const existing of existingSneakers) {
       const existingX = existing.endX
       const existingY = existing.endY
-      const existingW = SHOE_SIZE * existing.scale
-      const existingH = SHOE_SIZE * existing.scale
+      const existingRadius = (SHOE_SIZE * existing.scale) / 2
       
-      if (checkCollision(finalX, finalY, width, height, existingX, existingY, existingW, existingH)) {
+      if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasCollision = true
-        // Try moving left or right, or slightly up
-        const offsetX = (attempts % 2 === 0 ? 1 : -1) * (width + 18) * Math.ceil((attempts + 1) / 2)
-        const offsetY = attempts > 10 ? -8 : 0 // Try moving up if many attempts
-        finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX + offsetX))
-        finalY = Math.max(0, targetY + offsetY)
+        // Try moving horizontally
+        const offsetX = (attempts % 2 === 0 ? 1 : -1) * (radius * 2 + 5) * Math.ceil((attempts + 1) / 2)
+        finalX = Math.max(radius, Math.min(viewportWidth - radius, currentX + offsetX))
+        
+        // Recalculate Y based on new X
+        finalY = baseY
+        for (const existing2 of existingSneakers) {
+          const existingX2 = existing2.endX
+          const existingY2 = existing2.endY
+          const existingRadius2 = (SHOE_SIZE * existing2.scale) / 2
+          
+          if (Math.abs(finalX - existingX2) < radius + existingRadius2) {
+            const topOfExisting = existingY2 - existingRadius2
+            if (topOfExisting < finalY) {
+              finalY = topOfExisting - radius - 1
+            }
+          }
+        }
         break
       }
     }
@@ -164,7 +278,6 @@ export default function FallingSneakers() {
       const homeSection = document.getElementById('home')
       if (homeSection) {
         const rect = homeSection.getBoundingClientRect()
-        // Continue as long as hero page is visible
         isActiveRef.current = rect.top < window.innerHeight && rect.bottom > 0
       }
     }
@@ -178,13 +291,12 @@ export default function FallingSneakers() {
       
       const viewportWidth = window.innerWidth
       const viewportHeight = window.innerHeight
-      // More scale variation
-      const scale = 0.6 + Math.random() * 0.5 // 0.6-1.1 (more variation)
+      const scale = 0.6 + Math.random() * 0.5
       
-      // Add slight random offset to start position for more natural dispersion
-      const startXOffset = (Math.random() - 0.5) * 40 // ±20px variation
+      // Slight random offset to start position
+      const startXOffset = (Math.random() - 0.5) * 30
       const startX = (SOURCE_X_PERCENT / 100) * viewportWidth + startXOffset
-      const startY = -SHOE_SIZE - Math.random() * 20 // Slight vertical variation
+      const startY = -SHOE_SIZE - Math.random() * 15
       
       // Simulate fall with collision detection
       const result = simulateFall(startX, startY, existing, viewportWidth, viewportHeight, scale)
@@ -194,6 +306,7 @@ export default function FallingSneakers() {
       
       // Random rotation (-15 to 15 degrees)
       const rotation = (Math.random() - 0.5) * 30
+      const finalRotation = (Math.random() - 0.5) * 20 // Final settled rotation
       
       // Random initial scale for animation
       const initialScale = 0.7 + Math.random() * 0.2
@@ -211,6 +324,7 @@ export default function FallingSneakers() {
         initialScale,
         colorFilter: colorProps.filterString,
         rotation,
+        finalRotation,
         brightness: colorProps.brightness,
         saturation: colorProps.saturation,
         hueRotate: colorProps.hueRotate,
@@ -226,7 +340,7 @@ export default function FallingSneakers() {
       setSneakers([firstSneaker])
     }
 
-    // Add new sneakers (vastly slower - much less frequent)
+    // Add new sneakers - SLOWED DOWN (trickling in like sand)
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
@@ -235,7 +349,7 @@ export default function FallingSneakers() {
         if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 1800) // Vastly slower: every 1800ms (1.8 seconds) - 3x slower than before
+    }, 2500) // Much slower: every 2.5 seconds (trickling effect)
 
     return () => {
       clearInterval(interval)
@@ -247,39 +361,30 @@ export default function FallingSneakers() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
       {sneakers.map((sneaker) => {
-        // Build animation path: start -> bounces -> end -> final bounce
+        // Build animation path: start -> bounces -> end
         const yPath = [sneaker.startY]
         const xPath = [sneaker.startX]
+        const rotationPath = [0]
         
-        // Add bounce points
+        // Add bounce points with rotation
         sneaker.bouncePoints.forEach((bounce) => {
           yPath.push(bounce.y)
           xPath.push(bounce.x)
+          rotationPath.push(rotationPath[rotationPath.length - 1] + bounce.rotation)
         })
         
         // Add final landing position
         yPath.push(sneaker.endY)
         xPath.push(sneaker.endX)
+        rotationPath.push(sneaker.finalRotation)
         
-        // Add final bounce with more variation
-        const finalBounceHeight = 4 + Math.random() * 12 // More variation: 4-16
-        const finalBounceY = sneaker.endY - finalBounceHeight
-        yPath.push(finalBounceY, sneaker.endY)
-        xPath.push(sneaker.endX, sneaker.endX)
-        
-        // Calculate duration - VASTLY SLOWED DOWN (4-5x slower)
+        // Calculate duration - graceful slow fall
         const totalDistance = Math.abs(sneaker.endY - sneaker.startY)
-        const baseDuration = 8.0 + (totalDistance / 1000) * 6.0 // 8-14 seconds (vastly slower)
+        const baseDuration = 6.0 + (totalDistance / 1000) * 4.0 // 6-10 seconds (graceful)
         
         // Create times array for keyframes
         const numKeyframes = yPath.length
         const times = Array.from({ length: numKeyframes }, (_, i) => i / (numKeyframes - 1))
-        
-        // Add random rotation animation matching keyframes
-        const rotationPath = Array.from({ length: numKeyframes }, (_, i) => {
-          const progress = i / (numKeyframes - 1)
-          return sneaker.rotation * progress
-        })
 
         return (
           <motion.div
@@ -290,13 +395,14 @@ export default function FallingSneakers() {
               y: sneaker.startY,
               opacity: 0,
               scale: sneaker.initialScale,
+              rotate: 0,
             }}
             animate={{
               x: xPath,
               y: yPath,
-              opacity: [0, sneaker.opacity, sneaker.opacity, sneaker.opacity], // Stay visible with random opacity
-              scale: [sneaker.initialScale, sneaker.scale, sneaker.scale, sneaker.scale], // Scale variation
-              rotate: rotationPath, // Random rotation throughout animation
+              opacity: [0, 0, sneaker.opacity, sneaker.opacity], // Graceful fade in (not sharp)
+              scale: [sneaker.initialScale, sneaker.initialScale * 0.95, sneaker.scale, sneaker.scale],
+              rotate: rotationPath, // Tumbling rotation
             }}
             transition={{
               x: {
@@ -307,12 +413,12 @@ export default function FallingSneakers() {
               y: {
                 duration: baseDuration,
                 times,
-                ease: [0.4, 0, 0.6, 1], // Gravity curve
+                ease: [0.3, 0, 0.5, 1], // Gravity curve
               },
               opacity: {
-                duration: 0.8,
-                times: [0, 0.2, 0.6, 1], // Slower fade in
-                ease: 'easeOut',
+                duration: baseDuration,
+                times: [0, 0.1, 0.3, 1], // Graceful fade in over 30% of animation
+                ease: 'easeIn',
               },
               scale: {
                 duration: baseDuration,
@@ -322,11 +428,10 @@ export default function FallingSneakers() {
               rotate: {
                 duration: baseDuration,
                 times,
-                ease: 'easeInOut',
+                ease: 'easeInOut', // Smooth tumbling
               },
             }}
             onAnimationComplete={() => {
-              // Mark as no longer animating, but keep visible
               setSneakers((prev) =>
                 prev.map((s) => (s.id === sneaker.id ? { ...s, isAnimating: false } : s))
               )
