@@ -4,41 +4,41 @@ import { useRef, useState, useMemo, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 
-const steps = [
-  {
-    number: 1,
-    icon: (
-      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-      </svg>
-    ),
-    title: 'Donate Shoes',
+  const steps = [
+    {
+      number: 1,
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      ),
+      title: 'Donate Shoes',
     description:
       'Drop off your gently used shoes at one of our collection points, or contact us to arrange a pickup. We accept all types of shoes in good condition.',
-  },
-  {
-    number: 2,
-    icon: (
-      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-      </svg>
-    ),
-    title: 'Shoes Are Traded',
+    },
+    {
+      number: 2,
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+        </svg>
+      ),
+      title: 'Shoes Are Traded',
     description:
       'We partner with organizations that purchase our collected shoes. These partners resell or recycle the shoes, providing us with funds for our mission.',
-  },
-  {
-    number: 3,
-    icon: (
-      <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      </svg>
-    ),
-    title: 'Proceeds Donated',
+    },
+    {
+      number: 3,
+      icon: (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      ),
+      title: 'Proceeds Donated',
     description:
       '100% of the proceeds from shoe sales go directly to Ronald McDonald House, helping families stay close to their children during medical treatment.',
-  },
-]
+    },
+  ]
 
 export default function HowItWorks() {
   const ref = useRef(null)
@@ -117,7 +117,7 @@ export default function HowItWorks() {
         <div className="max-w-5xl mx-auto">
           <div className="relative grid grid-cols-1 lg:grid-cols-[220px_auto] gap-6 lg:gap-10 items-center">
             <div className="relative hidden lg:grid gap-6">
-              {steps.map((step, index) => (
+            {steps.map((step, index) => (
                 <div
                   key={step.title}
                   className={`relative rounded-3xl border backdrop-blur-2xl px-6 py-5 transition-all duration-300 ${
@@ -144,24 +144,24 @@ export default function HowItWorks() {
                           : '0 2px 8px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
                       }}
                     >
-                      {step.number}
+                  {step.number}
                     </span>
                     <p className="font-semibold">{step.title}</p>
                   </div>
                 </div>
-              ))}
-            </div>
+            ))}
+          </div>
 
             <div className="card overflow-hidden relative">
               <AnimatePresence mode="wait">
-                <motion.div
+          <motion.div
                   key={steps[currentStep].title}
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -24 }}
                   transition={{ duration: 0.35, ease: 'easeOut' }}
                   className="space-y-4 text-center"
-                >
+          >
                   <div className="flex justify-center text-accent-600 mb-4">{steps[currentStep].icon}</div>
                   <h3 className="text-2xl font-bold text-gray-900">{steps[currentStep].title}</h3>
                   <p className="text-gray-800 leading-relaxed">
@@ -196,7 +196,7 @@ export default function HowItWorks() {
                     }}
                     aria-label="Navigate through process steps"
                   />
-                </div>
+              </div>
               </div>
             </div>
           </div>
