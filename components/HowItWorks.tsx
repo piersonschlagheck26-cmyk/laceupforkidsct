@@ -46,19 +46,20 @@ export default function HowItWorks() {
   const [sliderValue, setSliderValue] = useState(0) // 0-100 for smooth sliding
   const [isUserInteracting, setIsUserInteracting] = useState(false)
 
-  // Auto-progress smoothly every 2 seconds through all stages
+  // Auto-progress smoothly - 8 seconds to go through all 3 steps
   useEffect(() => {
     if (isUserInteracting) return
 
     const interval = setInterval(() => {
       setSliderValue((prev) => {
-        // Smoothly increment by 1% each interval
-        const increment = 1
+        // Smoothly increment by 0.5% each interval
+        // 100 steps * 80ms = 8000ms (8 seconds) for full cycle
+        const increment = 0.5
         const nextValue = prev + increment
         // Loop back to 0 when reaching 100
         return nextValue >= 100 ? 0 : nextValue
       })
-    }, 40) // Update every 40ms for smooth progression (100 steps * 40ms = 4 seconds per full cycle)
+    }, 80) // Update every 80ms for 8 second cycle (100 steps * 80ms = 8000ms)
 
     return () => clearInterval(interval)
   }, [isUserInteracting])

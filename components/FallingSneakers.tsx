@@ -58,12 +58,13 @@ const simulateFall = (
   let currentX = startX
   let currentY = startY
   const bouncePoints: { x: number; y: number }[] = []
-  const minDrift = -2 // Minimal horizontal drift (pixels per step)
-  const maxDrift = 2
   
   // Simulate step-by-step fall
   const stepSize = 10
-  let velocityX = (Math.random() - 0.5) * 0.3 // Very minimal horizontal velocity
+  // Each shoe disperses left or right - random direction and speed
+  const direction = Math.random() < 0.5 ? -1 : 1 // Left or right
+  const speed = 0.5 + Math.random() * 1.5 // Speed of dispersion
+  let velocityX = direction * speed // Horizontal velocity for dispersion
   
   for (let y = startY; y < baseY + 300; y += stepSize) {
     currentY = y
@@ -93,17 +94,42 @@ const simulateFall = (
         currentX = bounceX
         currentY = bounceY
         
-        // Change velocity after bounce
-        velocityX = (dx / distance) * 0.5 + (Math.random() - 0.5) * 0.3
+        // Change velocity after bounce - maintain dispersion direction but adjust
+        const bounceDirection = dx > 0 ? 1 : -1
+        velocityX = bounceDirection * (0.5 + Math.random() * 1.0) // Continue dispersing after bounce
         break
       }
     }
   }
   
-  // Final position - ensure it's on the pile
+  // Final position - ensure it's on the pile and doesn't overlap
   const pileHeight = existingSneakers.length * 10
   const finalY = Math.min(currentY, baseY - pileHeight)
-  const finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX))
+  
+  // Ensure no overlap with existing shoes (rigid structures)
+  let finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX))
+  
+  // Check for collisions at final position and adjust if needed
+  let attempts = 0
+  while (attempts < 20) {
+    let hasCollision = false
+    for (const existing of existingSneakers) {
+      const existingX = existing.endX
+      const existingY = existing.endY
+      const existingW = SHOE_SIZE * existing.scale
+      const existingH = SHOE_SIZE * existing.scale
+      
+      if (checkCollision(finalX, finalY, width, height, existingX, existingY, existingW, existingH)) {
+        hasCollision = true
+        // Try moving left or right
+        const offset = (attempts % 2 === 0 ? 1 : -1) * (width + 15) * (attempts + 1)
+        finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX + offset))
+        break
+      }
+    }
+    if (!hasCollision) break
+    attempts++
+  }
   
   return { endX: finalX, endY: finalY, bouncePoints }
 }
