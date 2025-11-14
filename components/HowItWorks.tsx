@@ -135,11 +135,12 @@ export default function HowItWorks() {
                     transition={{ type: 'spring', stiffness: 160, damping: 16 }}
                   >
                     <Image
-                      src="/images/sneaker-top.svg"
+                      src="/images/sneaker-clipart.png"
                       alt="Current step indicator"
                       width={64}
                       height={64}
                       className="drop-shadow-lg"
+                      unoptimized
                     />
                   </motion.div>
                   <div className="absolute top-1/2 left-0 right-0 flex justify-between -translate-y-1/2 pointer-events-none">

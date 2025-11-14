@@ -23,12 +23,16 @@ export default function Hero() {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
-      <FallingSneakers />
       {/* Background with gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-100 via-white to-accent-50">
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary-100 via-white to-accent-50">
         <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-[0.07]"></div>
         <div className="absolute -top-32 -left-24 w-72 h-72 bg-gradient-to-br from-accent-200/70 to-primary-200/40 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-32 -right-24 w-72 h-72 bg-gradient-to-tr from-primary-300/60 to-accent-200/50 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Falling Sneakers Animation */}
+      <div className="absolute inset-0 z-[5]">
+        <FallingSneakers />
       </div>
 
       {/* Content */}

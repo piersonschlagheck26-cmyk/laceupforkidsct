@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface Sneaker {
   id: number
@@ -10,74 +10,105 @@ interface Sneaker {
   rotation: number
   duration: number
   endY: number
-  tint: string
+  zIndex: number
 }
 
-const TINT_FILTERS = [
-  'brightness(1) saturate(1)',
-  'hue-rotate(15deg) brightness(1.05)',
-  'hue-rotate(45deg) saturate(1.1)',
-  'hue-rotate(90deg) brightness(1.1)',
-  'hue-rotate(150deg) saturate(0.95)',
-  'hue-rotate(210deg) brightness(0.95)',
-  'hue-rotate(280deg) saturate(1.15)',
-]
-
-const MAX_SNEAKERS = 18
+const MAX_SNEAKERS = 25
+const PILE_START_Y = 480 // Just above the CTA buttons area
 
 export default function FallingSneakers() {
   const [sneakers, setSneakers] = useState<Sneaker[]>([])
+  const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
+    // Check if user is on home section
+    const checkScroll = () => {
+      const homeSection = document.getElementById('home')
+      if (homeSection) {
+        const rect = homeSection.getBoundingClientRect()
+        const isInView = rect.top >= -100 && rect.bottom <= window.innerHeight + 100
+        setIsVisible(isInView)
+      }
+    }
+
+    checkScroll()
+    window.addEventListener('scroll', checkScroll)
+    window.addEventListener('resize', checkScroll)
+
+    // Start falling animation
     const interval = setInterval(() => {
+      if (!isVisible) return
+
       setSneakers((prev) => {
+        // Keep accumulating shoes, don't remove them
+        if (prev.length >= MAX_SNEAKERS) {
+          return prev
+        }
+
         const id = Date.now() + Math.random()
-        const left = 5 + Math.random() * 90
-        const rotation = Math.random() * 40 - 20
-        const duration = 6 + Math.random() * 5
-        const endY = 420 + Math.random() * 160
-        const tint = TINT_FILTERS[Math.floor(Math.random() * TINT_FILTERS.length)]
-        const next = [...prev.slice(Math.max(0, prev.length - (MAX_SNEAKERS - 1))), {
-          id,
-          left,
-          rotation,
-          duration,
-          endY,
-          tint,
-        }]
+        const left = 8 + Math.random() * 84 // Spread across most of the width
+        const rotation = Math.random() * 50 - 25
+        const duration = 4 + Math.random() * 3 // 4-7 seconds
+        const endY = PILE_START_Y + (prev.length % 8) * 15 + Math.random() * 20 // Pile up naturally
+        const zIndex = prev.length
 
-        setTimeout(() => {
-          setSneakers((current) => current.filter((s) => s.id !== id))
-        }, (duration + 0.5) * 1000)
-
-        return next
+        return [
+          ...prev,
+          {
+            id,
+            left,
+            rotation,
+            duration,
+            endY,
+            zIndex,
+          },
+        ]
       })
-    }, 900)
+    }, 800) // New shoe every 800ms
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('scroll', checkScroll)
+      window.removeEventListener('resize', checkScroll)
+    }
+  }, [isVisible])
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {sneakers.map((sneaker) => (
-        <motion.div
-          key={sneaker.id}
-          className="absolute"
-          initial={{ y: -160, opacity: 0, scale: 0.8, rotate: sneaker.rotation - 8 }}
-          animate={{ y: sneaker.endY, opacity: 0.2, scale: 1, rotate: sneaker.rotation }}
-          transition={{ duration: sneaker.duration, ease: 'easeInOut' }}
-          style={{ left: `${sneaker.left}%`, filter: sneaker.tint }}
-        >
-          <Image
-            src="/images/sneaker-top.svg"
-            alt="Animated sneaker"
-            width={90}
-            height={180}
-            className="drop-shadow-xl opacity-80"
-            priority={false}
-          />
-        </motion.div>
-      ))}
+      <AnimatePresence>
+        {sneakers.map((sneaker) => (
+          <motion.div
+            key={sneaker.id}
+            className="absolute"
+            initial={{ y: -120, opacity: 0, scale: 0.6, rotate: sneaker.rotation - 15 }}
+            animate={{ 
+              y: sneaker.endY, 
+              opacity: 0.85, 
+              scale: 0.7 + Math.random() * 0.2, 
+              rotate: sneaker.rotation 
+            }}
+            transition={{ 
+              duration: sneaker.duration, 
+              ease: [0.4, 0, 0.2, 1],
+              opacity: { duration: 0.5 }
+            }}
+            style={{ 
+              left: `${sneaker.left}%`, 
+              zIndex: sneaker.zIndex,
+            }}
+          >
+            <Image
+              src="/images/sneaker-clipart.png"
+              alt="Falling sneaker"
+              width={80}
+              height={80}
+              className="drop-shadow-lg"
+              priority={sneaker.id === sneakers[0]?.id}
+              unoptimized
+            />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   )
 }
