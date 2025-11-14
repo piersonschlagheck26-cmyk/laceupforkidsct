@@ -2,124 +2,115 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 interface Sneaker {
-  id: number
+  id: string
   left: number
   rotation: number
   duration: number
   endY: number
-  zIndex: number
   scale: number
-  initialRotation: number
 }
-
-const MAX_SNEAKERS = 25
-const PILE_START_Y = 480 // Just above the CTA buttons area
 
 export default function FallingSneakers() {
   const [sneakers, setSneakers] = useState<Sneaker[]>([])
-  const isVisibleRef = useRef(true)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const isActiveRef = useRef(true)
 
   useEffect(() => {
-    // Check if user is on home section
-    const checkScroll = () => {
+    // Check if home section is visible
+    const checkVisibility = () => {
       const homeSection = document.getElementById('home')
       if (homeSection) {
         const rect = homeSection.getBoundingClientRect()
-        const isInView = rect.top >= -100 && rect.bottom <= window.innerHeight + 100
-        isVisibleRef.current = isInView
+        isActiveRef.current = rect.top < window.innerHeight && rect.bottom > 0
       }
     }
 
-    checkScroll()
-    window.addEventListener('scroll', checkScroll)
-    window.addEventListener('resize', checkScroll)
+    checkVisibility()
+    window.addEventListener('scroll', checkVisibility, { passive: true })
+    window.addEventListener('resize', checkVisibility, { passive: true })
 
-    // Drop first shoe immediately
-    const dropShoe = () => {
+    // Add first sneaker immediately
+    const firstSneaker: Sneaker = {
+      id: `sneaker-${Date.now()}-${Math.random()}`,
+      left: 10 + Math.random() * 80,
+      rotation: (Math.random() - 0.5) * 40,
+      duration: 5 + Math.random() * 3,
+      endY: 450 + Math.random() * 50,
+      scale: 0.6 + Math.random() * 0.3,
+    }
+    setSneakers([firstSneaker])
+
+    // Add new sneakers periodically
+    const interval = setInterval(() => {
+      if (!isActiveRef.current) return
+
       setSneakers((prev) => {
-        if (!isVisibleRef.current || prev.length >= MAX_SNEAKERS) {
-          return prev
+        if (prev.length >= 20) return prev
+
+        const newSneaker: Sneaker = {
+          id: `sneaker-${Date.now()}-${Math.random()}`,
+          left: 10 + Math.random() * 80,
+          rotation: (Math.random() - 0.5) * 40,
+          duration: 5 + Math.random() * 3,
+          endY: 450 + Math.random() * 50 + (prev.length * 15), // Pile up naturally
+          scale: 0.6 + Math.random() * 0.3,
         }
 
-        const id = Date.now() + Math.random()
-        const left = 8 + Math.random() * 84
-        const rotation = Math.random() * 50 - 25
-        const initialRotation = rotation - 15
-        const duration = 4 + Math.random() * 3
-        const endY = PILE_START_Y + (prev.length % 8) * 15 + Math.random() * 20
-        const zIndex = prev.length
-        const scale = 0.7 + Math.random() * 0.2
-
-        return [
-          ...prev,
-          {
-            id,
-            left,
-            rotation,
-            initialRotation,
-            duration,
-            endY,
-            zIndex,
-            scale,
-          },
-        ]
+        return [...prev, newSneaker]
       })
-    }
-
-    // Drop first shoe immediately
-    dropShoe()
-
-    // Start falling animation
-    const interval = setInterval(() => {
-      dropShoe()
-    }, 800) // New shoe every 800ms
+    }, 1000) // New shoe every second
 
     return () => {
       clearInterval(interval)
-      window.removeEventListener('scroll', checkScroll)
-      window.removeEventListener('resize', checkScroll)
+      window.removeEventListener('scroll', checkVisibility)
+      window.removeEventListener('resize', checkVisibility)
     }
-  }, [])
+  }, []) // Empty deps - only run once on mount
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <AnimatePresence>
-        {sneakers.map((sneaker) => (
-          <motion.div
-            key={sneaker.id}
-            className="absolute"
-            initial={{ y: -120, opacity: 0, scale: 0.6, rotate: sneaker.initialRotation }}
-            animate={{ 
-              y: sneaker.endY, 
-              opacity: 0.85, 
-              scale: sneaker.scale, 
-              rotate: sneaker.rotation 
-            }}
-            transition={{ 
-              duration: sneaker.duration, 
-              ease: [0.4, 0, 0.2, 1],
-              opacity: { duration: 0.5 }
-            }}
-            style={{ 
-              left: `${sneaker.left}%`, 
-              zIndex: sneaker.zIndex,
-            }}
-          >
-            <Image
-              src="/images/sneaker-clipart.png"
-              alt="Falling sneaker"
-              width={80}
-              height={80}
-              className="drop-shadow-lg"
-              priority={sneaker.id === sneakers[0]?.id}
-              unoptimized
-            />
-          </motion.div>
-        ))}
-      </AnimatePresence>
+    <div 
+      ref={containerRef}
+      className="absolute inset-0 overflow-hidden pointer-events-none z-[5]"
+    >
+      {sneakers.map((sneaker) => (
+        <motion.div
+          key={sneaker.id}
+          className="absolute"
+          initial={{ 
+            y: -100, 
+            opacity: 0, 
+            scale: 0.5,
+            rotate: sneaker.rotation - 20
+          }}
+          animate={{ 
+            y: sneaker.endY, 
+            opacity: 0.9, 
+            scale: sneaker.scale,
+            rotate: sneaker.rotation
+          }}
+          transition={{ 
+            duration: sneaker.duration,
+            ease: 'easeIn',
+            opacity: { duration: 0.3 }
+          }}
+          style={{ 
+            left: `${sneaker.left}%`,
+          }}
+        >
+          <Image
+            src="/images/sneaker-clipart.png"
+            alt="Falling sneaker"
+            width={70}
+            height={70}
+            className="drop-shadow-lg"
+            unoptimized
+            priority={false}
+          />
+        </motion.div>
+      ))}
     </div>
   )
 }
