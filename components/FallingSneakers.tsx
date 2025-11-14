@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface Sneaker {
   id: string
@@ -16,6 +16,7 @@ interface Sneaker {
   colorFilter: string
   width: number
   height: number
+  bounceY?: number // For bounce effect
 }
 
 // Color filters matching the site palette (gold and red tones)
@@ -29,9 +30,8 @@ const COLOR_FILTERS = [
 ]
 
 const PILE_CENTER_X = 50 // Center of screen
-const BUTTON_AREA_Y = 420 // Just above CTA buttons
+const DESCRIPTION_END_Y = 320 // Just below the tagline description (logo + headline + tagline)
 const SHOE_SIZE = 70 // Base size in pixels
-const MAX_SNEAKERS = 40
 
 // Check if two shoes would overlap (using viewport width for percentage conversion)
 const checkCollision = (sneaker1: Sneaker, sneaker2: Sneaker, viewportWidth: number): boolean => {
@@ -62,7 +62,7 @@ const findValidPosition = (
   viewportWidth: number
 ): { endLeft: number; endY: number } | null => {
   const maxAttempts = 50
-  const spreadRange = 25 // How far to spread horizontally (in percentage)
+  const spreadRange = 30 // How far to spread horizontally (in percentage)
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const scale = 0.65 + Math.random() * 0.25
@@ -76,7 +76,7 @@ const findValidPosition = (
       rotation: 0,
       endRotation: (Math.random() - 0.5) * 60,
       duration: 0,
-      endY: targetY + Math.random() * 15 - 7.5,
+      endY: targetY + Math.random() * 12 - 6,
       scale,
       colorFilter: '',
       width,
@@ -106,8 +106,8 @@ export default function FallingSneakers() {
       const homeSection = document.getElementById('home')
       if (homeSection) {
         const rect = homeSection.getBoundingClientRect()
-        // Continue until scrolled past
-        isActiveRef.current = rect.bottom > 0
+        // Stop when scrolled past the frame
+        isActiveRef.current = rect.top < window.innerHeight && rect.bottom > 0
       }
     }
 
@@ -117,18 +117,37 @@ export default function FallingSneakers() {
 
     // Create a new sneaker
     const createSneaker = (existing: Sneaker[]): Sneaker | null => {
-      if (existing.length >= MAX_SNEAKERS) return null
-
       const viewportWidth = window.innerWidth
       const scale = 0.65 + Math.random() * 0.25
       const width = SHOE_SIZE * scale
       const height = SHOE_SIZE * scale
 
-      // Try to place just above buttons, stacking upward
-      const baseY = BUTTON_AREA_Y - (existing.length * 10) // Stack up from buttons
+      // Calculate pile height - shoes stack upward from description end
+      const pileHeight = existing.length * 10 // Each shoe adds ~10px height
+      const baseY = DESCRIPTION_END_Y + pileHeight
+      
       const position = findValidPosition(existing, PILE_CENTER_X, baseY, viewportWidth)
 
-      if (!position) return null
+      if (!position) {
+        // If can't find position, try slightly higher
+        const retryY = baseY - 5
+        const retryPosition = findValidPosition(existing, PILE_CENTER_X, retryY, viewportWidth)
+        if (!retryPosition) return null
+        return {
+          id: `sneaker-${Date.now()}-${Math.random()}`,
+          startLeft: PILE_CENTER_X,
+          endLeft: retryPosition.endLeft,
+          rotation: (Math.random() - 0.5) * 30,
+          endRotation: (Math.random() - 0.5) * 60,
+          duration: 1.5 + Math.random() * 0.8, // Faster: 1.5-2.3 seconds
+          endY: retryPosition.endY,
+          scale,
+          colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
+          width,
+          height,
+          bounceY: retryPosition.endY - 8, // Bounce up 8px when landing
+        }
+      }
 
       return {
         id: `sneaker-${Date.now()}-${Math.random()}`,
@@ -136,12 +155,13 @@ export default function FallingSneakers() {
         endLeft: position.endLeft,
         rotation: (Math.random() - 0.5) * 30,
         endRotation: (Math.random() - 0.5) * 60,
-        duration: 2.5 + Math.random() * 1.5,
+        duration: 1.5 + Math.random() * 0.8, // Faster: 1.5-2.3 seconds
         endY: position.endY,
         scale,
         colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
         width,
         height,
+        bounceY: position.endY - 8, // Bounce up 8px when landing
       }
     }
 
@@ -151,7 +171,7 @@ export default function FallingSneakers() {
       setSneakers([firstSneaker])
     }
 
-    // Add new sneakers
+    // Add new sneakers more frequently (unlimited)
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
@@ -160,7 +180,7 @@ export default function FallingSneakers() {
         if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 600) // Every 600ms
+    }, 400) // More frequent: every 400ms
 
     return () => {
       clearInterval(interval)
@@ -171,48 +191,62 @@ export default function FallingSneakers() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
-      {sneakers.map((sneaker) => (
-        <motion.div
-          key={sneaker.id}
-          className="absolute"
-          initial={{
-            y: -80,
-            x: '0%',
-            opacity: 0,
-            scale: 0.5,
-            rotate: sneaker.rotation,
-          }}
-          animate={{
-            y: sneaker.endY,
-            x: `${sneaker.endLeft - sneaker.startLeft}vw`,
-            opacity: 0.5,
-            scale: sneaker.scale,
-            rotate: sneaker.endRotation,
-          }}
-          transition={{
-            duration: sneaker.duration,
-            ease: [0.3, 0, 0.2, 1],
-            opacity: { duration: 0.4 },
-          }}
-          style={{
-            left: `${sneaker.startLeft}%`,
-          }}
-        >
-          <Image
-            src="/images/sneaker-transparent.svg"
-            alt="Falling sneaker"
-            width={SHOE_SIZE}
-            height={SHOE_SIZE}
-            className="drop-shadow-lg"
-            style={{
-              backgroundColor: 'transparent',
-              filter: sneaker.colorFilter,
+      <AnimatePresence>
+        {sneakers.map((sneaker) => (
+          <motion.div
+            key={sneaker.id}
+            className="absolute"
+            initial={{
+              y: -80,
+              x: '0%',
+              opacity: 0,
+              scale: 0.5,
+              rotate: sneaker.rotation,
             }}
-            unoptimized
-            priority={false}
-          />
-        </motion.div>
-      ))}
+            animate={{
+              y: [sneaker.endY, sneaker.bounceY || sneaker.endY, sneaker.endY],
+              x: `${sneaker.endLeft - sneaker.startLeft}vw`,
+              opacity: 0.5,
+              scale: sneaker.scale,
+              rotate: sneaker.endRotation,
+            }}
+            transition={{
+              y: {
+                duration: sneaker.duration + 0.25, // Add time for bounce
+                times: [0, 0.88, 1], // Fall 88% of time, bounce in last 12%
+                ease: [0.3, 0, 0.2, 1], // Ease in for fall
+              },
+              x: {
+                duration: sneaker.duration,
+                ease: [0.3, 0, 0.2, 1],
+              },
+              opacity: { duration: 0.4 },
+              scale: { duration: 0.3 },
+              rotate: {
+                duration: sneaker.duration,
+                ease: [0.3, 0, 0.2, 1],
+              },
+            }}
+            style={{
+              left: `${sneaker.startLeft}%`,
+            }}
+          >
+            <Image
+              src="/images/sneaker-transparent.svg"
+              alt="Falling sneaker"
+              width={SHOE_SIZE}
+              height={SHOE_SIZE}
+              className="drop-shadow-lg"
+              style={{
+                backgroundColor: 'transparent',
+                filter: sneaker.colorFilter,
+              }}
+              unoptimized
+              priority={false}
+            />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   )
 }
