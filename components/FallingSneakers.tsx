@@ -32,36 +32,43 @@ export default function FallingSneakers() {
     window.addEventListener('scroll', checkVisibility, { passive: true })
     window.addEventListener('resize', checkVisibility, { passive: true })
 
+    // Calculate bottom position based on viewport
+    const getBottomY = (index: number) => {
+      const viewportHeight = window.innerHeight
+      const startY = viewportHeight * 0.6 // Start piling at 60% down
+      return startY + (index * 18) + Math.random() * 30 // Stack down to bottom
+    }
+
     // Add first sneaker immediately
     const firstSneaker: Sneaker = {
       id: `sneaker-${Date.now()}-${Math.random()}`,
       left: 10 + Math.random() * 80,
       rotation: (Math.random() - 0.5) * 40,
-      duration: 5 + Math.random() * 3,
-      endY: 450 + Math.random() * 50,
+      duration: 2.5 + Math.random() * 1.5, // Faster: 2.5-4 seconds
+      endY: getBottomY(0),
       scale: 0.6 + Math.random() * 0.3,
     }
     setSneakers([firstSneaker])
 
-    // Add new sneakers periodically
+    // Add new sneakers more frequently
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
       setSneakers((prev) => {
-        if (prev.length >= 20) return prev
+        if (prev.length >= 30) return prev // Allow more shoes
 
         const newSneaker: Sneaker = {
           id: `sneaker-${Date.now()}-${Math.random()}`,
           left: 10 + Math.random() * 80,
           rotation: (Math.random() - 0.5) * 40,
-          duration: 5 + Math.random() * 3,
-          endY: 450 + Math.random() * 50 + (prev.length * 15), // Pile up naturally
+          duration: 2.5 + Math.random() * 1.5, // Faster: 2.5-4 seconds
+          endY: getBottomY(prev.length), // Pile down to bottom
           scale: 0.6 + Math.random() * 0.3,
         }
 
         return [...prev, newSneaker]
       })
-    }, 1000) // New shoe every second
+    }, 500) // More frequent: every 500ms (half a second)
 
     return () => {
       clearInterval(interval)
@@ -87,7 +94,7 @@ export default function FallingSneakers() {
           }}
           animate={{ 
             y: sneaker.endY, 
-            opacity: 0.9, 
+            opacity: 0.45, 
             scale: sneaker.scale,
             rotate: sneaker.rotation
           }}
@@ -106,6 +113,10 @@ export default function FallingSneakers() {
             width={70}
             height={70}
             className="drop-shadow-lg"
+            style={{ 
+              backgroundColor: 'transparent',
+              opacity: 1, // Image itself is fully opaque, container handles transparency
+            }}
             unoptimized
             priority={false}
           />
