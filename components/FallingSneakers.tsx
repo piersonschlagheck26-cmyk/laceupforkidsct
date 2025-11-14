@@ -182,19 +182,29 @@ const simulateFall = (
           velocityY
         )
         
-        bouncePoints.push({
-          x: bounce.bounceX,
-          y: bounce.bounceY,
-          rotation: bounce.rotation,
-        })
+        // Only add bounce point if it's far enough from the last one (prevent vibration)
+        const minBounceDistance = 15
+        const shouldAddBounce = bouncePoints.length === 0 || 
+          Math.sqrt(
+            Math.pow(bounce.bounceX - bouncePoints[bouncePoints.length - 1].x, 2) +
+            Math.pow(bounce.bounceY - bouncePoints[bouncePoints.length - 1].y, 2)
+          ) > minBounceDistance
+        
+        if (shouldAddBounce) {
+          bouncePoints.push({
+            x: bounce.bounceX,
+            y: bounce.bounceY,
+            rotation: bounce.rotation,
+          })
+        }
         
         currentX = bounce.bounceX
         currentY = bounce.bounceY
         velocityX = bounce.newVelocityX
         velocityY = bounce.newVelocityY
         
-        // If velocity is very small, settle
-        if (Math.abs(velocityX) < 0.1 && Math.abs(velocityY) < 0.1) {
+        // If velocity is very small, settle (prevent micro-bounces)
+        if (Math.abs(velocityX) < 0.15 && Math.abs(velocityY) < 0.15) {
           break
         }
       }
@@ -211,28 +221,38 @@ const simulateFall = (
     }
   }
   
-  // Final position - find the lowest point on the pile
-  let finalY = baseY
+  // Final position - find the lowest point on the pile (proper stacking)
   let finalX = Math.max(radius, Math.min(viewportWidth - radius, currentX))
+  let finalY = baseY
   
-  // Check all existing shoes to find the highest point
+  // Find the highest point where this shoe can sit (stacking logic)
+  // Check all existing shoes to find where to stack
   for (const existing of existingSneakers) {
     const existingX = existing.endX
     const existingY = existing.endY
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
-    // If we're above this shoe, check if we should sit on it
-    if (Math.abs(finalX - existingX) < radius + existingRadius) {
+    // Calculate distance between centers
+    const distance = Math.sqrt(
+      Math.pow(finalX - existingX, 2) + Math.pow(finalY - existingY, 2)
+    )
+    
+    // If we're close enough horizontally to stack on top
+    if (Math.abs(finalX - existingX) < radius + existingRadius + 2) {
+      // Calculate the top of the existing shoe
       const topOfExisting = existingY - existingRadius
-      if (topOfExisting < finalY) {
-        finalY = topOfExisting - radius - 1 // Sit on top
+      // Our shoe should sit on top of this one
+      const ourBottom = topOfExisting - radius - 1
+      // Update finalY to be the lowest (highest on screen) position
+      if (ourBottom < finalY) {
+        finalY = ourBottom
       }
     }
   }
   
-  // Ensure no overlap with existing shoes
+  // Ensure no overlap with existing shoes - refine position
   let attempts = 0
-  while (attempts < 50) {
+  while (attempts < 100) {
     let hasCollision = false
     for (const existing of existingSneakers) {
       const existingX = existing.endX
@@ -241,21 +261,22 @@ const simulateFall = (
       
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasCollision = true
-        // Try moving horizontally
-        const offsetX = (attempts % 2 === 0 ? 1 : -1) * (radius * 2 + 5) * Math.ceil((attempts + 1) / 2)
+        // Try moving horizontally first
+        const offsetX = (attempts % 2 === 0 ? 1 : -1) * (radius * 2 + 8) * Math.ceil((attempts + 1) / 2)
         finalX = Math.max(radius, Math.min(viewportWidth - radius, currentX + offsetX))
         
-        // Recalculate Y based on new X
+        // Recalculate Y based on new X - find where to stack
         finalY = baseY
         for (const existing2 of existingSneakers) {
           const existingX2 = existing2.endX
           const existingY2 = existing2.endY
           const existingRadius2 = (SHOE_SIZE * existing2.scale) / 2
           
-          if (Math.abs(finalX - existingX2) < radius + existingRadius2) {
+          if (Math.abs(finalX - existingX2) < radius + existingRadius2 + 2) {
             const topOfExisting = existingY2 - existingRadius2
-            if (topOfExisting < finalY) {
-              finalY = topOfExisting - radius - 1
+            const ourBottom = topOfExisting - radius - 1
+            if (ourBottom < finalY) {
+              finalY = ourBottom
             }
           }
         }
@@ -366,25 +387,64 @@ export default function FallingSneakers() {
         const xPath = [sneaker.startX]
         const rotationPath = [0]
         
-        // Add bounce points with rotation
+        // Add bounce points with rotation (smooth transitions)
+        let cumulativeRotation = 0
         sneaker.bouncePoints.forEach((bounce) => {
-          yPath.push(bounce.y)
-          xPath.push(bounce.x)
-          rotationPath.push(rotationPath[rotationPath.length - 1] + bounce.rotation)
+          // Only add if significantly different from last point (smooth out micro-movements)
+          const lastY = yPath[yPath.length - 1]
+          const lastX = xPath[xPath.length - 1]
+          const distance = Math.sqrt(
+            Math.pow(bounce.x - lastX, 2) + Math.pow(bounce.y - lastY, 2)
+          )
+          
+          // Only add bounce if it's a significant movement
+          if (distance > 10) {
+            yPath.push(bounce.y)
+            xPath.push(bounce.x)
+            cumulativeRotation += bounce.rotation
+            rotationPath.push(cumulativeRotation)
+          }
         })
         
-        // Add final landing position
-        yPath.push(sneaker.endY)
-        xPath.push(sneaker.endX)
-        rotationPath.push(sneaker.finalRotation)
+        // Add final landing position (ensure smooth transition)
+        const lastY = yPath[yPath.length - 1]
+        const lastX = xPath[xPath.length - 1]
+        const finalDistance = Math.sqrt(
+          Math.pow(sneaker.endX - lastX, 2) + Math.pow(sneaker.endY - lastY, 2)
+        )
         
-        // Calculate duration - graceful slow fall
+        // Only add final position if it's different enough
+        if (finalDistance > 5) {
+          yPath.push(sneaker.endY)
+          xPath.push(sneaker.endX)
+          rotationPath.push(sneaker.finalRotation)
+        } else {
+          // Update last position to final position for smooth settling
+          yPath[yPath.length - 1] = sneaker.endY
+          xPath[xPath.length - 1] = sneaker.endX
+          rotationPath[rotationPath.length - 1] = sneaker.finalRotation
+        }
+        
+        // Calculate duration - CONSTANT SPEED for all shoes (same speed regardless of distance)
+        // Use a constant fall speed: pixels per second
+        const FALL_SPEED = 200 // pixels per second (consistent for all shoes)
         const totalDistance = Math.abs(sneaker.endY - sneaker.startY)
-        const baseDuration = 6.0 + (totalDistance / 1000) * 4.0 // 6-10 seconds (graceful)
+        const baseDuration = totalDistance / FALL_SPEED // Constant speed calculation
         
         // Create times array for keyframes
         const numKeyframes = yPath.length
         const times = Array.from({ length: numKeyframes }, (_, i) => i / (numKeyframes - 1))
+        
+        // Build opacity path - always visible from the start (no fade in)
+        const opacityPath = Array.from({ length: numKeyframes }, () => sneaker.opacity)
+        
+        // Build scale path
+        const scalePath = Array.from({ length: numKeyframes }, (_, i) => {
+          const progress = i / (numKeyframes - 1)
+          if (progress < 0.1) return sneaker.initialScale
+          if (progress < 0.2) return sneaker.initialScale * 0.95
+          return sneaker.scale
+        })
 
         return (
           <motion.div
@@ -393,15 +453,15 @@ export default function FallingSneakers() {
             initial={{
               x: sneaker.startX,
               y: sneaker.startY,
-              opacity: 0,
+              opacity: sneaker.opacity, // Start visible, no fade in
               scale: sneaker.initialScale,
               rotate: 0,
             }}
             animate={{
               x: xPath,
               y: yPath,
-              opacity: [0, 0, sneaker.opacity, sneaker.opacity], // Graceful fade in (not sharp)
-              scale: [sneaker.initialScale, sneaker.initialScale * 0.95, sneaker.scale, sneaker.scale],
+              opacity: opacityPath, // Stay visible forever after fade in
+              scale: scalePath,
               rotate: rotationPath, // Tumbling rotation
             }}
             transition={{
@@ -416,9 +476,8 @@ export default function FallingSneakers() {
                 ease: [0.3, 0, 0.5, 1], // Gravity curve
               },
               opacity: {
-                duration: baseDuration,
-                times: [0, 0.1, 0.3, 1], // Graceful fade in over 30% of animation
-                ease: 'easeIn',
+                duration: 0.01, // Instant (no transition needed since always visible)
+                ease: 'linear',
               },
               scale: {
                 duration: baseDuration,
@@ -430,11 +489,6 @@ export default function FallingSneakers() {
                 times,
                 ease: 'easeInOut', // Smooth tumbling
               },
-            }}
-            onAnimationComplete={() => {
-              setSneakers((prev) =>
-                prev.map((s) => (s.id === sneaker.id ? { ...s, isAnimating: false } : s))
-              )
             }}
             style={{
               transformOrigin: 'center center',
