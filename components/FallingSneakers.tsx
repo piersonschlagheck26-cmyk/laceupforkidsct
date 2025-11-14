@@ -6,19 +6,20 @@ import { motion } from 'framer-motion'
 
 interface Sneaker {
   id: string
-  startX: number // Pixel position from left
-  endX: number // Final pixel position
+  startX: number
+  endX: number
   startY: number
   endY: number
   scale: number
   colorFilter: string
-  bouncePoints: { x: number; y: number }[] // Intermediate bounce positions
+  bouncePoints: { x: number; y: number }[]
+  isAnimating: boolean // Track if animation is complete
 }
 
 const SHOE_SIZE = 80
 const SOURCE_X_PERCENT = 50 // Top center
 const PILE_BOTTOM_OFFSET = 80
-const MAX_SNEAKERS = 50
+const MAX_SNEAKERS = 100 // Increased for more accumulation
 
 // Color filters matching the site palette
 const COLOR_FILTERS = [
@@ -35,7 +36,7 @@ const checkCollision = (
   x1: number, y1: number, w1: number, h1: number,
   x2: number, y2: number, w2: number, h2: number
 ): boolean => {
-  const margin = 10
+  const margin = 12 // Increased margin for rigid structures
   return (
     Math.abs(x1 - x2) < (w1 + w2) / 2 + margin &&
     Math.abs(y1 - y2) < (h1 + h2) / 2 + margin
@@ -60,13 +61,13 @@ const simulateFall = (
   const bouncePoints: { x: number; y: number }[] = []
   
   // Simulate step-by-step fall
-  const stepSize = 10
+  const stepSize = 8
   // Each shoe disperses left or right - random direction and speed
   const direction = Math.random() < 0.5 ? -1 : 1 // Left or right
-  const speed = 0.5 + Math.random() * 1.5 // Speed of dispersion
+  const speed = 0.6 + Math.random() * 1.4 // Speed of dispersion
   let velocityX = direction * speed // Horizontal velocity for dispersion
   
-  for (let y = startY; y < baseY + 300; y += stepSize) {
+  for (let y = startY; y < baseY + 400; y += stepSize) {
     currentY = y
     currentX += velocityX // Apply horizontal drift
     
@@ -84,9 +85,9 @@ const simulateFall = (
         const distance = Math.sqrt(dx * dx + dy * dy) || 1
         
         // Bounce away from collision
-        const bounceDistance = 20 + Math.random() * 15
+        const bounceDistance = 18 + Math.random() * 12
         const bounceX = currentX + (dx / distance) * bounceDistance
-        const bounceY = currentY - 10 - Math.random() * 10 // Bounce up
+        const bounceY = currentY - 8 - Math.random() * 8 // Bounce up
         
         bouncePoints.push({ x: bounceX, y: bounceY })
         
@@ -96,22 +97,23 @@ const simulateFall = (
         
         // Change velocity after bounce - maintain dispersion direction but adjust
         const bounceDirection = dx > 0 ? 1 : -1
-        velocityX = bounceDirection * (0.5 + Math.random() * 1.0) // Continue dispersing after bounce
+        velocityX = bounceDirection * (0.6 + Math.random() * 0.9) // Continue dispersing after bounce
         break
       }
     }
   }
   
   // Final position - ensure it's on the pile and doesn't overlap
-  const pileHeight = existingSneakers.length * 10
-  const finalY = Math.min(currentY, baseY - pileHeight)
+  const pileHeight = existingSneakers.length * 12 // Each shoe adds height
+  const targetY = baseY - pileHeight
   
   // Ensure no overlap with existing shoes (rigid structures)
   let finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX))
+  let finalY = targetY
   
   // Check for collisions at final position and adjust if needed
   let attempts = 0
-  while (attempts < 20) {
+  while (attempts < 30) {
     let hasCollision = false
     for (const existing of existingSneakers) {
       const existingX = existing.endX
@@ -121,9 +123,11 @@ const simulateFall = (
       
       if (checkCollision(finalX, finalY, width, height, existingX, existingY, existingW, existingH)) {
         hasCollision = true
-        // Try moving left or right
-        const offset = (attempts % 2 === 0 ? 1 : -1) * (width + 15) * (attempts + 1)
-        finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX + offset))
+        // Try moving left or right, or slightly up
+        const offsetX = (attempts % 2 === 0 ? 1 : -1) * (width + 18) * Math.ceil((attempts + 1) / 2)
+        const offsetY = attempts > 10 ? -8 : 0 // Try moving up if many attempts
+        finalX = Math.max(width / 2, Math.min(viewportWidth - width / 2, currentX + offsetX))
+        finalY = Math.max(0, targetY + offsetY)
         break
       }
     }
@@ -143,6 +147,7 @@ export default function FallingSneakers() {
       const homeSection = document.getElementById('home')
       if (homeSection) {
         const rect = homeSection.getBoundingClientRect()
+        // Continue as long as hero page is visible
         isActiveRef.current = rect.top < window.innerHeight && rect.bottom > 0
       }
     }
@@ -173,6 +178,7 @@ export default function FallingSneakers() {
         scale,
         colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
         bouncePoints: result.bouncePoints,
+        isAnimating: true,
       }
     }
 
@@ -182,7 +188,7 @@ export default function FallingSneakers() {
       setSneakers([firstSneaker])
     }
 
-    // Add new sneakers
+    // Add new sneakers (slower - less frequent)
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
@@ -191,7 +197,7 @@ export default function FallingSneakers() {
         if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 400)
+    }, 600) // Slower: every 600ms instead of 400ms
 
     return () => {
       clearInterval(interval)
@@ -218,13 +224,13 @@ export default function FallingSneakers() {
         xPath.push(sneaker.endX)
         
         // Add final bounce
-        const finalBounceY = sneaker.endY - (8 + Math.random() * 10)
+        const finalBounceY = sneaker.endY - (6 + Math.random() * 8)
         yPath.push(finalBounceY, sneaker.endY)
         xPath.push(sneaker.endX, sneaker.endX)
         
-        // Calculate duration based on distance
+        // Calculate duration - SLOWED DOWN TO HALF SPEED (doubled)
         const totalDistance = Math.abs(sneaker.endY - sneaker.startY)
-        const duration = 1.5 + (totalDistance / 1000) * 1.5 // 1.5-3 seconds
+        const baseDuration = 3.0 + (totalDistance / 1000) * 3.0 // 3-6 seconds (was 1.5-3)
         
         // Create times array for keyframes
         const numKeyframes = yPath.length
@@ -243,29 +249,36 @@ export default function FallingSneakers() {
             animate={{
               x: xPath,
               y: yPath,
-              opacity: [0, 0.5, 0.5],
-              scale: [0.8, sneaker.scale, sneaker.scale],
+              opacity: [0, 0.5, 0.5, 0.5], // Stay visible - no fade out
+              scale: [0.8, sneaker.scale, sneaker.scale, sneaker.scale], // Stay at final scale
             }}
             transition={{
               x: {
-                duration,
+                duration: baseDuration,
                 times,
                 ease: 'easeOut',
               },
               y: {
-                duration,
+                duration: baseDuration,
                 times,
                 ease: [0.4, 0, 0.6, 1], // Gravity curve
               },
               opacity: {
-                duration: 0.5,
-                times: [0, 0.2, 1],
+                duration: 0.6,
+                times: [0, 0.15, 0.5, 1], // Fade in quickly, stay visible
+                ease: 'easeOut',
               },
               scale: {
-                duration,
+                duration: baseDuration,
                 times,
                 ease: 'easeOut',
               },
+            }}
+            onAnimationComplete={() => {
+              // Mark as no longer animating, but keep visible
+              setSneakers((prev) =>
+                prev.map((s) => (s.id === sneaker.id ? { ...s, isAnimating: false } : s))
+              )
             }}
             style={{
               transformOrigin: 'center center',
