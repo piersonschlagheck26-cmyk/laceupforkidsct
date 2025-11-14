@@ -22,34 +22,18 @@
   }
   
   .btn-primary {
-    @apply relative backdrop-blur-3xl text-white font-semibold py-3 px-6 rounded-2xl border border-white/50 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:brightness-110 hover:border-white/60 hover:-translate-y-0.5;
-    background: radial-gradient(ellipse at center, rgba(245, 171, 5, 0.5) 0%, rgba(228, 71, 34, 0.6) 50%, rgba(245, 171, 5, 0.7) 100%);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.3) inset, 0 0 60px rgba(245, 171, 5, 0.2);
+    @apply relative backdrop-blur-3xl text-white font-semibold py-3 px-6 rounded-2xl border-2 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:brightness-110 hover:-translate-y-0.5;
+    background: radial-gradient(ellipse at center, rgba(245, 171, 5, 0.7) 0%, rgba(228, 71, 34, 0.75) 50%, rgba(245, 171, 5, 0.8) 100%);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.5) inset, 0 0 80px rgba(245, 171, 5, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  }
+  
+  .btn-primary:hover {
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.35), 0 0 0 2px rgba(255, 255, 255, 0.6) inset, 0 0 100px rgba(245, 171, 5, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.5);
   }
   
   .btn-primary::before {
-    content: '';
-    @apply absolute inset-0 rounded-2xl;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 40%, rgba(255, 255, 255, 0.05) 70%, rgba(255, 255, 255, 0.15) 100%);
-    pointer-events: none;
-    border-radius: 1rem;
-  }
-  
-  .btn-primary::after {
-    content: '';
-    @apply absolute inset-0 rounded-2xl;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.2) 100%);
-    pointer-events: none;
-    border-radius: 1rem;
-  }
-  
-  .btn-secondary {
-    @apply relative backdrop-blur-3xl hover:backdrop-blur-3xl text-accent-600 font-semibold py-3 px-6 rounded-2xl border border-white/50 hover:border-white/60 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.15)] hover:-translate-y-0.5;
-    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.5) 100%);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.4) inset, 0 0 40px rgba(255, 255, 255, 0.15);
-  }
-  
-  .btn-secondary::before {
     content: '';
     @apply absolute inset-0 rounded-2xl;
     background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 40%, rgba(255, 255, 255, 0.1) 70%, rgba(255, 255, 255, 0.25) 100%);
@@ -57,10 +41,38 @@
     border-radius: 1rem;
   }
   
-  .btn-secondary::after {
+  .btn-primary::after {
     content: '';
     @apply absolute inset-0 rounded-2xl;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.3) 100%);
+    pointer-events: none;
+    border-radius: 1rem;
+  }
+  
+  .btn-secondary {
+    @apply relative backdrop-blur-3xl hover:backdrop-blur-3xl text-accent-600 font-semibold py-3 px-6 rounded-2xl border-2 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.15)] hover:-translate-y-0.5;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0.7) 100%);
+    border-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25), 0 0 0 2px rgba(255, 255, 255, 0.5) inset, 0 0 60px rgba(255, 255, 255, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.4);
+  }
+  
+  .btn-secondary:hover {
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 12px 48px 0 rgba(31, 38, 135, 0.3), 0 0 0 2px rgba(255, 255, 255, 0.6) inset, 0 0 80px rgba(255, 255, 255, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+  
+  .btn-secondary::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.4) 40%, rgba(255, 255, 255, 0.15) 70%, rgba(255, 255, 255, 0.35) 100%);
+    pointer-events: none;
+    border-radius: 1rem;
+  }
+  
+  .btn-secondary::after {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.4) 100%);
     pointer-events: none;
     border-radius: 1rem;
   }

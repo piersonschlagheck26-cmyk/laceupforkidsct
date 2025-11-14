@@ -46,16 +46,19 @@ export default function HowItWorks() {
   const [sliderValue, setSliderValue] = useState(0) // 0-100 for smooth sliding
   const [isUserInteracting, setIsUserInteracting] = useState(false)
 
-  // Auto-progress every 2 seconds
+  // Auto-progress smoothly every 2 seconds through all stages
   useEffect(() => {
     if (isUserInteracting) return
 
     const interval = setInterval(() => {
       setSliderValue((prev) => {
-        const nextValue = prev + (100 / (steps.length - 1))
+        // Smoothly increment by 1% each interval
+        const increment = 1
+        const nextValue = prev + increment
+        // Loop back to 0 when reaching 100
         return nextValue >= 100 ? 0 : nextValue
       })
-    }, 2000)
+    }, 40) // Update every 40ms for smooth progression (100 steps * 40ms = 4 seconds per full cycle)
 
     return () => clearInterval(interval)
   }, [isUserInteracting])
@@ -81,9 +84,12 @@ export default function HowItWorks() {
   }
 
   // Calculate which step to show based on slider position (0-100 maps to 0-2)
+  // Divide into 3 equal sections: 0-33.33 = step 0, 33.34-66.66 = step 1, 66.67-100 = step 2
   const currentStep = useMemo(() => {
-    const stepSize = 100 / (steps.length - 1)
-    return Math.round(sliderValue / stepSize)
+    const stepSize = 100 / steps.length
+    if (sliderValue < stepSize) return 0
+    if (sliderValue < stepSize * 2) return 1
+    return 2
   }, [sliderValue])
 
   const progressPercent = sliderValue
