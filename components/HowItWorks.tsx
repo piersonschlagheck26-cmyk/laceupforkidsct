@@ -1,9 +1,8 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useMemo } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
-import Image from 'next/image'
 
 const steps = [
   {
@@ -44,14 +43,19 @@ const steps = [
 export default function HowItWorks() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [currentStep, setCurrentStep] = useState(0)
+  const [sliderValue, setSliderValue] = useState(0) // 0-100 for smooth sliding
 
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentStep(Number(event.target.value))
+    setSliderValue(Number(event.target.value))
   }
 
-  const maxIndex = steps.length - 1
-  const progressPercent = maxIndex === 0 ? 0 : (currentStep / maxIndex) * 100
+  // Calculate which step to show based on slider position (0-100 maps to 0-2)
+  const currentStep = useMemo(() => {
+    const stepSize = 100 / (steps.length - 1)
+    return Math.round(sliderValue / stepSize)
+  }, [sliderValue])
+
+  const progressPercent = sliderValue
 
   return (
     <section id="how-it-works" ref={ref} className="relative section-padding overflow-hidden">
@@ -116,46 +120,51 @@ export default function HowItWorks() {
                 </motion.div>
               </AnimatePresence>
 
-              <div className="mt-10 px-6">
+              <div className="mt-10 px-6 pb-4">
                 <div className="relative">
+                  {/* Progress track */}
+                  <div className="absolute top-1/2 left-0 right-0 h-2 bg-primary-200 rounded-full -translate-y-1/2" />
+                  <div 
+                    className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full -translate-y-1/2 transition-all duration-150"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                  
+                  {/* Smooth range input */}
                   <input
                     type="range"
                     min={0}
-                    max={maxIndex}
-                    step={1}
-                    value={currentStep}
+                    max={100}
+                    value={sliderValue}
                     onChange={handleRangeChange}
-                    className="w-full appearance-none bg-transparent"
-                    aria-label="Select process step"
+                    className="w-full h-2 appearance-none bg-transparent cursor-pointer relative z-10"
+                    style={{
+                      background: 'transparent',
+                    }}
+                    aria-label="Navigate through process steps"
                   />
-                  <div className="absolute top-1/2 left-0 right-0 h-1 bg-primary-200 rounded-full pointer-events-none" />
-                  <motion.div
-                    className="absolute -top-7 flex items-center justify-center pointer-events-none"
-                    style={{ left: `calc(${progressPercent}% - 32px)` }}
-                    transition={{ type: 'spring', stiffness: 160, damping: 16 }}
-                  >
-                    <Image
-                      src="/images/sneaker-clipart.png"
-                      alt="Current step indicator"
-                      width={64}
-                      height={64}
-                      className="drop-shadow-lg"
-                      unoptimized
-                    />
-                  </motion.div>
+                  
+                  {/* Step markers */}
                   <div className="absolute top-1/2 left-0 right-0 flex justify-between -translate-y-1/2 pointer-events-none">
-                    {steps.map((step, index) => (
-                      <span
-                        key={step.title}
-                        className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-semibold ${
-                          index === currentStep
-                            ? 'border-accent-500 bg-white text-accent-600 shadow-md'
-                            : 'border-primary-200 bg-white/70 text-gray-500'
-                        }`}
-                      >
-                        {step.number}
-                      </span>
-                    ))}
+                    {steps.map((step, index) => {
+                      const markerPosition = (index / (steps.length - 1)) * 100
+                      return (
+                        <div
+                          key={step.title}
+                          className="flex flex-col items-center"
+                          style={{ position: 'absolute', left: `${markerPosition}%`, transform: 'translateX(-50%)' }}
+                        >
+                          <span
+                            className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-semibold transition-all ${
+                              Math.abs(sliderValue - markerPosition) < 15
+                                ? 'border-accent-500 bg-white text-accent-600 shadow-md scale-110'
+                                : 'border-primary-200 bg-white/70 text-gray-500 scale-100'
+                            }`}
+                          >
+                            {step.number}
+                          </span>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
