@@ -46,11 +46,16 @@ export default function Navigation({ activeSection }: NavigationProps) {
   return (
     <nav className="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 pointer-events-none">
       <div
-        className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-3xl transition-all duration-300 pointer-events-auto shadow-xl ${
+        className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-3xl transition-all duration-300 pointer-events-auto ${
           isScrolled
-            ? 'bg-white/30 border-white/25 shadow-primary-900/15'
-            : 'bg-white/20 border-white/20 shadow-primary-900/10'
+            ? 'bg-white/25 border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
+            : 'bg-white/20 border-white/25 shadow-[0_8px_32px_rgba(0,0,0,0.08)]'
         }`}
+        style={{
+          boxShadow: isScrolled 
+            ? '0 8px 32px 0 rgba(31, 38, 135, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
+            : '0 8px 32px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.15) inset'
+        }}
       >
         <div className="px-5 py-4 sm:px-8">
           <div className="flex items-center justify-between">
@@ -130,11 +135,16 @@ export default function Navigation({ activeSection }: NavigationProps) {
                 <button
                   key={link.href}
                   onClick={() => scrollToSection(link.href)}
-                  className={`block w-full text-left py-2 px-4 rounded-2xl transition-colors ${
+                  className={`relative block w-full text-left py-2 px-4 rounded-2xl backdrop-blur-xl transition-all duration-300 ${
                     activeSection === link.href.replace('#', '')
-                      ? 'bg-primary-100/70 text-accent-700'
-                      : 'text-gray-700 hover:bg-primary-50/80'
+                      ? 'bg-white/25 border border-white/30 text-accent-700 shadow-lg'
+                      : 'text-gray-700 hover:bg-white/20 border border-transparent hover:border-white/20'
                   }`}
+                  style={{
+                    boxShadow: activeSection === link.href.replace('#', '')
+                      ? '0 4px 16px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
+                      : 'none'
+                  }}
                 >
                   {link.label}
                 </button>

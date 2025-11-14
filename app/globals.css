@@ -22,15 +22,39 @@
   }
   
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-500/85 via-accent-500/85 to-primary-500/85 backdrop-blur-xl text-white font-semibold py-3 px-6 rounded-2xl border border-white/50 transition-all duration-200 shadow-lg shadow-primary-900/25 hover:shadow-xl hover:brightness-110 hover:border-white/60;
+    @apply relative bg-gradient-to-r from-primary-500/30 via-accent-500/30 to-primary-500/30 backdrop-blur-2xl text-white font-semibold py-3 px-6 rounded-2xl border border-white/30 transition-all duration-300 shadow-2xl shadow-primary-900/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:brightness-110 hover:border-white/40 hover:-translate-y-0.5;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  
+  .btn-primary::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
   }
   
   .btn-secondary {
-    @apply bg-white/65 backdrop-blur-xl hover:bg-white/75 text-accent-600 font-semibold py-3 px-6 rounded-2xl border-2 border-white/50 hover:border-white/70 transition-all duration-200 shadow-lg shadow-primary-900/15 hover:shadow-xl;
+    @apply relative bg-white/25 backdrop-blur-2xl hover:bg-white/35 text-accent-600 font-semibold py-3 px-6 rounded-2xl border border-white/30 hover:border-white/40 transition-all duration-300 shadow-2xl shadow-primary-900/15 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:-translate-y-0.5;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  }
+  
+  .btn-secondary::before {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
   }
   
   .card {
-    @apply bg-white/95 backdrop-blur rounded-2xl shadow-lg shadow-primary-900/10 p-6 sm:p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary-900/15;
+    @apply relative bg-white/20 backdrop-blur-2xl rounded-3xl shadow-2xl shadow-primary-900/10 p-6 sm:p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)] border border-white/20;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  }
+  
+  .card::before {
+    content: '';
+    @apply absolute inset-0 rounded-3xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05) 100%);
+    pointer-events: none;
   }
 }
 

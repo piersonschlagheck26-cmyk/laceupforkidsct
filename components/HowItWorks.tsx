@@ -82,17 +82,29 @@ export default function HowItWorks() {
               {steps.map((step, index) => (
                 <div
                   key={step.title}
-                  className={`rounded-2xl border bg-white/70 px-6 py-5 shadow-lg transition ${
-                    index === currentStep ? 'border-accent-400 text-gray-900' : 'border-transparent text-gray-400'
+                  className={`relative rounded-3xl border backdrop-blur-2xl px-6 py-5 transition-all duration-300 ${
+                    index === currentStep 
+                      ? 'bg-white/25 border-white/40 text-gray-900 shadow-[0_8px_32px_rgba(0,0,0,0.12)]' 
+                      : 'bg-white/15 border-white/20 text-gray-400 shadow-[0_4px_16px_rgba(0,0,0,0.08)]'
                   }`}
+                  style={{
+                    boxShadow: index === currentStep
+                      ? '0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
+                      : '0 4px 16px 0 rgba(31, 38, 135, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.15) inset'
+                  }}
                 >
                   <div className="flex items-center gap-4">
                     <span
-                      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-semibold ${
+                      className={`relative flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-semibold backdrop-blur-xl ${
                         index === currentStep
-                          ? 'border-accent-500 bg-white text-accent-600 shadow-md'
-                          : 'border-primary-200 bg-white/70'
+                          ? 'border-accent-500/60 bg-white/30 text-accent-600 shadow-lg'
+                          : 'border-white/30 bg-white/20 text-gray-400'
                       }`}
+                      style={{
+                        boxShadow: index === currentStep
+                          ? '0 4px 16px 0 rgba(228, 71, 34, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.3) inset'
+                          : '0 2px 8px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
+                      }}
                     >
                       {step.number}
                     </span>

@@ -26,7 +26,10 @@ export default function RotatingBelt() {
 
   return (
     <div
-      className="relative w-full max-w-2xl mx-auto h-16 overflow-hidden rounded-2xl bg-gradient-to-r from-white/50 via-primary-50/40 to-white/50 backdrop-blur-md shadow-lg shadow-primary-900/5 border border-white/60"
+      className="relative w-full max-w-2xl mx-auto h-16 overflow-hidden rounded-3xl bg-gradient-to-r from-white/25 via-primary-50/20 to-white/25 backdrop-blur-2xl shadow-2xl border border-white/30 transition-all duration-300 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:-translate-y-0.5"
+      style={{
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
+      }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
