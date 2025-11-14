@@ -56,7 +56,7 @@ export default function WhatWeDo() {
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             What We Do
           </h2>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-800 max-w-3xl mx-auto">
             Lace Up for Kids is a teen-led nonprofit that transforms gently used shoes into meaningful support for families. We collect shoes that would otherwise end up in landfills, partner with organizations to trade them for funds, and donate 100% of the proceeds to Ronald McDonald House.
           </p>
         </motion.div>
@@ -74,7 +74,7 @@ export default function WhatWeDo() {
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              <p className="text-gray-800 leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
         </div>

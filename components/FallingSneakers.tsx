@@ -10,17 +10,21 @@ interface Sneaker {
   endX: number
   startY: number
   endY: number
+  currentX: number // Current position (for continuous settling)
+  currentY: number // Current position (for continuous settling)
   scale: number
   initialScale: number
   colorFilter: string
   rotation: number
   finalRotation: number // Final rotation after tumbling
+  currentRotation: number // Current rotation (for continuous settling)
   brightness: number
   saturation: number
   hueRotate: number
   opacity: number
   bouncePoints: { x: number; y: number; rotation: number }[] // Include rotation in bounce points
   isAnimating: boolean
+  isSettled: boolean // Whether shoe has finished initial animation
 }
 
 const SHOE_SIZE = 80
@@ -133,7 +137,7 @@ const simulateFall = (
   
   let currentX = startX
   let currentY = startY
-  let velocityX = (Math.random() - 0.5) * 0.8 // Initial horizontal velocity
+  let velocityX = (Math.random() - 0.5) * 0.6 // Reduced horizontal velocity for denser pile
   let velocityY = 0.5 + Math.random() * 0.3 // Initial vertical velocity (gravity)
   const bouncePoints: { x: number; y: number; rotation: number }[] = []
   
@@ -314,10 +318,10 @@ export default function FallingSneakers() {
       const viewportHeight = window.innerHeight
       const scale = 0.6 + Math.random() * 0.5
       
-      // Slight random offset to start position
-      const startXOffset = (Math.random() - 0.5) * 30
+      // Smaller random offset for denser pile (reduced from 30 to 20)
+      const startXOffset = (Math.random() - 0.5) * 20
       const startX = (SOURCE_X_PERCENT / 100) * viewportWidth + startXOffset
-      const startY = -SHOE_SIZE - Math.random() * 15
+      const startY = -SHOE_SIZE - Math.random() * 10
       
       // Simulate fall with collision detection
       const result = simulateFall(startX, startY, existing, viewportWidth, viewportHeight, scale)
@@ -341,17 +345,21 @@ export default function FallingSneakers() {
         endX: result.endX,
         startY,
         endY: result.endY,
+        currentX: result.endX, // Start at end position
+        currentY: result.endY,
         scale,
         initialScale,
         colorFilter: colorProps.filterString,
         rotation,
         finalRotation,
+        currentRotation: finalRotation, // Start at final rotation
         brightness: colorProps.brightness,
         saturation: colorProps.saturation,
         hueRotate: colorProps.hueRotate,
         opacity,
         bouncePoints: result.bouncePoints,
         isAnimating: true,
+        isSettled: false,
       }
     }
 
@@ -361,7 +369,7 @@ export default function FallingSneakers() {
       setSneakers([firstSneaker])
     }
 
-    // Add new sneakers - SLOWED DOWN (trickling in like sand)
+    // Add new sneakers - DENSER (more frequent for tighter pile)
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
@@ -370,10 +378,98 @@ export default function FallingSneakers() {
         if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 2500) // Much slower: every 2.5 seconds (trickling effect)
+    }, 2000) // Every 2 seconds for denser pile (was 2.5)
+
+    // Continuous settling effect - shoes adjust as pile grows
+    const settlingInterval = setInterval(() => {
+      if (!isActiveRef.current) return
+
+      setSneakers((prev) => {
+        const viewportWidth = window.innerWidth
+        const viewportHeight = window.innerHeight
+        const baseY = viewportHeight - PILE_BOTTOM_OFFSET
+        
+        // Only settle shoes that have finished initial animation
+        const settledShoes = prev.filter(s => s.isSettled)
+        if (settledShoes.length === 0) return prev
+
+        return prev.map((sneaker) => {
+          if (!sneaker.isSettled) return sneaker
+
+          const radius = (SHOE_SIZE * sneaker.scale) / 2
+          let newX = sneaker.currentX
+          let newY = sneaker.currentY
+          let newRotation = sneaker.currentRotation
+          let needsAdjustment = false
+
+          // Check all other shoes to see if we need to settle
+          for (const other of prev) {
+            if (other.id === sneaker.id || !other.isSettled) continue
+
+            const otherX = other.currentX
+            const otherY = other.currentY
+            const otherRadius = (SHOE_SIZE * other.scale) / 2
+
+            // If we're overlapping with another shoe, only adjust if we need to move DOWN (never up)
+            if (Math.abs(newX - otherX) < radius + otherRadius + 2) {
+              const otherTop = otherY - otherRadius
+              const ourBottom = newY + radius
+
+              // If we're overlapping, only move down (never up) and slightly sideways
+              if (ourBottom > otherTop - 1) {
+                const targetY = otherTop - radius - 1
+                // Only move if target is below or equal to current (never up)
+                if (targetY >= newY) {
+                  newY = targetY
+                  // Add slight horizontal shift to create natural pile
+                  const shiftDirection = (Math.random() - 0.5) * 0.2
+                  newX = Math.max(radius, Math.min(viewportWidth - radius, newX + shiftDirection * 8))
+                  // DO NOT adjust rotation - keep landing angle
+                  needsAdjustment = true
+                }
+              }
+            }
+
+            // If another shoe is above us and pushing, only shift sideways (never up)
+            if (Math.abs(newX - otherX) < radius + otherRadius + 2) {
+              const otherBottom = otherY + otherRadius
+              const ourTop = newY - radius
+
+              // If another shoe is above us, only shift sideways (never move up)
+              if (otherBottom < ourTop + 3 && otherY < newY) {
+                const shiftAmount = (Math.random() - 0.5) * 12
+                newX = Math.max(radius, Math.min(viewportWidth - radius, newX + shiftAmount))
+                // DO NOT adjust rotation - keep landing angle
+                needsAdjustment = true
+              }
+            }
+          }
+
+          // Ensure we're not below the base
+          if (newY > baseY) {
+            newY = baseY
+            needsAdjustment = true
+          }
+
+          // Only update if we need adjustment AND we're not moving up (never move up)
+          // Also never change rotation - keep the landing angle
+          if (needsAdjustment && newY >= sneaker.currentY && (Math.abs(newX - sneaker.currentX) > 0.5 || Math.abs(newY - sneaker.currentY) > 0.5)) {
+            return {
+              ...sneaker,
+              currentX: newX,
+              currentY: newY,
+              currentRotation: sneaker.currentRotation, // Keep original rotation, never change
+            }
+          }
+
+          return sneaker
+        })
+      })
+    }, 500) // Check every 500ms for settling adjustments
 
     return () => {
       clearInterval(interval)
+      clearInterval(settlingInterval)
       window.removeEventListener('scroll', checkVisibility)
       window.removeEventListener('resize', checkVisibility)
     }
@@ -446,6 +542,11 @@ export default function FallingSneakers() {
           return sneaker.scale
         })
 
+        // If shoe is settled, use current position for continuous settling
+        const finalX = sneaker.isSettled ? sneaker.currentX : xPath
+        const finalY = sneaker.isSettled ? sneaker.currentY : yPath
+        const finalRotate = sneaker.isSettled ? sneaker.currentRotation : rotationPath
+
         return (
           <motion.div
             key={sneaker.id}
@@ -458,37 +559,47 @@ export default function FallingSneakers() {
               rotate: 0,
             }}
             animate={{
-              x: xPath,
-              y: yPath,
-              opacity: opacityPath, // Stay visible forever after fade in
-              scale: scalePath,
-              rotate: rotationPath, // Tumbling rotation
+              x: finalX,
+              y: finalY,
+              opacity: sneaker.opacity, // Always visible
+              scale: sneaker.isSettled ? sneaker.scale : scalePath,
+              rotate: finalRotate, // Tumbling rotation or current rotation
             }}
             transition={{
               x: {
-                duration: baseDuration,
-                times,
-                ease: 'easeOut',
+                duration: sneaker.isSettled ? 0.8 : baseDuration, // Smooth settling transitions
+                times: sneaker.isSettled ? undefined : times,
+                ease: sneaker.isSettled ? 'easeOut' : 'easeOut',
               },
               y: {
-                duration: baseDuration,
-                times,
-                ease: [0.3, 0, 0.5, 1], // Gravity curve
+                duration: sneaker.isSettled ? 0.8 : baseDuration, // Smooth settling transitions
+                times: sneaker.isSettled ? undefined : times,
+                ease: sneaker.isSettled ? 'easeOut' : [0.3, 0, 0.5, 1], // Gravity curve
               },
               opacity: {
                 duration: 0.01, // Instant (no transition needed since always visible)
                 ease: 'linear',
               },
               scale: {
-                duration: baseDuration,
-                times,
+                duration: sneaker.isSettled ? 0.8 : baseDuration,
+                times: sneaker.isSettled ? undefined : times,
                 ease: 'easeOut',
               },
               rotate: {
-                duration: baseDuration,
-                times,
+                duration: sneaker.isSettled ? 0.8 : baseDuration, // Smooth rotation adjustments
+                times: sneaker.isSettled ? undefined : times,
                 ease: 'easeInOut', // Smooth tumbling
               },
+            }}
+            onAnimationComplete={() => {
+              // Mark as settled and update current position
+              setSneakers((prev) =>
+                prev.map((s) => 
+                  s.id === sneaker.id 
+                    ? { ...s, isAnimating: false, isSettled: true, currentX: s.endX, currentY: s.endY, currentRotation: s.finalRotation }
+                    : s
+                )
+              )
             }}
             style={{
               transformOrigin: 'center center',

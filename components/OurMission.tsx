@@ -44,7 +44,7 @@ export default function OurMission() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900">Lace Up for Kids</h3>
             </div>
-            <p className="text-gray-600 leading-relaxed">
+            <p className="text-gray-800 leading-relaxed">
               Our mission is to empower young people to make a tangible difference in their communities by collecting and repurposing shoes that would otherwise be discarded. We believe that small actions can create big change, and by working together, we can support families facing difficult times while also reducing waste.
             </p>
           </motion.div>

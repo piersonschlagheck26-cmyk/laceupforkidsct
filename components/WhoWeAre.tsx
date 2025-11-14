@@ -53,7 +53,7 @@ export default function WhoWeAre() {
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             Who We Are
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-800 max-w-2xl mx-auto">
             A group of passionate teens working together to make a difference in our community
           </p>
         </motion.div>
@@ -82,7 +82,7 @@ export default function WhoWeAre() {
               <p className="text-primary-600 font-semibold mb-4">{member.role}</p>
 
               {/* Bio */}
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">{member.bio}</p>
+              <p className="text-gray-800 text-sm leading-relaxed mb-4">{member.bio}</p>
 
               {/* Social Links */}
               <div className="flex justify-center space-x-4">

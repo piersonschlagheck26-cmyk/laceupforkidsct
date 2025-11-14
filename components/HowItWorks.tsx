@@ -109,7 +109,7 @@ export default function HowItWorks() {
           className="text-center mb-12"
         >
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">How It Works</h2>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-800 max-w-2xl mx-auto">
             Our simple three-step process makes it easy to make a difference
           </p>
         </motion.div>
@@ -164,7 +164,7 @@ export default function HowItWorks() {
                 >
                   <div className="flex justify-center text-accent-600 mb-4">{steps[currentStep].icon}</div>
                   <h3 className="text-2xl font-bold text-gray-900">{steps[currentStep].title}</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-800 leading-relaxed">
                     {steps[currentStep].description}
                   </p>
                 </motion.div>

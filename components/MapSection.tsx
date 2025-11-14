@@ -22,7 +22,7 @@ export default function MapSection() {
             Donation Drop-Off Points
           </span>
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Where to Bring Your Shoes</h2>
-          <p className="text-lg text-gray-700">
+          <p className="text-lg text-gray-800">
             These are our current Lace Up for Kids donation boxes in Guilford, Connecticut. Drop your gently used sneakers at either location anytime.
           </p>
         </div>
@@ -32,12 +32,12 @@ export default function MapSection() {
             <div key={location.name} className="card text-left">
               <h3 className="text-2xl font-bold text-gray-900 mb-1">{location.name}</h3>
               <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
-              <p className="text-gray-600 leading-relaxed">{location.description}</p>
+              <p className="text-gray-800 leading-relaxed">{location.description}</p>
             </div>
           ))}
         </div>
 
-        <p className="mt-8 text-center text-sm text-gray-600 italic">
+        <p className="mt-8 text-center text-sm text-gray-800 italic">
           Want to host a donation bin at your business or school? Contact us and we’ll set one up together.
         </p>
       </div>

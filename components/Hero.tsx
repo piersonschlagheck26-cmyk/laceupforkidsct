@@ -61,7 +61,7 @@ export default function Hero() {
           </h1>
 
           {/* Tagline */}
-          <p className="text-xl sm:text-2xl text-gray-700 mb-10 font-medium leading-relaxed max-w-2xl mx-auto relative">
+          <p className="text-xl sm:text-2xl text-gray-800 mb-10 font-medium leading-relaxed max-w-2xl mx-auto relative">
             <span className="relative z-10" style={{
               textShadow: '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(0, 0, 0, 0.1)'
             }}>
