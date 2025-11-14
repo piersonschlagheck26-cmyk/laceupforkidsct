@@ -7,7 +7,6 @@ import WhatWeDo from '@/components/WhatWeDo'
 import OurMission from '@/components/OurMission'
 import HowItWorks from '@/components/HowItWorks'
 import WhoWeAre from '@/components/WhoWeAre'
-// import Contact from '@/components/Contact' // Temporarily disabled
 import Footer from '@/components/Footer'
 
 export default function Home() {
@@ -42,7 +41,6 @@ export default function Home() {
       <OurMission />
       <HowItWorks />
       <WhoWeAre />
-      {/* <Contact /> */}
       <Footer />
     </main>
   )

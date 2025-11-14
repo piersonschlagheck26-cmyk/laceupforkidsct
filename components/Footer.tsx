@@ -56,11 +56,6 @@ export default function Footer() {
                   Who We Are
                 </a>
               </li>
-              {/* <li>
-                <a href="#contact" className="hover:text-primary-400 transition-colors">
-                  Contact
-                </a>
-              </li> */}
             </ul>
           </div>
 
