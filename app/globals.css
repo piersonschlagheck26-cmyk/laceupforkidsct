@@ -22,11 +22,11 @@
   }
   
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-500 via-accent-500 to-primary-500 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-200 shadow-lg shadow-accent-500/30 hover:shadow-xl hover:brightness-105;
+    @apply bg-gradient-to-r from-primary-500/70 via-accent-500/70 to-primary-500/70 backdrop-blur-xl text-white font-semibold py-3 px-6 rounded-2xl border border-white/30 transition-all duration-200 shadow-lg shadow-primary-900/20 hover:shadow-xl hover:brightness-110 hover:border-white/40;
   }
   
   .btn-secondary {
-    @apply bg-white/90 hover:bg-white text-accent-600 font-semibold py-3 px-6 rounded-2xl border-2 border-accent-500 transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-white/40 backdrop-blur-xl hover:bg-white/50 text-accent-600 font-semibold py-3 px-6 rounded-2xl border-2 border-white/40 hover:border-white/60 transition-all duration-200 shadow-lg shadow-primary-900/10 hover:shadow-xl;
   }
   
   .card {

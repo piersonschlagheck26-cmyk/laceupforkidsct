@@ -48,8 +48,8 @@ export default function Navigation({ activeSection }: NavigationProps) {
       <div
         className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-3xl transition-all duration-300 pointer-events-auto shadow-xl ${
           isScrolled
-            ? 'bg-white/60 border-white/45 shadow-primary-900/15'
-            : 'bg-white/40 border-white/35 shadow-primary-900/10'
+            ? 'bg-white/30 border-white/25 shadow-primary-900/15'
+            : 'bg-white/20 border-white/20 shadow-primary-900/10'
         }`}
       >
         <div className="px-5 py-4 sm:px-8">
