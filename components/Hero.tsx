@@ -36,7 +36,7 @@ export default function Hero() {
           <div className="mb-10 flex justify-center">
             <div className="relative w-40 h-48 sm:w-48 sm:h-56 drop-shadow-2xl">
               <Image
-                src="/assets/logo.svg"
+                src="/assets/logo.png"
                 alt="Lace Up for Kids logo"
                 fill
                 priority

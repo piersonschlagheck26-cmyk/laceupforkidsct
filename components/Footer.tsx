@@ -21,7 +21,7 @@ export default function Footer() {
             <div className="flex items-center space-x-3 mb-5">
               <div className="relative w-12 h-14 drop-shadow-xl">
                 <Image
-                  src="/assets/logo.svg"
+                  src="/assets/logo.png"
                   alt="Lace Up for Kids logo"
                   fill
                   className="object-contain"

@@ -6,9 +6,9 @@ import Image from 'next/image'
 
 const teamMembers = [
   {
-    name: 'Alex Martinez',
+    name: 'Shane Tandler',
     role: 'Founder & Director',
-    bio: 'A high school senior passionate about community service and environmental sustainability. Started Lace Up for Kids after seeing the need for both waste reduction and family support.',
+    bio: 'A high school junior passionate about community service and environmental sustainability. Started Lace Up for Kids after seeing the need for both waste reduction and family support.',
     // image: '/images/team-placeholder-1.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
     social: {
       twitter: '#',
@@ -16,9 +16,9 @@ const teamMembers = [
     },
   },
   {
-    name: 'Jordan Chen',
-    role: 'Operations Lead',
-    bio: 'Junior year student who coordinates shoe collections and manages partnerships. Loves organizing community events and making connections that drive positive change.',
+    name: 'Pierson Schlagheck',
+    role: 'Website Developer and Social Media Manager',
+    bio: 'Junior year student who coordinates initiatives and manages advertising. Loves organizing community events and making connections that drive positive change.',
     // image: '/images/team-placeholder-2.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
     social: {
       twitter: '#',
@@ -26,9 +26,9 @@ const teamMembers = [
     },
   },
   {
-    name: 'Sam Taylor',
-    role: 'Outreach Coordinator',
-    bio: 'Sophomore dedicated to spreading awareness about our mission. Handles social media, communications, and helps recruit new volunteers to join our cause.',
+    name: 'Conor Farrell',
+    role: 'Operations Coordinator',
+    bio: 'Junior dedicated to spreading awareness about our mission. Arranges shoe collection locations and product handling.',
     // image: '/images/team-placeholder-3.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
     social: {
       instagram: '#',

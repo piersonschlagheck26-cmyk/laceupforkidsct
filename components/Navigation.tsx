@@ -23,8 +23,8 @@ export default function Navigation({ activeSection }: NavigationProps) {
   const navLinks = [
     { href: '#home', label: 'Home' },
     { href: '#what-we-do', label: 'What We Do' },
-    { href: '#how-it-works', label: 'How It Works' },
     { href: '#mission', label: 'Our Mission' },
+    { href: '#how-it-works', label: 'How It Works' },
     { href: '#who-we-are', label: 'Who We Are' },
   ]
 
@@ -63,11 +63,11 @@ export default function Navigation({ activeSection }: NavigationProps) {
           >
             <div className="relative w-12 h-12 drop-shadow-lg">
               <Image
-                src="/assets/logo.svg"
+                src="/assets/logo.png"
                 alt="Lace Up for Kids logo"
                 width={48}
                 height={48}
-                className="w-12 h-12"
+                className="w-12 h-12 object-contain"
                 priority
               />
             </div>
