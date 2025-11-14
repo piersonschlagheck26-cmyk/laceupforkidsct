@@ -33,18 +33,18 @@ const BUTTON_AREA_Y = 420 // Just above CTA buttons
 const SHOE_SIZE = 70 // Base size in pixels
 const MAX_SNEAKERS = 40
 
-// Check if two shoes would overlap
-const checkCollision = (sneaker1: Sneaker, sneaker2: Sneaker): boolean => {
-  const margin = 5 // Small margin to prevent touching
+// Check if two shoes would overlap (using viewport width for percentage conversion)
+const checkCollision = (sneaker1: Sneaker, sneaker2: Sneaker, viewportWidth: number): boolean => {
+  const margin = 8 // Margin to prevent touching
   const w1 = sneaker1.width / 2
   const h1 = sneaker1.height / 2
   const w2 = sneaker2.width / 2
   const h2 = sneaker2.height / 2
 
-  // Get center positions
-  const x1 = sneaker1.endLeft
+  // Convert percentage to pixels for x position
+  const x1 = (sneaker1.endLeft / 100) * viewportWidth
   const y1 = sneaker1.endY
-  const x2 = sneaker2.endLeft
+  const x2 = (sneaker2.endLeft / 100) * viewportWidth
   const y2 = sneaker2.endY
 
   // Check bounding box overlap
@@ -58,12 +58,17 @@ const checkCollision = (sneaker1: Sneaker, sneaker2: Sneaker): boolean => {
 const findValidPosition = (
   existingSneakers: Sneaker[],
   centerX: number,
-  targetY: number
+  targetY: number,
+  viewportWidth: number
 ): { endLeft: number; endY: number } | null => {
   const maxAttempts = 50
-  const spreadRange = 30 // How far to spread horizontally
+  const spreadRange = 25 // How far to spread horizontally (in percentage)
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const scale = 0.65 + Math.random() * 0.25
+    const width = SHOE_SIZE * scale
+    const height = SHOE_SIZE * scale
+    
     const testSneaker: Sneaker = {
       id: 'test',
       startLeft: centerX,
@@ -71,16 +76,16 @@ const findValidPosition = (
       rotation: 0,
       endRotation: (Math.random() - 0.5) * 60,
       duration: 0,
-      endY: targetY + Math.random() * 20 - 10,
-      scale: 0.65 + Math.random() * 0.25,
+      endY: targetY + Math.random() * 15 - 7.5,
+      scale,
       colorFilter: '',
-      width: SHOE_SIZE * (0.65 + Math.random() * 0.25),
-      height: SHOE_SIZE * (0.65 + Math.random() * 0.25),
+      width,
+      height,
     }
 
     // Check collision with all existing shoes
     const hasCollision = existingSneakers.some((existing) =>
-      checkCollision(testSneaker, existing)
+      checkCollision(testSneaker, existing, viewportWidth)
     )
 
     if (!hasCollision) {
@@ -114,13 +119,14 @@ export default function FallingSneakers() {
     const createSneaker = (existing: Sneaker[]): Sneaker | null => {
       if (existing.length >= MAX_SNEAKERS) return null
 
+      const viewportWidth = window.innerWidth
       const scale = 0.65 + Math.random() * 0.25
       const width = SHOE_SIZE * scale
       const height = SHOE_SIZE * scale
 
-      // Try to place just above buttons
-      const baseY = BUTTON_AREA_Y - (existing.length * 8) // Stack up from buttons
-      const position = findValidPosition(existing, PILE_CENTER_X, baseY)
+      // Try to place just above buttons, stacking upward
+      const baseY = BUTTON_AREA_Y - (existing.length * 10) // Stack up from buttons
+      const position = findValidPosition(existing, PILE_CENTER_X, baseY, viewportWidth)
 
       if (!position) return null
 
