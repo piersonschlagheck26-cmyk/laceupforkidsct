@@ -1,0 +1,52 @@
+<svg width="360" height="520" viewBox="0 0 360 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">Lace Up For Kids logo</title>
+  <desc id="logoDesc">Two red sneakers hanging in front of a yellow recycle symbol with the words Lace Up For Kids.</desc>
+  <defs>
+    <linearGradient id="lace-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f9d358" />
+      <stop offset="100%" stop-color="#f4a806" />
+    </linearGradient>
+    <linearGradient id="shoe-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b3d" />
+      <stop offset="100%" stop-color="#c63a1e" />
+    </linearGradient>
+    <style><![CDATA[
+      .logo-text {
+        font-family: 'Playfair Display', 'Georgia', serif;
+        font-weight: 700;
+        fill: #1f1f1f;
+        letter-spacing: 2px;
+      }
+      .logo-small {
+        font-size: 42px;
+      }
+      .logo-large {
+        font-size: 52px;
+      }
+    ]]></style>
+  </defs>
+  <!-- Recycle symbol -->
+  <g fill="url(#lace-gradient)">
+    <path d="M177.5 68l42.6 74.3c3.3 5.7-0.8 12.9-7.4 12.9h-30.9l22.6 39.5-26.7 15.4-42.6-74.3c-3.3-5.7 0.8-12.9 7.4-12.9h30.9L150.3 83.9z" />
+    <path d="M278 203.2l-42.6 74.3c-3.3 5.7-11.4 5.7-14.7 0l-15.5-27L182.6 285l-13.4-28.3 42.6-74.3c3.3-5.7 11.4-5.7 14.7 0l15.5 27 22.6-39.5z" />
+    <path d="M119.7 189.1l-42.6-74.3c-3.3-5.7 0.8-12.9 7.4-12.9h30.9l-22.6-39.5 26.7-15.4 42.6 74.3c3.3 5.7-0.8 12.9-7.4 12.9h-30.9l22.6 39.5z" transform="rotate(120 140 140)" />
+  </g>
+
+  <!-- Hanging lace -->
+  <path d="M178 115c6.1 0 11 4.9 11 11 0 5.8-4.4 10.5-10 11v58c0 3.9-3.1 7-7 7s-7-3.1-7-7v-58c-5.6-0.5-10-5.2-10-11 0-6.1 4.9-11 11-11 0.6 0 1.1 0 1.6 0.1 1-3.5 4.2-6.1 8-6.1 3.7 0 6.9 2.5 7.9 5.9 0.8-0.1 1.6-0.1 2.5-0.1z" fill="#f4a806" />
+
+  <!-- Sneakers -->
+  <g stroke="#611c10" stroke-width="6" stroke-linejoin="round">
+    <path d="M140 268c-14 0-33 9.6-39.5 21.1-7.1 13.1-3.7 26.2 6.2 43.8 9.9 17.6 26.5 31.3 44.8 31.3 16.9 0 35.3-11.3 48.3-33.2 9.3-15.8 12.3-31.7 9.2-44.7-3.1-12.8-19.8-16.8-34.6-15.9l-34.4 2.2z" fill="url(#shoe-gradient)" />
+    <path d="M220 268c-14 0-33 9.6-39.5 21.1-7.1 13.1-3.7 26.2 6.2 43.8 9.9 17.6 26.5 31.3 44.8 31.3 16.9 0 35.3-11.3 48.3-33.2 9.3-15.8 12.3-31.7 9.2-44.7-3.1-12.8-19.8-16.8-34.6-15.9l-34.4 2.2z" fill="url(#shoe-gradient)" transform="matrix(-1 0 0 1 430 0)" />
+    <path d="M98 311c35 12 60-11 96-11s61 25 96 11" stroke="#fbdd7a" stroke-width="9" stroke-linecap="round" />
+    <path d="M144 266c6 16 24 22 32 37" stroke="#fbdd7a" stroke-width="6" stroke-linecap="round" />
+    <path d="M216 266c-6 16-24 22-32 37" stroke="#fbdd7a" stroke-width="6" stroke-linecap="round" />
+    <path d="M168 386c0 15-9 36-16 45" stroke="#fbdd7a" stroke-width="6" stroke-linecap="round" />
+    <path d="M192 386c0 15 9 36 16 45" stroke="#fbdd7a" stroke-width="6" stroke-linecap="round" />
+  </g>
+
+  <!-- Text -->
+  <text class="logo-text logo-large" x="50%" y="70" text-anchor="middle">Lace Up</text>
+  <text class="logo-text logo-small" x="50%" y="470" text-anchor="middle">For Kids</text>
+</svg>

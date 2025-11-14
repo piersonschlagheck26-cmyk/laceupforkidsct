@@ -26,7 +26,7 @@ export default function RotatingBelt() {
 
   return (
     <div
-      className="relative w-full max-w-2xl mx-auto h-16 overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg border border-gray-200"
+      className="relative w-full max-w-2xl mx-auto h-16 overflow-hidden rounded-2xl bg-gradient-to-r from-primary-100/90 via-white to-accent-50/80 backdrop-blur shadow-xl shadow-primary-900/10 border border-white/60"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
@@ -41,7 +41,7 @@ export default function RotatingBelt() {
             key={index}
             className="min-w-full flex items-center justify-center px-6"
           >
-            <p className="text-lg sm:text-xl font-semibold text-gray-800 text-center">
+            <p className="text-lg sm:text-xl font-semibold text-ember-800 text-center">
               {message}
             </p>
           </div>
@@ -56,8 +56,8 @@ export default function RotatingBelt() {
             onClick={() => setCurrentIndex(index)}
             className={`h-2 rounded-full transition-all ${
               index === currentIndex
-                ? 'w-8 bg-primary-600'
-                : 'w-2 bg-gray-300 hover:bg-gray-400'
+                ? 'w-8 bg-gradient-to-r from-primary-500 to-accent-500'
+                : 'w-2 bg-primary-200 hover:bg-primary-300'
             }`}
             aria-label={`Go to message ${index + 1}`}
           />

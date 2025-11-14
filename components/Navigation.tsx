@@ -45,8 +45,10 @@ export default function Navigation({ activeSection }: NavigationProps) {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'
-      }`}
+        isScrolled
+          ? 'bg-white/95 backdrop-blur-lg shadow-lg shadow-primary-900/10'
+          : 'bg-gradient-to-r from-white/85 via-primary-50/70 to-white/85 backdrop-blur'
+      } border-b border-white/40`}
     >
       <div className="container-custom section-padding py-4">
         <div className="flex items-center justify-between">
@@ -57,13 +59,19 @@ export default function Navigation({ activeSection }: NavigationProps) {
               e.preventDefault()
               scrollToSection('#home')
             }}
-            className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+            className="flex items-center space-x-3 hover:opacity-90 transition-opacity"
           >
-            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-              {/* TODO: Replace with actual logo image */}
-              <span className="text-white font-bold text-xl">LU</span>
+            <div className="relative w-12 h-12 drop-shadow-lg">
+              <Image
+                src="/assets/logo.svg"
+                alt="Lace Up for Kids logo"
+                width={48}
+                height={48}
+                className="w-12 h-12"
+                priority
+              />
             </div>
-            <span className="font-bold text-xl text-gray-900">Lace Up for Kids</span>
+            <span className="font-bold text-xl text-gray-900 tracking-wide">Lace Up for Kids</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -72,10 +80,10 @@ export default function Navigation({ activeSection }: NavigationProps) {
               <button
                 key={link.href}
                 onClick={() => scrollToSection(link.href)}
-                className={`text-sm font-medium transition-colors ${
+                className={`text-sm font-semibold transition-colors ${
                   activeSection === link.href.replace('#', '')
-                    ? 'text-primary-600'
-                    : 'text-gray-700 hover:text-primary-600'
+                    ? 'text-accent-600'
+                    : 'text-gray-700 hover:text-accent-600'
                 }`}
               >
                 {link.label}
@@ -122,8 +130,8 @@ export default function Navigation({ activeSection }: NavigationProps) {
                 onClick={() => scrollToSection(link.href)}
                 className={`block w-full text-left py-2 px-4 rounded-lg transition-colors ${
                   activeSection === link.href.replace('#', '')
-                    ? 'bg-primary-50 text-primary-600'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-primary-100 text-accent-700'
+                    : 'text-gray-700 hover:bg-primary-50'
                 }`}
               >
                 {link.label}

@@ -46,8 +46,12 @@ export default function HowItWorks() {
   }
 
   return (
-    <section id="how-it-works" ref={ref} className="section-padding bg-gradient-to-br from-primary-50 to-white">
-      <div className="container-custom">
+    <section id="how-it-works" ref={ref} className="relative section-padding overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-ember-50" />
+      <div className="absolute -top-32 right-0 w-64 h-64 bg-accent-200/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary-200/25 rounded-full blur-[120px]" />
+
+      <div className="container-custom relative">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -57,7 +61,7 @@ export default function HowItWorks() {
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             How It Works
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
             Our simple three-step process makes it easy to make a difference
           </p>
         </motion.div>
@@ -74,17 +78,17 @@ export default function HowItWorks() {
                 className="relative"
               >
                 {/* Number Badge */}
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg z-10">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-accent-500 to-primary-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">
                   {step.number}
                 </div>
 
                 {/* Card */}
-                <div className="card pt-8 text-center hover:scale-105 transition-transform">
-                  <div className="text-primary-600 mb-4 flex justify-center">
+                <div className="card pt-10 text-center hover:scale-105 transition-transform">
+                  <div className="text-accent-600 mb-4 flex justify-center">
                     {step.icon}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
-                  <p className="text-gray-600">{step.description}</p>
+                  <p className="text-gray-600 leading-relaxed">{step.description}</p>
                 </div>
               </motion.div>
             ))}
@@ -98,13 +102,13 @@ export default function HowItWorks() {
             className="mb-12"
           >
             <div className="flex items-center justify-between max-w-3xl mx-auto">
-              <div className="flex-1 h-2 bg-gray-200 rounded-full mr-2">
-                <div className="h-full bg-primary-600 rounded-full" style={{ width: '33%' }}></div>
+              <div className="flex-1 h-2 bg-primary-200 rounded-full mr-2">
+                <div className="h-full bg-gradient-to-r from-primary-500 to-accent-400 rounded-full" style={{ width: '33%' }}></div>
               </div>
-              <div className="flex-1 h-2 bg-gray-200 rounded-full mx-2">
-                <div className="h-full bg-primary-600 rounded-full" style={{ width: '66%' }}></div>
+              <div className="flex-1 h-2 bg-primary-200 rounded-full mx-2">
+                <div className="h-full bg-gradient-to-r from-primary-500 via-accent-500 to-primary-500 rounded-full" style={{ width: '66%' }}></div>
               </div>
-              <div className="flex-1 h-2 bg-primary-600 rounded-full ml-2"></div>
+              <div className="flex-1 h-2 bg-gradient-to-r from-accent-500 to-primary-500 rounded-full ml-2"></div>
             </div>
           </motion.div>
 

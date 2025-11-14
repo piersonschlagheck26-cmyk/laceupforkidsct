@@ -38,22 +38,26 @@ export default function WhatWeDo() {
   ]
 
   return (
-    <section id="what-we-do" ref={ref} className="section-padding bg-gray-50">
-      <div className="container-custom">
+    <section id="what-we-do" ref={ref} className="relative section-padding overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50 to-accent-50" />
+      <div className="absolute -top-20 -left-16 w-60 h-60 bg-primary-200/40 rounded-full blur-3xl" />
+      <div className="absolute -bottom-28 right-10 w-72 h-72 bg-accent-200/30 rounded-full blur-3xl" />
+
+      <div className="container-custom relative">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
+          <span className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold bg-primary-200/70 text-ember-900 uppercase tracking-wider mb-4">
+            Our Impact
+          </span>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
             What We Do
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Lace Up for Kids is a teen-led nonprofit that transforms gently used shoes into 
-            meaningful support for families. We collect shoes that would otherwise end up in 
-            landfills, partner with organizations to trade them for funds, and donate 100% of 
-            the proceeds to Ronald McDonald House.
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            Lace Up for Kids is a teen-led nonprofit that transforms gently used shoes into meaningful support for families. We collect shoes that would otherwise end up in landfills, partner with organizations to trade them for funds, and donate 100% of the proceeds to Ronald McDonald House.
           </p>
         </motion.div>
 
@@ -66,11 +70,11 @@ export default function WhatWeDo() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="card text-center"
             >
-              <div className="text-primary-600 mb-4 flex justify-center">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-accent-400 text-white shadow-lg">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
+              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
         </div>

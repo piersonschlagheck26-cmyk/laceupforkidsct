@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import RotatingBelt from './RotatingBelt'
 
 export default function Hero() {
@@ -22,38 +23,45 @@ export default function Hero() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
       {/* Background with gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-accent-50">
-        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-5"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-100 via-white to-accent-50">
+        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-[0.07]"></div>
+        <div className="absolute -top-32 -left-24 w-72 h-72 bg-gradient-to-br from-accent-200/70 to-primary-200/40 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -right-24 w-72 h-72 bg-gradient-to-tr from-primary-300/60 to-accent-200/50 rounded-full blur-3xl"></div>
       </div>
 
       {/* Content */}
       <div className="container-custom section-padding relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Logo placeholder */}
-          <div className="mb-8 flex justify-center">
-            <div className="w-32 h-32 bg-primary-600 rounded-3xl flex items-center justify-center shadow-2xl">
-              {/* TODO: Replace with actual logo from /public/assets/logo.pdf or converted image */}
-              <span className="text-white font-bold text-5xl">LU</span>
+          {/* Logo */}
+          <div className="mb-10 flex justify-center">
+            <div className="relative w-40 h-48 sm:w-48 sm:h-56 drop-shadow-2xl">
+              <Image
+                src="/assets/logo.svg"
+                alt="Lace Up for Kids logo"
+                fill
+                priority
+                className="object-contain"
+              />
             </div>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
-            Lace Up for Kids
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6">
+            Turning Sneakers into Support
           </h1>
 
           {/* Tagline */}
-          <p className="text-xl sm:text-2xl text-gray-600 mb-8 font-medium">
-            Turning old shoes into hope for families in need
+          <p className="text-xl sm:text-2xl text-gray-700 mb-10 font-medium leading-relaxed max-w-2xl mx-auto">
+            Lace Up for Kids recycles gently used shoes and transforms them into hope for families staying at Ronald McDonald House.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <button onClick={handleDonateClick} className="btn-primary text-lg px-8 py-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            <button onClick={handleDonateClick} className="btn-primary text-lg px-10 py-4">
               Donate Now
             </button>
-            <button onClick={scrollToHowItWorks} className="btn-secondary text-lg px-8 py-4">
-              Learn How It Works
+            <button onClick={scrollToHowItWorks} className="btn-secondary text-lg px-10 py-4">
+              See How It Works
             </button>
           </div>
 
@@ -65,7 +73,7 @@ export default function Hero() {
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <svg
-          className="w-6 h-6 text-gray-400"
+          className="w-6 h-6 text-accent-500"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
