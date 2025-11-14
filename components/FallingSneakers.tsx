@@ -11,7 +11,13 @@ interface Sneaker {
   startY: number
   endY: number
   scale: number
+  initialScale: number // Random initial scale for animation
   colorFilter: string
+  rotation: number // Random rotation for each shoe
+  brightness: number // Random brightness variation
+  saturation: number // Random saturation variation
+  hueRotate: number // Random hue rotation
+  opacity: number // Random opacity
   bouncePoints: { x: number; y: number }[]
   isAnimating: boolean // Track if animation is complete
 }
@@ -21,15 +27,21 @@ const SOURCE_X_PERCENT = 50 // Top center
 const PILE_BOTTOM_OFFSET = 80
 const MAX_SNEAKERS = 100 // Increased for more accumulation
 
-// Color filters matching the site palette
-const COLOR_FILTERS = [
-  'brightness(1.1) saturate(1.2) hue-rotate(0deg)',
-  'brightness(1.15) saturate(1.3) hue-rotate(5deg) sepia(0.2)',
-  'brightness(1.1) saturate(1.4) hue-rotate(350deg) sepia(0.3)',
-  'brightness(1.2) saturate(1.1) hue-rotate(15deg) sepia(0.15)',
-  'brightness(1.05) saturate(1.3) hue-rotate(340deg) sepia(0.25)',
-  'brightness(1.18) saturate(1.25) hue-rotate(10deg) sepia(0.2)',
-]
+// Generate random color filter for each shoe
+const generateColorFilter = () => {
+  const brightness = 0.95 + Math.random() * 0.3 // 0.95-1.25
+  const saturation = 1.0 + Math.random() * 0.5 // 1.0-1.5
+  const hueRotate = (Math.random() - 0.5) * 40 // -20 to 20 degrees
+  const sepia = Math.random() * 0.4 // 0-0.4
+  
+  return {
+    brightness,
+    saturation,
+    hueRotate,
+    sepia,
+    filterString: `brightness(${brightness}) saturate(${saturation}) hue-rotate(${hueRotate}deg) sepia(${sepia})`,
+  }
+}
 
 // Simple collision check
 const checkCollision = (
@@ -60,16 +72,21 @@ const simulateFall = (
   let currentY = startY
   const bouncePoints: { x: number; y: number }[] = []
   
-  // Simulate step-by-step fall
-  const stepSize = 8
-  // Each shoe disperses left or right - random direction and speed
+  // Simulate step-by-step fall with more randomization
+  const stepSize = 6 // Smaller steps for smoother simulation
+  // Each shoe disperses left or right - random direction and speed with more variation
   const direction = Math.random() < 0.5 ? -1 : 1 // Left or right
-  const speed = 0.6 + Math.random() * 1.4 // Speed of dispersion
+  const speed = 0.4 + Math.random() * 2.0 // More variation: 0.4-2.4
   let velocityX = direction * speed // Horizontal velocity for dispersion
+  
+  // Add random wobble to horizontal movement
+  const wobbleAmount = Math.random() * 0.3 // Random wobble intensity
   
   for (let y = startY; y < baseY + 400; y += stepSize) {
     currentY = y
-    currentX += velocityX // Apply horizontal drift
+    // Apply horizontal drift with random wobble
+    const wobble = Math.sin(y * 0.1) * wobbleAmount * (Math.random() - 0.5)
+    currentX += velocityX + wobble // Apply horizontal drift with wobble
     
     // Check collision with all existing shoes
     for (const existing of existingSneakers) {
@@ -84,10 +101,10 @@ const simulateFall = (
         const dy = currentY - existingY
         const distance = Math.sqrt(dx * dx + dy * dy) || 1
         
-        // Bounce away from collision
-        const bounceDistance = 18 + Math.random() * 12
+        // Bounce away from collision with more randomization
+        const bounceDistance = 15 + Math.random() * 20 // More variation: 15-35
         const bounceX = currentX + (dx / distance) * bounceDistance
-        const bounceY = currentY - 8 - Math.random() * 8 // Bounce up
+        const bounceY = currentY - 6 - Math.random() * 12 // More variation: 6-18 bounce up
         
         bouncePoints.push({ x: bounceX, y: bounceY })
         
@@ -161,13 +178,28 @@ export default function FallingSneakers() {
       
       const viewportWidth = window.innerWidth
       const viewportHeight = window.innerHeight
-      const scale = 0.7 + Math.random() * 0.3
+      // More scale variation
+      const scale = 0.6 + Math.random() * 0.5 // 0.6-1.1 (more variation)
       
-      const startX = (SOURCE_X_PERCENT / 100) * viewportWidth
-      const startY = -SHOE_SIZE // Start above viewport
+      // Add slight random offset to start position for more natural dispersion
+      const startXOffset = (Math.random() - 0.5) * 40 // ±20px variation
+      const startX = (SOURCE_X_PERCENT / 100) * viewportWidth + startXOffset
+      const startY = -SHOE_SIZE - Math.random() * 20 // Slight vertical variation
       
       // Simulate fall with collision detection
       const result = simulateFall(startX, startY, existing, viewportWidth, viewportHeight, scale)
+      
+      // Generate random color properties
+      const colorProps = generateColorFilter()
+      
+      // Random rotation (-15 to 15 degrees)
+      const rotation = (Math.random() - 0.5) * 30
+      
+      // Random initial scale for animation
+      const initialScale = 0.7 + Math.random() * 0.2
+      
+      // Random opacity
+      const opacity = 0.45 + Math.random() * 0.15
       
       return {
         id: `sneaker-${Date.now()}-${Math.random()}`,
@@ -176,7 +208,13 @@ export default function FallingSneakers() {
         startY,
         endY: result.endY,
         scale,
-        colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
+        initialScale,
+        colorFilter: colorProps.filterString,
+        rotation,
+        brightness: colorProps.brightness,
+        saturation: colorProps.saturation,
+        hueRotate: colorProps.hueRotate,
+        opacity,
         bouncePoints: result.bouncePoints,
         isAnimating: true,
       }
@@ -188,7 +226,7 @@ export default function FallingSneakers() {
       setSneakers([firstSneaker])
     }
 
-    // Add new sneakers (slower - less frequent)
+    // Add new sneakers (vastly slower - much less frequent)
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
@@ -197,7 +235,7 @@ export default function FallingSneakers() {
         if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 600) // Slower: every 600ms instead of 400ms
+    }, 1800) // Vastly slower: every 1800ms (1.8 seconds) - 3x slower than before
 
     return () => {
       clearInterval(interval)
@@ -223,18 +261,25 @@ export default function FallingSneakers() {
         yPath.push(sneaker.endY)
         xPath.push(sneaker.endX)
         
-        // Add final bounce
-        const finalBounceY = sneaker.endY - (6 + Math.random() * 8)
+        // Add final bounce with more variation
+        const finalBounceHeight = 4 + Math.random() * 12 // More variation: 4-16
+        const finalBounceY = sneaker.endY - finalBounceHeight
         yPath.push(finalBounceY, sneaker.endY)
         xPath.push(sneaker.endX, sneaker.endX)
         
-        // Calculate duration - SLOWED DOWN TO HALF SPEED (doubled)
+        // Calculate duration - VASTLY SLOWED DOWN (4-5x slower)
         const totalDistance = Math.abs(sneaker.endY - sneaker.startY)
-        const baseDuration = 3.0 + (totalDistance / 1000) * 3.0 // 3-6 seconds (was 1.5-3)
+        const baseDuration = 8.0 + (totalDistance / 1000) * 6.0 // 8-14 seconds (vastly slower)
         
         // Create times array for keyframes
         const numKeyframes = yPath.length
         const times = Array.from({ length: numKeyframes }, (_, i) => i / (numKeyframes - 1))
+        
+        // Add random rotation animation matching keyframes
+        const rotationPath = Array.from({ length: numKeyframes }, (_, i) => {
+          const progress = i / (numKeyframes - 1)
+          return sneaker.rotation * progress
+        })
 
         return (
           <motion.div
@@ -244,13 +289,14 @@ export default function FallingSneakers() {
               x: sneaker.startX,
               y: sneaker.startY,
               opacity: 0,
-              scale: 0.8,
+              scale: sneaker.initialScale,
             }}
             animate={{
               x: xPath,
               y: yPath,
-              opacity: [0, 0.5, 0.5, 0.5], // Stay visible - no fade out
-              scale: [0.8, sneaker.scale, sneaker.scale, sneaker.scale], // Stay at final scale
+              opacity: [0, sneaker.opacity, sneaker.opacity, sneaker.opacity], // Stay visible with random opacity
+              scale: [sneaker.initialScale, sneaker.scale, sneaker.scale, sneaker.scale], // Scale variation
+              rotate: rotationPath, // Random rotation throughout animation
             }}
             transition={{
               x: {
@@ -264,14 +310,19 @@ export default function FallingSneakers() {
                 ease: [0.4, 0, 0.6, 1], // Gravity curve
               },
               opacity: {
-                duration: 0.6,
-                times: [0, 0.15, 0.5, 1], // Fade in quickly, stay visible
+                duration: 0.8,
+                times: [0, 0.2, 0.6, 1], // Slower fade in
                 ease: 'easeOut',
               },
               scale: {
                 duration: baseDuration,
                 times,
                 ease: 'easeOut',
+              },
+              rotate: {
+                duration: baseDuration,
+                times,
+                ease: 'easeInOut',
               },
             }}
             onAnimationComplete={() => {
@@ -292,10 +343,10 @@ export default function FallingSneakers() {
               className="drop-shadow-xl"
               style={{
                 backgroundColor: 'transparent',
-                filter: `${sneaker.colorFilter} hue-rotate(-15deg) saturate(0.9) brightness(1.05)`,
+                filter: `${sneaker.colorFilter}`,
                 imageRendering: 'auto',
                 mixBlendMode: 'normal',
-                WebkitFilter: `${sneaker.colorFilter} hue-rotate(-15deg) saturate(0.9) brightness(1.05)`,
+                WebkitFilter: `${sneaker.colorFilter}`,
                 width: `${SHOE_SIZE * sneaker.scale}px`,
                 height: `${SHOE_SIZE * sneaker.scale}px`,
               }}
