@@ -8,8 +8,6 @@ interface Sneaker {
   id: string
   startLeft: number
   endLeft: number
-  rotation: number
-  endRotation: number
   duration: number
   endY: number
   scale: number
@@ -53,7 +51,7 @@ const checkCollision = (
   )
 }
 
-// Calculate bounce when hitting another shoe
+// Calculate bounce when hitting another shoe (no rotation)
 const calculateBounce = (
   fallingX: number,
   fallingY: number,
@@ -63,7 +61,7 @@ const calculateBounce = (
   hitY: number,
   hitW: number,
   hitH: number
-): { bounceX: number; bounceY: number; bounceRotation: number } => {
+): { bounceX: number; bounceY: number } => {
   // Calculate collision angle
   const dx = fallingX - hitX
   const dy = fallingY - hitY
@@ -72,22 +70,20 @@ const calculateBounce = (
   if (distance === 0) {
     // Direct collision - bounce to the side
     return {
-      bounceX: fallingX + (Math.random() - 0.5) * 30,
-      bounceY: fallingY - 15, // Bounce up slightly
-      bounceRotation: (Math.random() - 0.5) * 90,
+      bounceX: fallingX + (Math.random() - 0.5) * 25,
+      bounceY: fallingY - 12, // Bounce up slightly
     }
   }
   
-  // Bounce away from collision point
-  const bounceDistance = 20 + Math.random() * 15
+  // Bounce away from collision point (like raindrops)
+  const bounceDistance = 15 + Math.random() * 12
   const bounceX = fallingX + (dx / distance) * bounceDistance
-  const bounceY = fallingY - 10 - Math.random() * 10 // Bounce up and away
-  const bounceRotation = (Math.random() - 0.5) * 120
+  const bounceY = fallingY - 8 - Math.random() * 8 // Bounce up and away
   
-  return { bounceX, bounceY, bounceRotation }
+  return { bounceX, bounceY }
 }
 
-// Find landing position with collision and bounce simulation
+// Find landing position with collision and bounce simulation (raindrop style - minimal horizontal drift)
 const findLandingPosition = (
   existingSneakers: Sneaker[],
   startX: number,
@@ -100,19 +96,20 @@ const findLandingPosition = (
   const height = SHOE_SIZE * scale
   const baseY = viewportHeight - PILE_BOTTOM_OFFSET
   
-  // Simulate fall with potential bounces
+  // Simulate fall with potential bounces (like raindrops - mostly straight down)
   let currentX = (startX / 100) * viewportWidth
   let currentY = startY
-  const horizontalVelocity = (Math.random() - 0.5) * 2 // Random drift
+  const horizontalVelocity = (Math.random() - 0.5) * 0.5 // Minimal drift for raindrop effect
   const bounceOffsets: { x: number; y: number }[] = []
   
   // Simulate falling and checking for collisions
-  const stepSize = 20
+  const stepSize = 15
   let hasBounced = false
   
   for (let y = startY; y < baseY + 200; y += stepSize) {
     currentY = y
-    currentX += horizontalVelocity * (y - startY) / 100 // Drift as falls
+    // Minimal horizontal movement - raindrops fall mostly straight
+    currentX += horizontalVelocity * (y - startY) / 200
     
     // Check collision with existing shoes
     for (const existing of existingSneakers) {
@@ -133,7 +130,7 @@ const findLandingPosition = (
     }
     
     // If we've bounced and are falling again, continue
-    if (hasBounced && y > currentY + 50) {
+    if (hasBounced && y > currentY + 40) {
       hasBounced = false
     }
   }
@@ -171,7 +168,7 @@ export default function FallingSneakers() {
       const viewportHeight = window.innerHeight
       const scale = 0.65 + Math.random() * 0.35
       
-      // Find landing position with bounce physics
+      // Find landing position with bounce physics (raindrop style)
       const landing = findLandingPosition(
         existing,
         CONFETTI_SOURCE_X,
@@ -181,23 +178,17 @@ export default function FallingSneakers() {
         scale
       )
       
-      // Natural rotation based on horizontal movement
-      const horizontalMovement = landing.endLeft - CONFETTI_SOURCE_X
-      const totalRotation = (Math.random() - 0.5) * 1080 + horizontalMovement * 2
-      
       return {
         id: `sneaker-${Date.now()}-${Math.random()}`,
         startLeft: CONFETTI_SOURCE_X,
         endLeft: landing.endLeft,
-        rotation: (Math.random() - 0.5) * 60,
-        endRotation: totalRotation,
-        duration: 2.0 + Math.random() * 1.5, // 2.0-3.5 seconds
+        duration: 1.8 + Math.random() * 1.2, // 1.8-3.0 seconds (faster like raindrops)
         endY: landing.endY,
         scale,
         colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
         width: SHOE_SIZE * scale,
         height: SHOE_SIZE * scale,
-        horizontalVelocity: (Math.random() - 0.5) * 2,
+        horizontalVelocity: (Math.random() - 0.5) * 0.5, // Minimal drift
         bounceOffsets: landing.bounceOffsets,
       }
     }
@@ -230,16 +221,15 @@ export default function FallingSneakers() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
       <AnimatePresence>
         {sneakers.map((sneaker) => {
-          // Calculate animation path with bounces
-          const bounceHeight = 10 + Math.random() * 15
+          // Calculate animation path with bounces (raindrop style - no rotation)
+          const bounceHeight = 8 + Math.random() * 12
           const bounceY = sneaker.endY - bounceHeight
           
-          // Create keyframe path with bounces
+          // Create keyframe path with bounces (straight down like raindrops)
           const yKeyframes = [sneaker.endY, bounceY, sneaker.endY]
           const xKeyframes = ['0%', `${sneaker.endLeft - sneaker.startLeft}vw`, `${sneaker.endLeft - sneaker.startLeft}vw`]
-          const rotateKeyframes = [sneaker.rotation, sneaker.endRotation, sneaker.endRotation]
           
-          // Add bounce points if they exist
+          // Add bounce points if they exist (no rotation)
           if (sneaker.bounceOffsets.length > 0 && typeof window !== 'undefined') {
             const firstBounce = sneaker.bounceOffsets[0]
             const bounceXPercent = ((firstBounce.x / window.innerWidth) * 100) - sneaker.startLeft
@@ -248,7 +238,6 @@ export default function FallingSneakers() {
             // Insert bounce into keyframes
             yKeyframes.splice(1, 0, bounceYPercent)
             xKeyframes.splice(1, 0, `${bounceXPercent}vw`)
-            rotateKeyframes.splice(1, 0, sneaker.endRotation + (Math.random() - 0.5) * 60)
           }
 
           return (
@@ -259,46 +248,40 @@ export default function FallingSneakers() {
                 y: SCREEN_TOP,
                 x: '0%',
                 opacity: 0,
-                scale: 0.6,
-                rotate: sneaker.rotation,
+                scale: 0.7,
               }}
               animate={{
                 y: yKeyframes,
                 x: xKeyframes,
                 opacity: [0, 0.5, 0.5],
-                scale: [0.6, sneaker.scale * 0.95, sneaker.scale],
-                rotate: rotateKeyframes,
+                scale: [0.7, sneaker.scale * 0.98, sneaker.scale],
               }}
               transition={{
                 y: {
-                  duration: sneaker.duration + 0.3,
+                  duration: sneaker.duration + 0.2,
                   times: sneaker.bounceOffsets.length > 0 
-                    ? [0, 0.7, 0.85, 1] 
-                    : [0, 0.92, 1],
-                  ease: [0.42, 0, 0.58, 1],
+                    ? [0, 0.75, 0.88, 1] 
+                    : [0, 0.93, 1],
+                  ease: [0.4, 0, 0.6, 1], // Natural gravity for raindrops
                 },
                 x: {
                   duration: sneaker.duration,
                   times: sneaker.bounceOffsets.length > 0
-                    ? [0, 0.7, 0.85, 1]
+                    ? [0, 0.75, 0.88, 1]
                     : [0, 0.5, 1],
-                  ease: [0.25, 0.1, 0.5, 1],
+                  ease: 'easeOut', // Minimal horizontal movement
                 },
                 opacity: {
-                  duration: 0.6,
-                  times: [0, 0.2, 1],
+                  duration: 0.4,
+                  times: [0, 0.15, 1],
                   ease: 'easeOut',
                 },
                 scale: {
-                  duration: sneaker.duration + 0.3,
+                  duration: sneaker.duration + 0.2,
                   times: sneaker.bounceOffsets.length > 0
-                    ? [0, 0.7, 0.85, 1]
-                    : [0, 0.92, 1],
-                  ease: [0.42, 0, 0.58, 1],
-                },
-                rotate: {
-                  duration: sneaker.duration,
-                  ease: [0.25, 0.1, 0.5, 1],
+                    ? [0, 0.75, 0.88, 1]
+                    : [0, 0.93, 1],
+                  ease: [0.4, 0, 0.6, 1],
                 },
               }}
               style={{
