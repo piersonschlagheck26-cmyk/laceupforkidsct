@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -11,6 +11,8 @@ interface Sneaker {
   duration: number
   endY: number
   zIndex: number
+  scale: number
+  initialRotation: number
 }
 
 const MAX_SNEAKERS = 25
@@ -18,7 +20,7 @@ const PILE_START_Y = 480 // Just above the CTA buttons area
 
 export default function FallingSneakers() {
   const [sneakers, setSneakers] = useState<Sneaker[]>([])
-  const [isVisible, setIsVisible] = useState(true)
+  const isVisibleRef = useRef(true)
 
   useEffect(() => {
     // Check if user is on home section
@@ -27,7 +29,7 @@ export default function FallingSneakers() {
       if (homeSection) {
         const rect = homeSection.getBoundingClientRect()
         const isInView = rect.top >= -100 && rect.bottom <= window.innerHeight + 100
-        setIsVisible(isInView)
+        isVisibleRef.current = isInView
       }
     }
 
@@ -35,22 +37,21 @@ export default function FallingSneakers() {
     window.addEventListener('scroll', checkScroll)
     window.addEventListener('resize', checkScroll)
 
-    // Start falling animation
-    const interval = setInterval(() => {
-      if (!isVisible) return
-
+    // Drop first shoe immediately
+    const dropShoe = () => {
       setSneakers((prev) => {
-        // Keep accumulating shoes, don't remove them
-        if (prev.length >= MAX_SNEAKERS) {
+        if (!isVisibleRef.current || prev.length >= MAX_SNEAKERS) {
           return prev
         }
 
         const id = Date.now() + Math.random()
-        const left = 8 + Math.random() * 84 // Spread across most of the width
+        const left = 8 + Math.random() * 84
         const rotation = Math.random() * 50 - 25
-        const duration = 4 + Math.random() * 3 // 4-7 seconds
-        const endY = PILE_START_Y + (prev.length % 8) * 15 + Math.random() * 20 // Pile up naturally
+        const initialRotation = rotation - 15
+        const duration = 4 + Math.random() * 3
+        const endY = PILE_START_Y + (prev.length % 8) * 15 + Math.random() * 20
         const zIndex = prev.length
+        const scale = 0.7 + Math.random() * 0.2
 
         return [
           ...prev,
@@ -58,12 +59,22 @@ export default function FallingSneakers() {
             id,
             left,
             rotation,
+            initialRotation,
             duration,
             endY,
             zIndex,
+            scale,
           },
         ]
       })
+    }
+
+    // Drop first shoe immediately
+    dropShoe()
+
+    // Start falling animation
+    const interval = setInterval(() => {
+      dropShoe()
     }, 800) // New shoe every 800ms
 
     return () => {
@@ -71,7 +82,7 @@ export default function FallingSneakers() {
       window.removeEventListener('scroll', checkScroll)
       window.removeEventListener('resize', checkScroll)
     }
-  }, [isVisible])
+  }, [])
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -80,11 +91,11 @@ export default function FallingSneakers() {
           <motion.div
             key={sneaker.id}
             className="absolute"
-            initial={{ y: -120, opacity: 0, scale: 0.6, rotate: sneaker.rotation - 15 }}
+            initial={{ y: -120, opacity: 0, scale: 0.6, rotate: sneaker.initialRotation }}
             animate={{ 
               y: sneaker.endY, 
               opacity: 0.85, 
-              scale: 0.7 + Math.random() * 0.2, 
+              scale: sneaker.scale, 
               rotate: sneaker.rotation 
             }}
             transition={{ 
