@@ -9,7 +9,7 @@ const teamMembers = [
     name: 'Alex Martinez',
     role: 'Founder & Director',
     bio: 'A high school senior passionate about community service and environmental sustainability. Started Lace Up for Kids after seeing the need for both waste reduction and family support.',
-    image: '/images/team-placeholder-1.jpg', // TODO: Replace with actual headshot
+    // image: '/images/team-placeholder-1.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
     social: {
       twitter: '#',
       linkedin: '#',
@@ -19,7 +19,7 @@ const teamMembers = [
     name: 'Jordan Chen',
     role: 'Operations Lead',
     bio: 'Junior year student who coordinates shoe collections and manages partnerships. Loves organizing community events and making connections that drive positive change.',
-    image: '/images/team-placeholder-2.jpg', // TODO: Replace with actual headshot
+    // image: '/images/team-placeholder-2.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
     social: {
       twitter: '#',
       instagram: '#',
@@ -29,7 +29,7 @@ const teamMembers = [
     name: 'Sam Taylor',
     role: 'Outreach Coordinator',
     bio: 'Sophomore dedicated to spreading awareness about our mission. Handles social media, communications, and helps recruit new volunteers to join our cause.',
-    image: '/images/team-placeholder-3.jpg', // TODO: Replace with actual headshot
+    // image: '/images/team-placeholder-3.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
     social: {
       instagram: '#',
       linkedin: '#',
