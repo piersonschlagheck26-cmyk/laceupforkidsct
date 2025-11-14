@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Lace Up for Kids | Donate Shoes, Support Families',
     description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates proceeds to Ronald McDonald House to support families in need.',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://laceupforkids.org',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://laceupforkidsct.org',
     siteName: 'Lace Up for Kids',
     type: 'website',
   },
