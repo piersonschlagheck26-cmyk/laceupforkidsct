@@ -91,8 +91,8 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
   border: 3px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(228, 71, 34, 0.2);
-  transition: all 0.2s ease;
-  margin-top: -6px;
+  transition: all 0.3s ease;
+  margin-top: -9px; /* Center on 2px track (20px thumb / 2 - 2px track / 2 = 9px) */
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
@@ -112,7 +112,8 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
   border: 3px solid white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(228, 71, 34, 0.2);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  margin-top: 0;
 }
 
 input[type="range"]::-moz-range-thumb:hover {

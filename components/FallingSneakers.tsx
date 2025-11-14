@@ -307,7 +307,7 @@ export default function FallingSneakers() {
               }}
             >
               <Image
-                src="/images/sneaker-realistic.png"
+                src="/images/sneaker-new.jpg"
                 alt="Falling sneaker"
                 width={SHOE_SIZE}
                 height={SHOE_SIZE}

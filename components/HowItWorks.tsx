@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useMemo } from 'react'
+import { useRef, useState, useMemo, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 
@@ -44,9 +44,40 @@ export default function HowItWorks() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const [sliderValue, setSliderValue] = useState(0) // 0-100 for smooth sliding
+  const [isUserInteracting, setIsUserInteracting] = useState(false)
+
+  // Auto-progress every 2 seconds
+  useEffect(() => {
+    if (isUserInteracting) return
+
+    const interval = setInterval(() => {
+      setSliderValue((prev) => {
+        const nextValue = prev + (100 / (steps.length - 1))
+        return nextValue >= 100 ? 0 : nextValue
+      })
+    }, 2000)
+
+    return () => clearInterval(interval)
+  }, [isUserInteracting])
 
   const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsUserInteracting(true)
     setSliderValue(Number(event.target.value))
+    
+    // Reset interaction flag after user stops interacting
+    setTimeout(() => {
+      setIsUserInteracting(false)
+    }, 3000)
+  }
+
+  const handleMouseDown = () => {
+    setIsUserInteracting(true)
+  }
+
+  const handleMouseUp = () => {
+    setTimeout(() => {
+      setIsUserInteracting(false)
+    }, 3000)
   }
 
   // Calculate which step to show based on slider position (0-100 maps to 0-2)
@@ -133,11 +164,11 @@ export default function HowItWorks() {
               </AnimatePresence>
 
               <div className="mt-10 px-6 pb-4">
-                <div className="relative">
+                <div className="relative h-6 flex items-center">
                   {/* Progress track */}
-                  <div className="absolute top-1/2 left-0 right-0 h-2 bg-primary-200 rounded-full -translate-y-1/2" />
+                  <div className="absolute top-1/2 left-0 right-0 h-2 bg-primary-200/50 rounded-full -translate-y-1/2" />
                   <div 
-                    className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full -translate-y-1/2 transition-all duration-150"
+                    className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full -translate-y-1/2 transition-all duration-500 ease-out"
                     style={{ width: `${progressPercent}%` }}
                   />
                   
@@ -148,7 +179,11 @@ export default function HowItWorks() {
                     max={100}
                     value={sliderValue}
                     onChange={handleRangeChange}
-                    className="w-full h-2 appearance-none bg-transparent cursor-pointer relative z-10"
+                    onMouseDown={handleMouseDown}
+                    onMouseUp={handleMouseUp}
+                    onTouchStart={handleMouseDown}
+                    onTouchEnd={handleMouseUp}
+                    className="w-full h-6 appearance-none bg-transparent cursor-pointer relative z-10"
                     style={{
                       background: 'transparent',
                     }}
