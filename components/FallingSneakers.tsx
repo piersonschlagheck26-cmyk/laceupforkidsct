@@ -16,8 +16,8 @@ interface Sneaker {
   colorFilter: string
   width: number
   height: number
-  horizontalVelocity: number // For realistic drift
-  rotationVelocity: number // For tumbling effect
+  horizontalSpread: number // How far it spreads from center
+  rotationSpeed: number // Rotation speed multiplier
 }
 
 // Color filters matching the site palette (gold and red tones)
@@ -30,63 +30,67 @@ const COLOR_FILTERS = [
   'brightness(1.18) saturate(1.25) hue-rotate(10deg) sepia(0.2)',
 ]
 
-const SHOE_SIZE = 80 // Slightly larger for more realistic appearance
-const SCREEN_TOP = -100 // Start from above viewport
-const PILE_BOTTOM_OFFSET = 100 // Distance from bottom of screen for pile
+const SHOE_SIZE = 80
+const CONFETTI_SOURCE_X = 50 // Single point at top center (like confetti cannon)
+const SCREEN_TOP = -120 // Start from above viewport
+const PILE_BOTTOM_OFFSET = 80 // Distance from bottom of screen
 
-// Check if two shoes would overlap (using viewport width for percentage conversion)
+// Check if two shoes would overlap
 const checkCollision = (sneaker1: Sneaker, sneaker2: Sneaker, viewportWidth: number): boolean => {
-  const margin = 10 // Margin to prevent touching
+  const margin = 12
   const w1 = sneaker1.width / 2
   const h1 = sneaker1.height / 2
   const w2 = sneaker2.width / 2
   const h2 = sneaker2.height / 2
 
-  // Convert percentage to pixels for x position
   const x1 = (sneaker1.endLeft / 100) * viewportWidth
   const y1 = sneaker1.endY
   const x2 = (sneaker2.endLeft / 100) * viewportWidth
   const y2 = sneaker2.endY
 
-  // Check bounding box overlap
   return (
     Math.abs(x1 - x2) < (w1 + w2 + margin) &&
     Math.abs(y1 - y2) < (h1 + h2 + margin)
   )
 }
 
-// Find a non-overlapping position
+// Find a valid position in the uneven pile at bottom
 const findValidPosition = (
   existingSneakers: Sneaker[],
-  centerX: number,
   targetY: number,
-  viewportWidth: number
+  viewportWidth: number,
+  preferredSpread: number
 ): { endLeft: number; endY: number } | null => {
-  const maxAttempts = 50
-  const spreadRange = 35 // How far to spread horizontally (in percentage)
+  const maxAttempts = 60
+  // Wider spread for uneven accumulation (like confetti)
+  const spreadRange = 60 + Math.random() * 20 // 60-80% spread
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const scale = 0.7 + Math.random() * 0.3 // Slightly larger range
+    const scale = 0.65 + Math.random() * 0.35
     const width = SHOE_SIZE * scale
     const height = SHOE_SIZE * scale
     
+    // Uneven distribution - more likely near center but can be anywhere
+    const distributionBias = Math.random() < 0.6 ? 0.3 : 1.0 // 60% chance to be closer to center
+    const randomOffset = (Math.random() - 0.5) * spreadRange * distributionBias
+    const endLeft = CONFETTI_SOURCE_X + randomOffset + preferredSpread * 0.4
+    
     const testSneaker: Sneaker = {
       id: 'test',
-      startLeft: centerX,
-      endLeft: centerX + (Math.random() - 0.5) * spreadRange,
+      startLeft: CONFETTI_SOURCE_X,
+      endLeft: Math.max(5, Math.min(95, endLeft)), // Clamp to 5-95%
       rotation: 0,
-      endRotation: (Math.random() - 0.5) * 60,
+      endRotation: 0,
       duration: 0,
-      endY: targetY + Math.random() * 15 - 7.5,
+      endY: targetY + (Math.random() - 0.5) * 20, // More vertical variation
       scale,
       colorFilter: '',
       width,
       height,
-      horizontalVelocity: 0,
-      rotationVelocity: 0,
+      horizontalSpread: 0,
+      rotationSpeed: 0,
     }
 
-    // Check collision with all existing shoes
     const hasCollision = existingSneakers.some((existing) =>
       checkCollision(testSneaker, existing, viewportWidth)
     )
@@ -109,7 +113,6 @@ export default function FallingSneakers() {
       const homeSection = document.getElementById('home')
       if (homeSection) {
         const rect = homeSection.getBoundingClientRect()
-        // Stop when scrolled past the frame
         isActiveRef.current = rect.top < window.innerHeight && rect.bottom > 0
       }
     }
@@ -118,74 +121,69 @@ export default function FallingSneakers() {
     window.addEventListener('scroll', checkVisibility, { passive: true })
     window.addEventListener('resize', checkVisibility, { passive: true })
 
-    // Create a new sneaker with realistic physics
+    // Create a new sneaker with confetti-like physics
     const createSneaker = (existing: Sneaker[]): Sneaker | null => {
       const viewportWidth = window.innerWidth
       const viewportHeight = window.innerHeight
-      const scale = 0.7 + Math.random() * 0.3
+      const scale = 0.65 + Math.random() * 0.35
       const width = SHOE_SIZE * scale
       const height = SHOE_SIZE * scale
 
-      // Random starting position across the top of the screen
-      const randomStartX = 10 + Math.random() * 80 // 10% to 90% across screen
-      
-      // Pile forms at bottom center, but shoes drift during fall
-      const pileCenterX = 50 // Center of screen for pile
+      // Confetti-like spread: starts from center, spreads outward
+      // Each shoe gets a random horizontal velocity that determines its spread
+      const horizontalSpread = (Math.random() - 0.5) * 70 // -35% to +35% spread
+      const rotationSpeed = 0.5 + Math.random() * 1.5 // Rotation speed variation
       
       // Calculate pile height - shoes stack upward from bottom
-      const pileHeight = existing.length * 12 // Each shoe adds ~12px height
+      const pileHeight = existing.length * 11
       const baseY = viewportHeight - PILE_BOTTOM_OFFSET - pileHeight
       
-      // Find valid position in the pile (at bottom center, but with spread)
-      const position = findValidPosition(existing, pileCenterX, baseY, viewportWidth)
+      // Find valid position in uneven pile
+      const position = findValidPosition(existing, baseY, viewportWidth, horizontalSpread)
 
       if (!position) {
-        // If can't find position, try slightly higher
-        const retryY = baseY - 8
-        const retryPosition = findValidPosition(existing, pileCenterX, retryY, viewportWidth)
+        // Try slightly higher
+        const retryY = baseY - 10
+        const retryPosition = findValidPosition(existing, retryY, viewportWidth, horizontalSpread)
         if (!retryPosition) return null
         
-        // Realistic physics: horizontal drift and rotation
-        const horizontalDrift = (Math.random() - 0.5) * 30 // Drift during fall
-        const rotationAmount = (Math.random() - 0.5) * 720 // Multiple rotations
-        const rotationVelocity = (Math.random() - 0.5) * 4
+        // Natural confetti rotation - multiple full rotations
+        const totalRotation = (Math.random() - 0.5) * 1080 + horizontalSpread * 3 // -540 to +540 degrees + spread influence
         
         return {
           id: `sneaker-${Date.now()}-${Math.random()}`,
-          startLeft: randomStartX,
-          endLeft: retryPosition.endLeft + horizontalDrift * 0.2,
-          rotation: (Math.random() - 0.5) * 45,
-          endRotation: retryPosition.endLeft * 2 + rotationAmount,
-          duration: 2.0 + Math.random() * 1.2, // 2.0-3.2 seconds (longer fall from top)
+          startLeft: CONFETTI_SOURCE_X,
+          endLeft: retryPosition.endLeft,
+          rotation: (Math.random() - 0.5) * 60,
+          endRotation: totalRotation,
+          duration: 2.2 + Math.random() * 1.4, // 2.2-3.6 seconds (natural variation)
           endY: retryPosition.endY,
           scale,
           colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
           width,
           height,
-          horizontalVelocity: horizontalDrift,
-          rotationVelocity,
+          horizontalSpread,
+          rotationSpeed,
         }
       }
 
-      // Realistic physics: horizontal drift and rotation
-      const horizontalDrift = (Math.random() - 0.5) * 30
-      const rotationAmount = (Math.random() - 0.5) * 720
-      const rotationVelocity = (Math.random() - 0.5) * 4
+      // Natural confetti rotation
+      const totalRotation = (Math.random() - 0.5) * 1080 + horizontalSpread * 3
 
       return {
         id: `sneaker-${Date.now()}-${Math.random()}`,
-        startLeft: randomStartX,
-        endLeft: position.endLeft + horizontalDrift * 0.2,
-        rotation: (Math.random() - 0.5) * 45,
-        endRotation: position.endLeft * 2 + rotationAmount,
-        duration: 2.0 + Math.random() * 1.2,
+        startLeft: CONFETTI_SOURCE_X,
+        endLeft: position.endLeft,
+        rotation: (Math.random() - 0.5) * 60,
+        endRotation: totalRotation,
+        duration: 2.2 + Math.random() * 1.4,
         endY: position.endY,
         scale,
         colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
         width,
         height,
-        horizontalVelocity: horizontalDrift,
-        rotationVelocity,
+        horizontalSpread,
+        rotationSpeed,
       }
     }
 
@@ -195,7 +193,7 @@ export default function FallingSneakers() {
       setSneakers([firstSneaker])
     }
 
-    // Add new sneakers more frequently (unlimited)
+    // Add new sneakers (unlimited, like confetti stream)
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
@@ -204,7 +202,7 @@ export default function FallingSneakers() {
         if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 350) // Slightly more frequent for better effect
+    }, 300) // More frequent for confetti effect
 
     return () => {
       clearInterval(interval)
@@ -217,9 +215,14 @@ export default function FallingSneakers() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
       <AnimatePresence>
         {sneakers.map((sneaker) => {
-          // Calculate bounce height based on impact
-          const bounceHeight = 12 + Math.random() * 8 // 12-20px bounce
+          // Natural bounce - varies by impact
+          const bounceHeight = 8 + Math.random() * 12 // 8-20px bounce
           const bounceY = sneaker.endY - bounceHeight
+
+          // Calculate intermediate positions for natural confetti path
+          // Confetti spreads more as it falls (like real confetti)
+          const midPoint = (sneaker.startLeft + sneaker.endLeft) / 2
+          const midSpread = sneaker.startLeft + (sneaker.endLeft - sneaker.startLeft) * 0.6
 
           return (
             <motion.div
@@ -229,37 +232,44 @@ export default function FallingSneakers() {
                 y: SCREEN_TOP,
                 x: '0%',
                 opacity: 0,
-                scale: 0.6,
+                scale: 0.5,
                 rotate: sneaker.rotation,
               }}
               animate={{
                 y: [sneaker.endY, bounceY, sneaker.endY],
-                x: `${sneaker.endLeft - sneaker.startLeft}vw`,
+                x: [
+                  '0%',
+                  `${midSpread - sneaker.startLeft}vw`,
+                  `${sneaker.endLeft - sneaker.startLeft}vw`
+                ],
                 opacity: [0, 0.5, 0.5],
-                scale: [0.6, sneaker.scale, sneaker.scale],
+                scale: [0.5, sneaker.scale * 0.95, sneaker.scale], // Slight scale on bounce
                 rotate: [sneaker.rotation, sneaker.endRotation, sneaker.endRotation],
               }}
               transition={{
                 y: {
-                  duration: sneaker.duration + 0.3,
-                  times: [0, 0.92, 1], // Fall 92% of time, bounce in last 8%
-                  ease: [0.25, 0.1, 0.25, 1], // More realistic gravity curve
+                  duration: sneaker.duration + 0.25,
+                  times: [0, 0.93, 1], // Fall 93%, bounce 7%
+                  ease: [0.42, 0, 0.58, 1], // Natural gravity curve (ease-in-out)
                 },
                 x: {
                   duration: sneaker.duration,
-                  ease: [0.25, 0.1, 0.25, 1], // Smooth horizontal drift
+                  times: [0, 0.5, 1], // Accelerate spread as it falls
+                  ease: [0.25, 0.1, 0.5, 1], // Confetti-like spread acceleration
                 },
                 opacity: {
-                  duration: 0.5,
-                  times: [0, 0.3, 1],
+                  duration: 0.6,
+                  times: [0, 0.2, 1],
+                  ease: 'easeOut',
                 },
                 scale: {
-                  duration: 0.4,
-                  ease: 'easeOut',
+                  duration: sneaker.duration + 0.25,
+                  times: [0, 0.93, 1],
+                  ease: [0.42, 0, 0.58, 1],
                 },
                 rotate: {
                   duration: sneaker.duration,
-                  ease: [0.25, 0.1, 0.25, 1], // Smooth rotation
+                  ease: [0.25, 0.1, 0.5, 1], // Natural tumbling
                 },
               }}
               style={{
@@ -276,7 +286,7 @@ export default function FallingSneakers() {
                 style={{
                   backgroundColor: 'transparent',
                   filter: sneaker.colorFilter,
-                  imageRendering: 'auto', // Better quality for realistic image
+                  imageRendering: 'auto',
                 }}
                 unoptimized
                 priority={false}
