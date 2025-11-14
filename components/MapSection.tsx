@@ -1,17 +1,25 @@
 'use client'
 
-import Image from 'next/image'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
+
+const DonationMap = dynamic(() => import('./DonationMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[360px] w-full rounded-2xl bg-gradient-to-br from-primary-100/60 to-accent-100/60 animate-pulse" />
+  ),
+})
 
 const locations = [
   {
     name: 'First Congregational Church',
     address: '122 Broad Street, Guilford, CT',
-    description: 'Located in the heart of Guilford on the Green. Drop your shoe donations inside the main lobby collection box.',
+    description: 'Located on the Green—drop your shoe donations inside the main lobby collection box.',
   },
   {
     name: 'Guilford Racquet & Swim Club',
     address: '420 Church Street, Guilford, CT',
-    description: 'Leave your donations at the reception area—our volunteers pick them up weekly.',
+    description: 'Leave your sneakers at reception; our volunteers collect them every week.',
   },
 ]
 
@@ -30,17 +38,11 @@ export default function MapSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <div className="card h-full">
-            <div className="overflow-hidden rounded-2xl border border-white/60 shadow-lg">
-              <Image
-                src="/images/guilford-map-placeholder.svg"
-                alt="Map of Guilford, CT showing donation box locations"
-                width={800}
-                height={650}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-            <p className="mt-4 text-sm text-gray-600 italic">
+          <div className="card h-full p-0 overflow-hidden">
+            <Suspense fallback={<div className="h-[360px] w-full rounded-2xl bg-gradient-to-br from-primary-100/60 to-accent-100/60 animate-pulse" />}>
+              <DonationMap />
+            </Suspense>
+            <p className="mt-4 px-6 pb-6 text-sm text-gray-600 italic">
               These collection boxes are open during each partner’s regular hours—drop your sneakers inside the clearly marked Lace Up for Kids bin.
             </p>
           </div>

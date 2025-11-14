@@ -34,3 +34,20 @@
   }
 }
 
+.map-sneaker-icon {
+  filter: drop-shadow(0 12px 18px rgba(87, 40, 8, 0.25));
+}
+
+.leaflet-container {
+  border-radius: 1rem;
+  box-shadow: 0 24px 48px rgba(87, 40, 8, 0.15);
+}
+
+.leaflet-control-zoom a {
+  @apply bg-white/90 text-ember-900 rounded-lg shadow-md border border-white/80;
+}
+
+.leaflet-control-attribution {
+  @apply text-xs text-gray-500 bg-white/80 px-2 py-1 rounded-t-lg;
+}
+

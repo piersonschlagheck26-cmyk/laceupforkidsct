@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import RotatingBelt from './RotatingBelt'
+import FallingSneakers from './FallingSneakers'
 
 export default function Hero() {
   const handleDonateClick = () => {
@@ -22,6 +23,7 @@ export default function Hero() {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
+      <FallingSneakers />
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-100 via-white to-accent-50">
         <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-[0.07]"></div>
