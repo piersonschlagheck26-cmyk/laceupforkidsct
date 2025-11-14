@@ -2,8 +2,6 @@
 
 A modern, responsive single-page website for Lace Up for Kids, a teen-led nonprofit that collects gently used shoes, trades them for funds, and donates proceeds to Ronald McDonald House.
 
-<!-- Auto-push test -->
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -217,4 +215,5 @@ This project is open source and available for use by the Lace Up for Kids organi
 ---
 
 **Questions?** Contact us at info@laceupforkids.org
+
 
