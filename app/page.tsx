@@ -7,7 +7,7 @@ import WhatWeDo from '@/components/WhatWeDo'
 import OurMission from '@/components/OurMission'
 import HowItWorks from '@/components/HowItWorks'
 import WhoWeAre from '@/components/WhoWeAre'
-import Contact from '@/components/Contact'
+// import Contact from '@/components/Contact' // Temporarily disabled
 import Footer from '@/components/Footer'
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'what-we-do', 'mission', 'how-it-works', 'who-we-are', 'contact']
+      const sections = ['home', 'what-we-do', 'mission', 'how-it-works', 'who-we-are']
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -42,7 +42,7 @@ export default function Home() {
       <OurMission />
       <HowItWorks />
       <WhoWeAre />
-      <Contact />
+      {/* <Contact /> */}
       <Footer />
     </main>
   )

@@ -26,7 +26,7 @@ export default function Navigation({ activeSection }: NavigationProps) {
     { href: '#how-it-works', label: 'How It Works' },
     { href: '#mission', label: 'Our Mission' },
     { href: '#who-we-are', label: 'Who We Are' },
-    { href: '#contact', label: 'Contact' },
+    // { href: '#contact', label: 'Contact' }, // Temporarily disabled
   ]
 
   const scrollToSection = (href: string) => {
