@@ -4,11 +4,11 @@ const nextConfig = {
   images: {
     domains: [],
   },
-  // Ensure all routes are properly handled
+  // Disable API routes completely
   async rewrites() {
     return []
   },
-  // Redirect any /api/* requests to home to prevent 404s
+  // Additional redirects as backup
   async redirects() {
     return [
       {
@@ -17,6 +17,11 @@ const nextConfig = {
         permanent: false,
       },
     ]
+  },
+  // Error handling
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
   },
 }
 
