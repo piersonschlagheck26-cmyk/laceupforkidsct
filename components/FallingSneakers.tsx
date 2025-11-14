@@ -31,8 +31,8 @@ const COLOR_FILTERS = [
 ]
 
 const SHOE_SIZE = 80
-const CONFETTI_SOURCE_X = 50 // Single point at top center (like confetti cannon)
-const SCREEN_TOP = -120 // Start from above viewport
+const CONFETTI_SOURCE_X = 50 // Single point at top center - ALL shoes start here
+const SCREEN_TOP = 0 // Start from very top of viewport
 const PILE_BOTTOM_OFFSET = 80 // Distance from bottom of screen
 
 // Check if two shoes would overlap
@@ -129,8 +129,8 @@ export default function FallingSneakers() {
       const width = SHOE_SIZE * scale
       const height = SHOE_SIZE * scale
 
-      // Confetti-like spread: starts from center, spreads outward
-      // Each shoe gets a random horizontal velocity that determines its spread
+      // ALL shoes start from top center (CONFETTI_SOURCE_X = 50%)
+      // Each shoe gets a random horizontal velocity that determines its spread as it falls
       const horizontalSpread = (Math.random() - 0.5) * 70 // -35% to +35% spread
       const rotationSpeed = 0.5 + Math.random() * 1.5 // Rotation speed variation
       
@@ -285,8 +285,10 @@ export default function FallingSneakers() {
                 className="drop-shadow-xl"
                 style={{
                   backgroundColor: 'transparent',
-                  filter: sneaker.colorFilter,
+                  filter: `${sneaker.colorFilter} hue-rotate(-15deg) saturate(0.9) brightness(1.05)`, // Remove blue tint and artifacts
                   imageRendering: 'auto',
+                  mixBlendMode: 'normal',
+                  WebkitFilter: `${sneaker.colorFilter} hue-rotate(-15deg) saturate(0.9) brightness(1.05)`,
                 }}
                 unoptimized
                 priority={false}
