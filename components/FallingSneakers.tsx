@@ -49,7 +49,7 @@ const generateColorFilter = () => {
 }
 
 // Circular collision check (treat shoes as circles)
-// Strict collision detection to prevent overlapping
+// Very strict collision detection to prevent ANY overlapping
 const checkCollision = (
   x1: number, y1: number, radius1: number,
   x2: number, y2: number, radius2: number
@@ -57,7 +57,7 @@ const checkCollision = (
   const dx = x1 - x2
   const dy = y1 - y2
   const distance = Math.sqrt(dx * dx + dy * dy)
-  const minDistance = radius1 + radius2 - 1 // Minimum gap of 1px to prevent overlap
+  const minDistance = radius1 + radius2 + 2 // Minimum gap of 2px to prevent overlap
   return distance < minDistance
 }
 
@@ -228,11 +228,11 @@ const simulateFall = (
   }
   
   // Final position - find the lowest point on the pile (proper stacking)
-  // Keep near center with slight random variation (pyramid forms from center)
+  // Keep near center with minimal variation (pyramid forms from center)
   const centerX = viewportWidth / 2
-  const randomOffsetX = (Math.random() - 0.5) * 12 // Smaller random variation, centered
-  let finalX = centerX + randomOffsetX + (currentX - centerX) * 0.3 // Blend with current position, favor center
-  finalX = Math.max(radius + 5, Math.min(viewportWidth - radius - 5, finalX)) // Keep away from edges
+  // Use current position with slight center bias (no random shifting)
+  let finalX = currentX * 0.7 + centerX * 0.3 // Blend current with center
+  finalX = Math.max(radius + 10, Math.min(viewportWidth - radius - 10, finalX)) // Keep away from edges
   let finalY = baseY
   
   // Find the highest point where this shoe can sit (stacking logic)
@@ -250,19 +250,19 @@ const simulateFall = (
     // If we're close enough horizontally to stack on top (pyramid formation)
     const horizontalDistance = Math.abs(finalX - existingX)
     const combinedRadius = radius + existingRadius
-    if (horizontalDistance < combinedRadius) {
+    if (horizontalDistance < combinedRadius + 2) {
       // Calculate the top of the existing shoe
       const topOfExisting = existingY - existingRadius
       // Our shoe should sit on top of this one
-      const ourBottom = topOfExisting - radius - 1 // 1px gap to prevent overlap
+      const ourBottom = topOfExisting - radius - 2 // 2px gap to prevent overlap
       // Update finalY to be the lowest (highest on screen) position
       // CRITICAL: Never move up - only down or stay same level
       if (ourBottom < finalY && ourBottom >= currentY) {
         finalY = ourBottom
-        // Slight horizontal adjustment to center if overlapping
-        if (horizontalDistance < combinedRadius - 2) {
+        // Only adjust horizontally if actually overlapping (not just close)
+        if (horizontalDistance < combinedRadius - 3) {
           const adjustDirection = finalX > existingX ? 1 : -1
-          finalX = existingX + adjustDirection * (combinedRadius - 1)
+          finalX = existingX + adjustDirection * (combinedRadius + 2) // Ensure 2px gap
         }
       }
     }
@@ -280,10 +280,11 @@ const simulateFall = (
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasCollision = true
         // Try moving horizontally - prefer moving toward center, not edges
+        // Use deterministic offsets (no random shifting)
         const directionToCenter = centerX > finalX ? 1 : -1
-        // Try both directions but prefer center
-        const tryDirection = attempts % 3 === 0 ? directionToCenter : (Math.random() < 0.5 ? -1 : 1)
-        const offsetX = tryDirection * (radius * 1.2 + 3 + Math.random() * 6)
+        // Try both directions but prefer center, use fixed offsets
+        const tryDirection = attempts % 3 === 0 ? directionToCenter : (attempts % 2 === 0 ? 1 : -1)
+        const offsetX = tryDirection * (radius * 1.5 + 5) * (attempts + 1) // Fixed offset, no randomness
         const newX = finalX + offsetX
         
         // Keep away from edges (prevent corner-seeking)
@@ -297,16 +298,16 @@ const simulateFall = (
           const existingRadius2 = (SHOE_SIZE * existing2.scale) / 2
           
           const horizontalDist = Math.abs(finalX - existingX2)
-          if (horizontalDist < radius + existingRadius2) {
+          if (horizontalDist < radius + existingRadius2 + 2) {
             const topOfExisting = existingY2 - existingRadius2
-            const ourBottom = topOfExisting - radius - 1 // 1px gap
+            const ourBottom = topOfExisting - radius - 2 // 2px gap to prevent overlap
             // CRITICAL: Never move up - only down or stay same level
             if (ourBottom < finalY && ourBottom >= currentY) {
               finalY = ourBottom
-              // Adjust horizontally if too close
-              if (horizontalDist < radius + existingRadius2 - 2) {
+              // Adjust horizontally if too close (ensure 2px gap minimum)
+              if (horizontalDist < radius + existingRadius2 + 1) {
                 const adjustDir = finalX > existingX2 ? 1 : -1
-                finalX = existingX2 + adjustDir * (radius + existingRadius2 - 1)
+                finalX = existingX2 + adjustDir * (radius + existingRadius2 + 2) // 2px gap
                 finalX = Math.max(radius + 10, Math.min(viewportWidth - radius - 10, finalX))
               }
             }
