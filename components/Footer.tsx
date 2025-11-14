@@ -69,12 +69,12 @@ export default function Footer() {
             <h3 className="text-white font-bold mb-4 uppercase tracking-wide">Contact</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:info@laceupforkids.org" className="hover:text-primary-200 transition-colors">
-                  info@laceupforkids.org
+                <a href="mailto:laceupforkidsct.org" className="hover:text-primary-200 transition-colors">
+                  laceupforkidsct.org
                 </a>
               </li>
               <li className="text-gray-400">
-                [Your City, State]
+                Guilford, Connecticut
               </li>
             </ul>
             <div className="flex space-x-4 mt-4">

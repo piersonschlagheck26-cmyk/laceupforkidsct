@@ -163,6 +163,7 @@ const teamMembers = [
 grep -r "TODO" .
 ```
 
+
 ---
 
 ## 📝 File-by-File Summary
@@ -176,6 +177,9 @@ grep -r "TODO" .
 | `components/HowItWorks.tsx` | 44-45 | Donation handler |
 | `app/layout.tsx` | 13 | Site URL metadata |
 | `tailwind.config.js` | All | Color customization |
+| `components/OurMission.tsx` | 1-82 | Mission copy and CTA |
+| `components/RotatingBelt.tsx` | 1-67 | Rotating messages |
+| `components/MapSection.tsx` | 1-89 | Map image, locations, drop-off descriptions |
 
 ---
 

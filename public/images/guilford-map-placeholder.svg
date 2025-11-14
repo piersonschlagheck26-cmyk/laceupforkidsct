@@ -1,0 +1,62 @@
+<svg width="800" height="650" viewBox="0 0 800 650" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="mapTitle mapDesc">
+  <title id="mapTitle">Guilford Connecticut donation map placeholder</title>
+  <desc id="mapDesc">Stylized map of Guilford, Connecticut with two donation pin markers.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef8e7" />
+      <stop offset="100%" stop-color="#ffe3d0" />
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d7ecff" />
+      <stop offset="100%" stop-color="#a5d9ff" />
+    </linearGradient>
+    <linearGradient id="pinGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff8b5b" />
+      <stop offset="100%" stop-color="#d94b26" />
+    </linearGradient>
+    <linearGradient id="pinGradientSecondary" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8c344" />
+      <stop offset="100%" stop-color="#d48d0d" />
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="650" rx="40" fill="url(#bg)" />
+
+  <!-- Shoreline -->
+  <path d="M0 420 C200 360 220 280 380 260 C510 246 560 270 660 320 C720 350 760 370 800 360 L800 650 L0 650 Z" fill="url(#water)" opacity="0.8" />
+
+  <!-- Land details -->
+  <g fill="none" stroke="#f5c47d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7">
+    <path d="M120 180 C180 140 260 160 320 200" />
+    <path d="M200 320 C260 280 360 290 420 340" />
+    <path d="M480 260 C540 220 620 230 680 280" />
+    <path d="M160 440 C220 410 300 420 360 460" />
+    <path d="M420 420 C480 380 560 380 620 430" />
+  </g>
+
+  <!-- Roads -->
+  <g fill="none" stroke="#f0a64a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.5">
+    <path d="M120 120 L200 200 L320 210 L420 300 L520 290 L640 360" />
+    <path d="M160 500 L300 440 L440 460 L560 520" />
+  </g>
+
+  <!-- Location Pins -->
+  <g transform="translate(280,280)">
+    <path d="M0 -60 C-33 -60 -60 -33 -60 0 C-60 42 0 90 0 90 C0 90 60 42 60 0 C60 -33 33 -60 0 -60 Z" fill="url(#pinGradient)" />
+    <circle cx="0" cy="-15" r="18" fill="#fff2eb" />
+  </g>
+  <g transform="translate(520,360)">
+    <path d="M0 -60 C-33 -60 -60 -33 -60 0 C-60 42 0 90 0 90 C0 90 60 42 60 0 C60 -33 33 -60 0 -60 Z" fill="url(#pinGradientSecondary)" />
+    <circle cx="0" cy="-15" r="18" fill="#fff8e5" />
+  </g>
+
+  <!-- Labels -->
+  <g fill="#4a2e16" font-family="'Inter', sans-serif" font-weight="600" font-size="26">
+    <text x="265" y="220">First Congregational Church</text>
+    <text x="485" y="410">Guilford Racquet &amp; Swim Club</text>
+  </g>
+  <g fill="#7b4b26" font-family="'Inter', sans-serif" font-size="18" opacity="0.8">
+    <text x="265" y="245">122 Broad St</text>
+    <text x="485" y="435">420 Church St</text>
+  </g>
+</svg>
