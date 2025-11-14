@@ -8,6 +8,15 @@ interface NavigationProps {
   activeSection: string
 }
 
+const NAV_LINKS = [
+  { href: '#home', label: 'Home' },
+  { href: '#what-we-do', label: 'Impact' },
+  { href: '#mission', label: 'Mission' },
+  { href: '#how-it-works', label: 'Process' },
+  { href: '#drop-off', label: 'Drop-off' },
+  { href: '#who-we-are', label: 'Team' },
+]
+
 export default function Navigation({ activeSection }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -19,14 +28,6 @@ export default function Navigation({ activeSection }: NavigationProps) {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const navLinks = [
-    { href: '#home', label: 'Home' },
-    { href: '#what-we-do', label: 'What We Do' },
-    { href: '#mission', label: 'Our Mission' },
-    { href: '#how-it-works', label: 'How It Works' },
-    { href: '#who-we-are', label: 'Who We Are' },
-  ]
 
   const scrollToSection = (href: string) => {
     const id = href.replace('#', '')
@@ -45,10 +46,10 @@ export default function Navigation({ activeSection }: NavigationProps) {
   return (
     <nav className="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 pointer-events-none">
       <div
-        className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-2xl shadow-lg transition-all duration-300 pointer-events-auto ${
+        className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-3xl transition-all duration-300 pointer-events-auto shadow-xl ${
           isScrolled
-            ? 'bg-white/75 border-white/60 shadow-2xl shadow-primary-900/10'
-            : 'bg-white/55 border-white/40 shadow-xl shadow-primary-900/5'
+            ? 'bg-white/60 border-white/45 shadow-primary-900/15'
+            : 'bg-white/40 border-white/35 shadow-primary-900/10'
         }`}
       >
         <div className="px-5 py-4 sm:px-8">
@@ -77,7 +78,7 @@ export default function Navigation({ activeSection }: NavigationProps) {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-6">
-              {navLinks.map((link) => (
+              {NAV_LINKS.map((link) => (
                 <button
                   key={link.href}
                   onClick={() => scrollToSection(link.href)}
@@ -125,13 +126,13 @@ export default function Navigation({ activeSection }: NavigationProps) {
           {/* Mobile Menu */}
           {isOpen && (
             <div className="lg:hidden mt-4 pb-1 space-y-3">
-              {navLinks.map((link) => (
+              {NAV_LINKS.map((link) => (
                 <button
                   key={link.href}
                   onClick={() => scrollToSection(link.href)}
                   className={`block w-full text-left py-2 px-4 rounded-2xl transition-colors ${
                     activeSection === link.href.replace('#', '')
-                      ? 'bg-primary-100/80 text-accent-700'
+                      ? 'bg-primary-100/70 text-accent-700'
                       : 'text-gray-700 hover:bg-primary-50/80'
                   }`}
                 >

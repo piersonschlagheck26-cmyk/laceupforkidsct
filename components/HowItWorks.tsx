@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import Image from 'next/image'
@@ -46,23 +46,20 @@ export default function HowItWorks() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const [currentStep, setCurrentStep] = useState(0)
 
-  useEffect(() => {
-    const autoAdvance = setInterval(() => {
-      setCurrentStep((prev) => (prev + 1) % steps.length)
-    }, 6000)
-
-    return () => clearInterval(autoAdvance)
-  }, [])
+  const handleRangeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentStep(Number(event.target.value))
+  }
 
   const handlePrev = () => {
-    setCurrentStep((prev) => (prev - 1 + steps.length) % steps.length)
+    setCurrentStep((prev) => Math.max(0, prev - 1))
   }
 
   const handleNext = () => {
-    setCurrentStep((prev) => (prev + 1) % steps.length)
+    setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))
   }
 
-  const progressPercent = (currentStep / (steps.length - 1)) * 100
+  const maxIndex = steps.length - 1
+  const progressPercent = maxIndex === 0 ? 0 : (currentStep / maxIndex) * 100
 
   return (
     <section id="how-it-works" ref={ref} className="relative section-padding overflow-hidden">
@@ -85,12 +82,11 @@ export default function HowItWorks() {
 
         <div className="max-w-4xl mx-auto">
           <div className="card text-center relative overflow-hidden">
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white via-white/60 to-transparent pointer-events-none" />
-
             <div className="flex justify-between items-center mb-6">
               <button
                 onClick={handlePrev}
-                className="rounded-full border border-primary-200 bg-white/80 px-3 py-2 text-accent-600 hover:bg-white transition"
+                disabled={currentStep === 0}
+                className="rounded-full border border-primary-200 bg-white/80 px-3 py-2 text-accent-600 hover:bg-white transition disabled:opacity-40"
                 aria-label="Previous step"
               >
                 ‹
@@ -100,7 +96,8 @@ export default function HowItWorks() {
               </span>
               <button
                 onClick={handleNext}
-                className="rounded-full border border-primary-200 bg-white/80 px-3 py-2 text-accent-600 hover:bg-white transition"
+                disabled={currentStep === maxIndex}
+                className="rounded-full border border-primary-200 bg-white/80 px-3 py-2 text-accent-600 hover:bg-white transition disabled:opacity-40"
                 aria-label="Next step"
               >
                 ›
@@ -113,7 +110,7 @@ export default function HowItWorks() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -24 }}
-                transition={{ duration: 0.45, ease: 'easeOut' }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
                 className="space-y-4"
               >
                 <div className="flex justify-center text-accent-600 mb-4">{steps[currentStep].icon}</div>
@@ -124,13 +121,23 @@ export default function HowItWorks() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-10">
-              <div className="relative h-24">
-                <div className="absolute top-1/2 left-6 right-6 h-1 bg-primary-200 rounded-full" />
+            <div className="mt-10 px-6">
+              <div className="relative">
+                <input
+                  type="range"
+                  min={0}
+                  max={maxIndex}
+                  step={1}
+                  value={currentStep}
+                  onChange={handleRangeChange}
+                  className="w-full appearance-none bg-transparent"
+                  aria-label="Select process step"
+                />
+                <div className="absolute top-1/2 left-0 right-0 h-1 bg-primary-200 rounded-full pointer-events-none" />
                 <motion.div
-                  className="absolute -top-1 flex items-center justify-center"
+                  className="absolute -top-6 flex items-center justify-center pointer-events-none"
                   style={{ left: `calc(${progressPercent}% - 32px)` }}
-                  transition={{ type: 'spring', stiffness: 120, damping: 14 }}
+                  transition={{ type: 'spring', stiffness: 160, damping: 16 }}
                 >
                   <Image
                     src="/images/sneaker-top.svg"
@@ -140,20 +147,18 @@ export default function HowItWorks() {
                     className="drop-shadow-lg"
                   />
                 </motion.div>
-                <div className="absolute top-1/2 left-6 right-6 flex justify-between -translate-y-1/2">
+                <div className="absolute top-1/2 left-0 right-0 flex justify-between -translate-y-1/2 pointer-events-none">
                   {steps.map((step, index) => (
-                    <button
+                    <span
                       key={step.title}
-                      onClick={() => setCurrentStep(index)}
-                      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition ${
+                      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-semibold ${
                         index === currentStep
                           ? 'border-accent-500 bg-white text-accent-600 shadow-md'
-                          : 'border-primary-200 bg-white/70 text-gray-500 hover:border-primary-300'
+                          : 'border-primary-200 bg-white/70 text-gray-500'
                       }`}
-                      aria-label={`Go to step ${step.number}`}
                     >
                       {step.number}
-                    </button>
+                    </span>
                   ))}
                 </div>
               </div>

@@ -25,7 +25,7 @@ const locations = [
 
 export default function MapSection() {
   return (
-    <section className="section-padding bg-gradient-to-br from-white via-primary-50/60 to-accent-50/40">
+    <section id="drop-off" className="section-padding bg-gradient-to-br from-white via-primary-50/60 to-accent-50/40">
       <div className="container-custom">
         <div className="max-w-4xl mx-auto text-center mb-12">
           <span className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold bg-primary-200/80 text-ember-900 uppercase tracking-wider mb-4">

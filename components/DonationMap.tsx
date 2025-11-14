@@ -2,31 +2,23 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useMemo } from 'react'
-import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
 
 const LOCATIONS = [
   {
     name: 'First Congregational Church',
     address: '122 Broad Street, Guilford, CT',
-    position: [41.2819, -72.675],
+    position: [41.2839, -72.6759],
     description: 'Drop shoes inside the lobby collection box on the Green.'
   },
   {
     name: 'Guilford Racquet & Swim Club',
     address: '420 Church Street, Guilford, CT',
-    position: [41.2915, -72.6735],
-    description: 'Leave donations at the reception desk—pickup happens weekly.'
+    position: [41.2966, -72.6788],
+    description: 'Leave donations at reception; our volunteers pick them up weekly.'
   }
 ] as const
-
-const sneakerIcon = L.icon({
-  iconUrl: '/images/sneaker-top.svg',
-  iconSize: [42, 90],
-  iconAnchor: [21, 45],
-  popupAnchor: [0, -40],
-  className: 'map-sneaker-icon'
-})
 
 export default function DonationMap() {
   const bounds = useMemo(() => {
@@ -38,7 +30,7 @@ export default function DonationMap() {
       bounds={bounds}
       className="h-[360px] w-full rounded-2xl"
       scrollWheelZoom={false}
-      minZoom={12}
+      minZoom={13}
       maxZoom={18}
     >
       <TileLayer
@@ -46,7 +38,7 @@ export default function DonationMap() {
         attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
       />
       {LOCATIONS.map((location) => (
-        <Marker key={location.name} position={location.position as [number, number]} icon={sneakerIcon}>
+        <Marker key={location.name} position={location.position as [number, number]}>
           <Popup>
             <div className="space-y-1">
               <p className="font-semibold text-gray-900">{location.name}</p>
