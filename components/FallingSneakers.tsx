@@ -16,7 +16,8 @@ interface Sneaker {
   colorFilter: string
   width: number
   height: number
-  bounceY?: number // For bounce effect
+  horizontalVelocity: number // For realistic drift
+  rotationVelocity: number // For tumbling effect
 }
 
 // Color filters matching the site palette (gold and red tones)
@@ -29,13 +30,13 @@ const COLOR_FILTERS = [
   'brightness(1.18) saturate(1.25) hue-rotate(10deg) sepia(0.2)',
 ]
 
-const PILE_CENTER_X = 50 // Center of screen
-const DESCRIPTION_END_Y = 320 // Just below the tagline description (logo + headline + tagline)
-const SHOE_SIZE = 70 // Base size in pixels
+const SHOE_SIZE = 80 // Slightly larger for more realistic appearance
+const SCREEN_TOP = -100 // Start from above viewport
+const PILE_BOTTOM_OFFSET = 100 // Distance from bottom of screen for pile
 
 // Check if two shoes would overlap (using viewport width for percentage conversion)
 const checkCollision = (sneaker1: Sneaker, sneaker2: Sneaker, viewportWidth: number): boolean => {
-  const margin = 8 // Margin to prevent touching
+  const margin = 10 // Margin to prevent touching
   const w1 = sneaker1.width / 2
   const h1 = sneaker1.height / 2
   const w2 = sneaker2.width / 2
@@ -62,10 +63,10 @@ const findValidPosition = (
   viewportWidth: number
 ): { endLeft: number; endY: number } | null => {
   const maxAttempts = 50
-  const spreadRange = 30 // How far to spread horizontally (in percentage)
+  const spreadRange = 35 // How far to spread horizontally (in percentage)
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const scale = 0.65 + Math.random() * 0.25
+    const scale = 0.7 + Math.random() * 0.3 // Slightly larger range
     const width = SHOE_SIZE * scale
     const height = SHOE_SIZE * scale
     
@@ -76,11 +77,13 @@ const findValidPosition = (
       rotation: 0,
       endRotation: (Math.random() - 0.5) * 60,
       duration: 0,
-      endY: targetY + Math.random() * 12 - 6,
+      endY: targetY + Math.random() * 15 - 7.5,
       scale,
       colorFilter: '',
       width,
       height,
+      horizontalVelocity: 0,
+      rotationVelocity: 0,
     }
 
     // Check collision with all existing shoes
@@ -115,53 +118,74 @@ export default function FallingSneakers() {
     window.addEventListener('scroll', checkVisibility, { passive: true })
     window.addEventListener('resize', checkVisibility, { passive: true })
 
-    // Create a new sneaker
+    // Create a new sneaker with realistic physics
     const createSneaker = (existing: Sneaker[]): Sneaker | null => {
       const viewportWidth = window.innerWidth
-      const scale = 0.65 + Math.random() * 0.25
+      const viewportHeight = window.innerHeight
+      const scale = 0.7 + Math.random() * 0.3
       const width = SHOE_SIZE * scale
       const height = SHOE_SIZE * scale
 
-      // Calculate pile height - shoes stack upward from description end
-      const pileHeight = existing.length * 10 // Each shoe adds ~10px height
-      const baseY = DESCRIPTION_END_Y + pileHeight
+      // Random starting position across the top of the screen
+      const randomStartX = 10 + Math.random() * 80 // 10% to 90% across screen
       
-      const position = findValidPosition(existing, PILE_CENTER_X, baseY, viewportWidth)
+      // Pile forms at bottom center, but shoes drift during fall
+      const pileCenterX = 50 // Center of screen for pile
+      
+      // Calculate pile height - shoes stack upward from bottom
+      const pileHeight = existing.length * 12 // Each shoe adds ~12px height
+      const baseY = viewportHeight - PILE_BOTTOM_OFFSET - pileHeight
+      
+      // Find valid position in the pile (at bottom center, but with spread)
+      const position = findValidPosition(existing, pileCenterX, baseY, viewportWidth)
 
       if (!position) {
         // If can't find position, try slightly higher
-        const retryY = baseY - 5
-        const retryPosition = findValidPosition(existing, PILE_CENTER_X, retryY, viewportWidth)
+        const retryY = baseY - 8
+        const retryPosition = findValidPosition(existing, pileCenterX, retryY, viewportWidth)
         if (!retryPosition) return null
+        
+        // Realistic physics: horizontal drift and rotation
+        const horizontalDrift = (Math.random() - 0.5) * 30 // Drift during fall
+        const rotationAmount = (Math.random() - 0.5) * 720 // Multiple rotations
+        const rotationVelocity = (Math.random() - 0.5) * 4
+        
         return {
           id: `sneaker-${Date.now()}-${Math.random()}`,
-          startLeft: PILE_CENTER_X,
-          endLeft: retryPosition.endLeft,
-          rotation: (Math.random() - 0.5) * 30,
-          endRotation: (Math.random() - 0.5) * 60,
-          duration: 1.5 + Math.random() * 0.8, // Faster: 1.5-2.3 seconds
+          startLeft: randomStartX,
+          endLeft: retryPosition.endLeft + horizontalDrift * 0.2,
+          rotation: (Math.random() - 0.5) * 45,
+          endRotation: retryPosition.endLeft * 2 + rotationAmount,
+          duration: 2.0 + Math.random() * 1.2, // 2.0-3.2 seconds (longer fall from top)
           endY: retryPosition.endY,
           scale,
           colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
           width,
           height,
-          bounceY: retryPosition.endY - 8, // Bounce up 8px when landing
+          horizontalVelocity: horizontalDrift,
+          rotationVelocity,
         }
       }
 
+      // Realistic physics: horizontal drift and rotation
+      const horizontalDrift = (Math.random() - 0.5) * 30
+      const rotationAmount = (Math.random() - 0.5) * 720
+      const rotationVelocity = (Math.random() - 0.5) * 4
+
       return {
         id: `sneaker-${Date.now()}-${Math.random()}`,
-        startLeft: PILE_CENTER_X,
-        endLeft: position.endLeft,
-        rotation: (Math.random() - 0.5) * 30,
-        endRotation: (Math.random() - 0.5) * 60,
-        duration: 1.5 + Math.random() * 0.8, // Faster: 1.5-2.3 seconds
+        startLeft: randomStartX,
+        endLeft: position.endLeft + horizontalDrift * 0.2,
+        rotation: (Math.random() - 0.5) * 45,
+        endRotation: position.endLeft * 2 + rotationAmount,
+        duration: 2.0 + Math.random() * 1.2,
         endY: position.endY,
         scale,
         colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
         width,
         height,
-        bounceY: position.endY - 8, // Bounce up 8px when landing
+        horizontalVelocity: horizontalDrift,
+        rotationVelocity,
       }
     }
 
@@ -180,7 +204,7 @@ export default function FallingSneakers() {
         if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 400) // More frequent: every 400ms
+    }, 350) // Slightly more frequent for better effect
 
     return () => {
       clearInterval(interval)
@@ -192,60 +216,74 @@ export default function FallingSneakers() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
       <AnimatePresence>
-        {sneakers.map((sneaker) => (
-          <motion.div
-            key={sneaker.id}
-            className="absolute"
-            initial={{
-              y: -80,
-              x: '0%',
-              opacity: 0,
-              scale: 0.5,
-              rotate: sneaker.rotation,
-            }}
-            animate={{
-              y: [sneaker.endY, sneaker.bounceY || sneaker.endY, sneaker.endY],
-              x: `${sneaker.endLeft - sneaker.startLeft}vw`,
-              opacity: 0.5,
-              scale: sneaker.scale,
-              rotate: sneaker.endRotation,
-            }}
-            transition={{
-              y: {
-                duration: sneaker.duration + 0.25, // Add time for bounce
-                times: [0, 0.88, 1], // Fall 88% of time, bounce in last 12%
-                ease: [0.3, 0, 0.2, 1], // Ease in for fall
-              },
-              x: {
-                duration: sneaker.duration,
-                ease: [0.3, 0, 0.2, 1],
-              },
-              opacity: { duration: 0.4 },
-              scale: { duration: 0.3 },
-              rotate: {
-                duration: sneaker.duration,
-                ease: [0.3, 0, 0.2, 1],
-              },
-            }}
-            style={{
-              left: `${sneaker.startLeft}%`,
-            }}
-          >
-            <Image
-              src="/images/sneaker-transparent.svg"
-              alt="Falling sneaker"
-              width={SHOE_SIZE}
-              height={SHOE_SIZE}
-              className="drop-shadow-lg"
-              style={{
-                backgroundColor: 'transparent',
-                filter: sneaker.colorFilter,
+        {sneakers.map((sneaker) => {
+          // Calculate bounce height based on impact
+          const bounceHeight = 12 + Math.random() * 8 // 12-20px bounce
+          const bounceY = sneaker.endY - bounceHeight
+
+          return (
+            <motion.div
+              key={sneaker.id}
+              className="absolute"
+              initial={{
+                y: SCREEN_TOP,
+                x: '0%',
+                opacity: 0,
+                scale: 0.6,
+                rotate: sneaker.rotation,
               }}
-              unoptimized
-              priority={false}
-            />
-          </motion.div>
-        ))}
+              animate={{
+                y: [sneaker.endY, bounceY, sneaker.endY],
+                x: `${sneaker.endLeft - sneaker.startLeft}vw`,
+                opacity: [0, 0.5, 0.5],
+                scale: [0.6, sneaker.scale, sneaker.scale],
+                rotate: [sneaker.rotation, sneaker.endRotation, sneaker.endRotation],
+              }}
+              transition={{
+                y: {
+                  duration: sneaker.duration + 0.3,
+                  times: [0, 0.92, 1], // Fall 92% of time, bounce in last 8%
+                  ease: [0.25, 0.1, 0.25, 1], // More realistic gravity curve
+                },
+                x: {
+                  duration: sneaker.duration,
+                  ease: [0.25, 0.1, 0.25, 1], // Smooth horizontal drift
+                },
+                opacity: {
+                  duration: 0.5,
+                  times: [0, 0.3, 1],
+                },
+                scale: {
+                  duration: 0.4,
+                  ease: 'easeOut',
+                },
+                rotate: {
+                  duration: sneaker.duration,
+                  ease: [0.25, 0.1, 0.25, 1], // Smooth rotation
+                },
+              }}
+              style={{
+                left: `${sneaker.startLeft}%`,
+                transformOrigin: 'center center',
+              }}
+            >
+              <Image
+                src="/images/sneaker-realistic.png"
+                alt="Falling sneaker"
+                width={SHOE_SIZE}
+                height={SHOE_SIZE}
+                className="drop-shadow-xl"
+                style={{
+                  backgroundColor: 'transparent',
+                  filter: sneaker.colorFilter,
+                  imageRendering: 'auto', // Better quality for realistic image
+                }}
+                unoptimized
+                priority={false}
+              />
+            </motion.div>
+          )
+        })}
       </AnimatePresence>
     </div>
   )
