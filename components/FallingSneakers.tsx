@@ -139,8 +139,8 @@ const simulateFall = (
   
   let currentX = startX
   let currentY = startY
-  let velocityX = (Math.random() - 0.5) * 0.6 // Reduced horizontal velocity for denser pile
-  let velocityY = 0.5 + Math.random() * 0.3 // Initial vertical velocity (gravity)
+  let velocityX = (Math.random() - 0.5) * 1.2 // More horizontal velocity for random dispersion
+  let velocityY = 0.5 + Math.random() * 0.4 // Initial vertical velocity (gravity)
   const bouncePoints: { x: number; y: number; rotation: number }[] = []
   
   const gravity = 0.15 // Gravity acceleration
@@ -227,12 +227,9 @@ const simulateFall = (
     }
   }
   
-  // Final position - find the lowest point on the pile (proper stacking)
-  // Keep near center with minimal variation (pyramid forms from center)
-  const centerX = viewportWidth / 2
-  // Use current position with slight center bias (no random shifting)
-  let finalX = currentX * 0.7 + centerX * 0.3 // Blend current with center
-  finalX = Math.max(radius + 10, Math.min(viewportWidth - radius - 10, finalX)) // Keep away from edges
+  // Final position - use physics result (natural tumbling and random falling)
+  // Only adjust if needed for collision, otherwise preserve natural physics
+  let finalX = Math.max(radius + 5, Math.min(viewportWidth - radius - 5, currentX))
   let finalY = baseY
   
   // Find the highest point where this shoe can sit (stacking logic)
@@ -260,9 +257,15 @@ const simulateFall = (
       if (ourBottom < finalY && ourBottom >= currentY) {
         finalY = ourBottom
         // Only adjust horizontally if actually overlapping (not just close)
+        // Use balanced adjustment toward center
         if (horizontalDistance < combinedRadius - 3) {
-          const adjustDirection = finalX > existingX ? 1 : -1
+          const centerX = viewportWidth / 2
+          const preferCenter = Math.abs(finalX - centerX) > Math.abs(existingX - centerX)
+          const adjustDirection = preferCenter
+            ? (centerX > finalX ? 1 : -1)
+            : (finalX > existingX ? 1 : -1)
           finalX = existingX + adjustDirection * (combinedRadius + 2) // Ensure 2px gap
+          finalX = Math.max(radius + 10, Math.min(viewportWidth - radius - 10, finalX))
         }
       }
     }
@@ -279,15 +282,16 @@ const simulateFall = (
       
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasCollision = true
-        // Try moving horizontally - prefer moving toward center, not edges
-        // Use deterministic offsets (no random shifting)
+        // Try moving horizontally - balanced approach (no corner bias)
+        // Alternate between left and right, but also try center direction
+        const centerX = viewportWidth / 2
         const directionToCenter = centerX > finalX ? 1 : -1
-        // Try both directions but prefer center, use fixed offsets
+        // Try center direction first, then alternate
         const tryDirection = attempts % 3 === 0 ? directionToCenter : (attempts % 2 === 0 ? 1 : -1)
-        const offsetX = tryDirection * (radius * 1.5 + 5) * (attempts + 1) // Fixed offset, no randomness
-        const newX = finalX + offsetX
+        const offsetX = tryDirection * (radius * 1.5 + 4) * (attempts + 1)
+        const newX = finalX + offsetX // Move from current finalX, not physics position
         
-        // Keep away from edges (prevent corner-seeking)
+        // Keep away from edges (balanced margins)
         finalX = Math.max(radius + 10, Math.min(viewportWidth - radius - 10, newX))
         
         // Recalculate Y based on new X - find where to stack
@@ -305,8 +309,14 @@ const simulateFall = (
             if (ourBottom < finalY && ourBottom >= currentY) {
               finalY = ourBottom
               // Adjust horizontally if too close (ensure 2px gap minimum)
+              // Use balanced adjustment (no corner bias)
               if (horizontalDist < radius + existingRadius2 + 1) {
-                const adjustDir = finalX > existingX2 ? 1 : -1
+                const centerX = viewportWidth / 2
+                // Prefer moving toward center if possible
+                const preferCenter = Math.abs(finalX - centerX) > Math.abs(existingX2 - centerX)
+                const adjustDir = preferCenter 
+                  ? (centerX > finalX ? 1 : -1)
+                  : (finalX > existingX2 ? 1 : -1)
                 finalX = existingX2 + adjustDir * (radius + existingRadius2 + 2) // 2px gap
                 finalX = Math.max(radius + 10, Math.min(viewportWidth - radius - 10, finalX))
               }
@@ -358,9 +368,11 @@ export default function FallingSneakers() {
       // Generate random color properties
       const colorProps = generateColorFilter()
       
-      // Random rotation (-15 to 15 degrees)
+      // Random initial rotation (-15 to 15 degrees)
       const rotation = (Math.random() - 0.5) * 30
-      const finalRotation = (Math.random() - 0.5) * 20 // Final settled rotation
+      // Calculate final rotation from all bounce rotations (natural tumbling)
+      const cumulativeBounceRotation = result.bouncePoints.reduce((sum, bounce) => sum + bounce.rotation, 0)
+      const finalRotation = rotation + cumulativeBounceRotation // Total rotation from tumbling
       
       // Random initial scale for animation
       const initialScale = 0.7 + Math.random() * 0.2
