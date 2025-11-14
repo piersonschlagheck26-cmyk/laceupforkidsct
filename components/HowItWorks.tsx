@@ -142,30 +142,6 @@ export default function HowItWorks() {
                     }}
                     aria-label="Navigate through process steps"
                   />
-                  
-                  {/* Step markers */}
-                  <div className="absolute top-1/2 left-0 right-0 flex justify-between -translate-y-1/2 pointer-events-none">
-                    {steps.map((step, index) => {
-                      const markerPosition = (index / (steps.length - 1)) * 100
-                      return (
-                        <div
-                          key={step.title}
-                          className="flex flex-col items-center"
-                          style={{ position: 'absolute', left: `${markerPosition}%`, transform: 'translateX(-50%)' }}
-                        >
-                          <span
-                            className={`flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-semibold transition-all ${
-                              Math.abs(sliderValue - markerPosition) < 15
-                                ? 'border-accent-500 bg-white text-accent-600 shadow-md scale-110'
-                                : 'border-primary-200 bg-white/70 text-gray-500 scale-100'
-                            }`}
-                          >
-                            {step.number}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
                 </div>
               </div>
             </div>
