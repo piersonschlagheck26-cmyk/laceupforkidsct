@@ -14,21 +14,82 @@ interface Sneaker {
   endY: number
   scale: number
   colorFilter: string
+  width: number
+  height: number
 }
 
 // Color filters matching the site palette (gold and red tones)
 const COLOR_FILTERS = [
-  'brightness(1.1) saturate(1.2) hue-rotate(0deg)', // Original
-  'brightness(1.15) saturate(1.3) hue-rotate(5deg) sepia(0.2)', // Warm gold
-  'brightness(1.1) saturate(1.4) hue-rotate(350deg) sepia(0.3)', // Red-orange
-  'brightness(1.2) saturate(1.1) hue-rotate(15deg) sepia(0.15)', // Golden yellow
-  'brightness(1.05) saturate(1.3) hue-rotate(340deg) sepia(0.25)', // Deep red
-  'brightness(1.18) saturate(1.25) hue-rotate(10deg) sepia(0.2)', // Amber
+  'brightness(1.1) saturate(1.2) hue-rotate(0deg)',
+  'brightness(1.15) saturate(1.3) hue-rotate(5deg) sepia(0.2)',
+  'brightness(1.1) saturate(1.4) hue-rotate(350deg) sepia(0.3)',
+  'brightness(1.2) saturate(1.1) hue-rotate(15deg) sepia(0.15)',
+  'brightness(1.05) saturate(1.3) hue-rotate(340deg) sepia(0.25)',
+  'brightness(1.18) saturate(1.25) hue-rotate(10deg) sepia(0.2)',
 ]
 
 const PILE_CENTER_X = 50 // Center of screen
-const PILE_START_Y = 450 // Above CTA buttons
-const MAX_SNEAKERS = 35
+const BUTTON_AREA_Y = 420 // Just above CTA buttons
+const SHOE_SIZE = 70 // Base size in pixels
+const MAX_SNEAKERS = 40
+
+// Check if two shoes would overlap
+const checkCollision = (sneaker1: Sneaker, sneaker2: Sneaker): boolean => {
+  const margin = 5 // Small margin to prevent touching
+  const w1 = sneaker1.width / 2
+  const h1 = sneaker1.height / 2
+  const w2 = sneaker2.width / 2
+  const h2 = sneaker2.height / 2
+
+  // Get center positions
+  const x1 = sneaker1.endLeft
+  const y1 = sneaker1.endY
+  const x2 = sneaker2.endLeft
+  const y2 = sneaker2.endY
+
+  // Check bounding box overlap
+  return (
+    Math.abs(x1 - x2) < (w1 + w2 + margin) &&
+    Math.abs(y1 - y2) < (h1 + h2 + margin)
+  )
+}
+
+// Find a non-overlapping position
+const findValidPosition = (
+  existingSneakers: Sneaker[],
+  centerX: number,
+  targetY: number
+): { endLeft: number; endY: number } | null => {
+  const maxAttempts = 50
+  const spreadRange = 30 // How far to spread horizontally
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const testSneaker: Sneaker = {
+      id: 'test',
+      startLeft: centerX,
+      endLeft: centerX + (Math.random() - 0.5) * spreadRange,
+      rotation: 0,
+      endRotation: (Math.random() - 0.5) * 60,
+      duration: 0,
+      endY: targetY + Math.random() * 20 - 10,
+      scale: 0.65 + Math.random() * 0.25,
+      colorFilter: '',
+      width: SHOE_SIZE * (0.65 + Math.random() * 0.25),
+      height: SHOE_SIZE * (0.65 + Math.random() * 0.25),
+    }
+
+    // Check collision with all existing shoes
+    const hasCollision = existingSneakers.some((existing) =>
+      checkCollision(testSneaker, existing)
+    )
+
+    if (!hasCollision) {
+      return { endLeft: testSneaker.endLeft, endY: testSneaker.endY }
+    }
+  }
+
+  return null
+}
 
 export default function FallingSneakers() {
   const [sneakers, setSneakers] = useState<Sneaker[]>([])
@@ -40,7 +101,8 @@ export default function FallingSneakers() {
       const homeSection = document.getElementById('home')
       if (homeSection) {
         const rect = homeSection.getBoundingClientRect()
-        isActiveRef.current = rect.top < window.innerHeight && rect.bottom > 0
+        // Continue until scrolled past
+        isActiveRef.current = rect.bottom > 0
       }
     }
 
@@ -48,58 +110,51 @@ export default function FallingSneakers() {
     window.addEventListener('scroll', checkVisibility, { passive: true })
     window.addEventListener('resize', checkVisibility, { passive: true })
 
-    // Calculate sand-like pile position
-    const getPilePosition = (index: number) => {
-      // Start from center, spread out like sand as pile grows
-      const pileHeight = index * 12 // Each shoe adds ~12px height
-      const spreadAngle = Math.min(index * 2, 45) // Spread angle increases with pile
-      const horizontalOffset = (Math.random() - 0.5) * spreadAngle * 0.8 // Random spread
-      
+    // Create a new sneaker
+    const createSneaker = (existing: Sneaker[]): Sneaker | null => {
+      if (existing.length >= MAX_SNEAKERS) return null
+
+      const scale = 0.65 + Math.random() * 0.25
+      const width = SHOE_SIZE * scale
+      const height = SHOE_SIZE * scale
+
+      // Try to place just above buttons
+      const baseY = BUTTON_AREA_Y - (existing.length * 8) // Stack up from buttons
+      const position = findValidPosition(existing, PILE_CENTER_X, baseY)
+
+      if (!position) return null
+
       return {
-        endLeft: PILE_CENTER_X + horizontalOffset, // Spread from center
-        endY: PILE_START_Y + pileHeight + Math.random() * 15, // Stack up
-        endRotation: (Math.random() - 0.5) * 60, // Tumble rotation
+        id: `sneaker-${Date.now()}-${Math.random()}`,
+        startLeft: PILE_CENTER_X,
+        endLeft: position.endLeft,
+        rotation: (Math.random() - 0.5) * 30,
+        endRotation: (Math.random() - 0.5) * 60,
+        duration: 2.5 + Math.random() * 1.5,
+        endY: position.endY,
+        scale,
+        colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
+        width,
+        height,
       }
     }
 
-    // Create first sneaker
-    const firstPos = getPilePosition(0)
-    const firstSneaker: Sneaker = {
-      id: `sneaker-${Date.now()}-${Math.random()}`,
-      startLeft: PILE_CENTER_X, // Start from center
-      endLeft: firstPos.endLeft,
-      rotation: (Math.random() - 0.5) * 30,
-      endRotation: firstPos.endRotation,
-      duration: 2.5 + Math.random() * 1.5,
-      endY: firstPos.endY,
-      scale: 0.65 + Math.random() * 0.25,
-      colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
+    // Add first sneaker immediately
+    const firstSneaker = createSneaker([])
+    if (firstSneaker) {
+      setSneakers([firstSneaker])
     }
-    setSneakers([firstSneaker])
 
     // Add new sneakers
     const interval = setInterval(() => {
       if (!isActiveRef.current) return
 
       setSneakers((prev) => {
-        if (prev.length >= MAX_SNEAKERS) return prev
-
-        const pos = getPilePosition(prev.length)
-        const newSneaker: Sneaker = {
-          id: `sneaker-${Date.now()}-${Math.random()}`,
-          startLeft: PILE_CENTER_X, // Always start from center
-          endLeft: pos.endLeft,
-          rotation: (Math.random() - 0.5) * 30,
-          endRotation: pos.endRotation,
-          duration: 2.5 + Math.random() * 1.5,
-          endY: pos.endY,
-          scale: 0.65 + Math.random() * 0.25,
-          colorFilter: COLOR_FILTERS[Math.floor(Math.random() * COLOR_FILTERS.length)],
-        }
-
+        const newSneaker = createSneaker(prev)
+        if (!newSneaker) return prev
         return [...prev, newSneaker]
       })
-    }, 500)
+    }, 600) // Every 600ms
 
     return () => {
       clearInterval(interval)
@@ -114,36 +169,36 @@ export default function FallingSneakers() {
         <motion.div
           key={sneaker.id}
           className="absolute"
-          initial={{ 
-            y: -80, 
+          initial={{
+            y: -80,
             x: '0%',
-            opacity: 0, 
+            opacity: 0,
             scale: 0.5,
-            rotate: sneaker.rotation
+            rotate: sneaker.rotation,
           }}
-          animate={{ 
+          animate={{
             y: sneaker.endY,
-            x: `${sneaker.endLeft - sneaker.startLeft}vw`, // Tumble horizontally using viewport width
-            opacity: 0.5, 
+            x: `${sneaker.endLeft - sneaker.startLeft}vw`,
+            opacity: 0.5,
             scale: sneaker.scale,
-            rotate: sneaker.endRotation // Tumble rotation
+            rotate: sneaker.endRotation,
           }}
-          transition={{ 
+          transition={{
             duration: sneaker.duration,
-            ease: [0.3, 0, 0.2, 1], // Ease in for sand-like fall
-            opacity: { duration: 0.4 }
+            ease: [0.3, 0, 0.2, 1],
+            opacity: { duration: 0.4 },
           }}
           style={{
             left: `${sneaker.startLeft}%`,
           }}
         >
           <Image
-            src="/images/sneaker-clipart.png"
+            src="/images/sneaker-transparent.svg"
             alt="Falling sneaker"
-            width={70}
-            height={70}
+            width={SHOE_SIZE}
+            height={SHOE_SIZE}
             className="drop-shadow-lg"
-            style={{ 
+            style={{
               backgroundColor: 'transparent',
               filter: sneaker.colorFilter,
             }}

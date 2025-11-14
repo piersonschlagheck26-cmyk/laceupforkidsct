@@ -1,0 +1,46 @@
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="sneakerTitle">
+  <title id="sneakerTitle">Transparent sneaker</title>
+  <defs>
+    <linearGradient id="shoeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b3d" />
+      <stop offset="100%" stop-color="#c63a1e" />
+    </linearGradient>
+    <linearGradient id="soleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f7f0e6" />
+      <stop offset="100%" stop-color="#d6cec4" />
+    </linearGradient>
+    <linearGradient id="laceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f9d358" />
+      <stop offset="100%" stop-color="#f4a806" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main shoe body -->
+  <path d="M15 20 Q40 5 65 20 L65 60 Q40 75 15 60 Z" fill="url(#shoeGrad)" stroke="#541913" stroke-width="1.5" stroke-linejoin="round" />
+  
+  <!-- Toe cap -->
+  <path d="M20 20 Q40 10 60 20" fill="url(#soleGrad)" stroke="#541913" stroke-width="1" />
+  
+  <!-- Sole -->
+  <path d="M15 60 Q40 70 65 60 L65 65 Q40 75 15 65 Z" fill="url(#soleGrad)" stroke="#541913" stroke-width="1.5" stroke-linejoin="round" />
+  
+  <!-- Laces -->
+  <path d="M25 25 L55 40" stroke="url(#laceGrad)" stroke-width="3" stroke-linecap="round" />
+  <path d="M25 30 L55 45" stroke="url(#laceGrad)" stroke-width="3" stroke-linecap="round" />
+  <path d="M25 35 L55 50" stroke="url(#laceGrad)" stroke-width="3" stroke-linecap="round" />
+  <path d="M25 40 L55 55" stroke="url(#laceGrad)" stroke-width="3" stroke-linecap="round" />
+  
+  <!-- Center line -->
+  <path d="M40 20 L40 60" stroke="#541913" stroke-width="1.5" stroke-linecap="round" />
+  
+  <!-- Eyelets -->
+  <circle cx="25" cy="25" r="2" fill="#541913" />
+  <circle cx="25" cy="30" r="2" fill="#541913" />
+  <circle cx="25" cy="35" r="2" fill="#541913" />
+  <circle cx="25" cy="40" r="2" fill="#541913" />
+  <circle cx="55" cy="40" r="2" fill="#541913" />
+  <circle cx="55" cy="45" r="2" fill="#541913" />
+  <circle cx="55" cy="50" r="2" fill="#541913" />
+  <circle cx="55" cy="55" r="2" fill="#541913" />
+</svg>
+
