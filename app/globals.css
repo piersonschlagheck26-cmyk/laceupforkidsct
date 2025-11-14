@@ -22,27 +22,47 @@
   }
   
   .btn-primary {
-    @apply relative bg-gradient-to-r from-primary-500/30 via-accent-500/30 to-primary-500/30 backdrop-blur-2xl text-white font-semibold py-3 px-6 rounded-2xl border border-white/30 transition-all duration-300 shadow-2xl shadow-primary-900/20 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:brightness-110 hover:border-white/40 hover:-translate-y-0.5;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+    @apply relative backdrop-blur-3xl text-white font-semibold py-3 px-6 rounded-2xl border border-white/50 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:brightness-110 hover:border-white/60 hover:-translate-y-0.5;
+    background: radial-gradient(ellipse at center, rgba(245, 171, 5, 0.5) 0%, rgba(228, 71, 34, 0.6) 50%, rgba(245, 171, 5, 0.7) 100%);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.3) inset, 0 0 60px rgba(245, 171, 5, 0.2);
   }
   
   .btn-primary::before {
     content: '';
     @apply absolute inset-0 rounded-2xl;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 40%, rgba(255, 255, 255, 0.05) 70%, rgba(255, 255, 255, 0.15) 100%);
     pointer-events: none;
+    border-radius: 1rem;
+  }
+  
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.2) 100%);
+    pointer-events: none;
+    border-radius: 1rem;
   }
   
   .btn-secondary {
-    @apply relative bg-white/25 backdrop-blur-2xl hover:bg-white/35 text-accent-600 font-semibold py-3 px-6 rounded-2xl border border-white/30 hover:border-white/40 transition-all duration-300 shadow-2xl shadow-primary-900/15 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)] hover:-translate-y-0.5;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    @apply relative backdrop-blur-3xl hover:backdrop-blur-3xl text-accent-600 font-semibold py-3 px-6 rounded-2xl border border-white/50 hover:border-white/60 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.15)] hover:-translate-y-0.5;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.5) 100%);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.4) inset, 0 0 40px rgba(255, 255, 255, 0.15);
   }
   
   .btn-secondary::before {
     content: '';
     @apply absolute inset-0 rounded-2xl;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 40%, rgba(255, 255, 255, 0.1) 70%, rgba(255, 255, 255, 0.25) 100%);
     pointer-events: none;
+    border-radius: 1rem;
+  }
+  
+  .btn-secondary::after {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.3) 100%);
+    pointer-events: none;
+    border-radius: 1rem;
   }
   
   .card {

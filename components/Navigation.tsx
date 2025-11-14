@@ -46,17 +46,27 @@ export default function Navigation({ activeSection }: NavigationProps) {
   return (
     <nav className="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 pointer-events-none">
       <div
-        className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-3xl transition-all duration-300 pointer-events-auto ${
+        className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-3xl transition-all duration-300 pointer-events-auto relative ${
           isScrolled
-            ? 'bg-white/25 border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
-            : 'bg-white/20 border-white/25 shadow-[0_8px_32px_rgba(0,0,0,0.08)]'
+            ? 'border-white/50 shadow-[0_12px_48px_rgba(0,0,0,0.15)]'
+            : 'border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
         }`}
         style={{
+          background: isScrolled
+            ? 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.5) 100%)'
+            : 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.45) 100%)',
           boxShadow: isScrolled 
-            ? '0 8px 32px 0 rgba(31, 38, 135, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
-            : '0 8px 32px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.15) inset'
+            ? '0 12px 48px 0 rgba(31, 38, 135, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.4) inset, 0 0 60px rgba(255, 255, 255, 0.1)'
+            : '0 8px 32px 0 rgba(31, 38, 135, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3) inset, 0 0 40px rgba(255, 255, 255, 0.08)'
         }}
       >
+        {/* Liquid glass gradient overlay */}
+        <div 
+          className="absolute inset-0 rounded-3xl pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 40%, rgba(255, 255, 255, 0.1) 70%, rgba(255, 255, 255, 0.25) 100%)',
+          }}
+        />
         <div className="px-5 py-4 sm:px-8">
           <div className="flex items-center justify-between">
             {/* Logo and Site Name */}
