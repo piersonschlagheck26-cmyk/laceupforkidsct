@@ -1,25 +1,15 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
-
-const DonationMap = dynamic(() => import('./DonationMap'), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[360px] w-full rounded-2xl bg-gradient-to-br from-primary-100/60 to-accent-100/60 animate-pulse" />
-  ),
-})
-
 const locations = [
   {
     name: 'First Congregational Church',
     address: '122 Broad Street, Guilford, CT',
-    description: 'Located on the Green—drop your shoe donations inside the main lobby collection box.',
+    description: 'Drop your shoe donations inside the lobby collection box on the Green.',
   },
   {
     name: 'Guilford Racquet & Swim Club',
     address: '420 Church Street, Guilford, CT',
-    description: 'Leave your sneakers at reception; our volunteers collect them every week.',
+    description: 'Leave your donations with reception; volunteers collect them weekly.',
   },
 ]
 
@@ -37,26 +27,19 @@ export default function MapSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-          <div className="card h-full p-0 overflow-hidden">
-            <Suspense fallback={<div className="h-[360px] w-full rounded-2xl bg-gradient-to-br from-primary-100/60 to-accent-100/60 animate-pulse" />}>
-              <DonationMap />
-            </Suspense>
-            <p className="mt-4 px-6 pb-6 text-sm text-gray-600 italic">
-              These collection boxes are open during each partner’s regular hours—drop your sneakers inside the clearly marked Lace Up for Kids bin.
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {locations.map((location) => (
-              <div key={location.name} className="card text-left">
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">{location.name}</h3>
-                <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
-                <p className="text-gray-600 leading-relaxed">{location.description}</p>
-              </div>
-            ))}
-          </div>
+        <div className="max-w-3xl mx-auto space-y-6">
+          {locations.map((location) => (
+            <div key={location.name} className="card text-left">
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">{location.name}</h3>
+              <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
+              <p className="text-gray-600 leading-relaxed">{location.description}</p>
+            </div>
+          ))}
         </div>
+
+        <p className="mt-8 text-center text-sm text-gray-600 italic">
+          Want to host a donation bin at your business or school? Contact us and we’ll set one up together.
+        </p>
       </div>
     </section>
   )

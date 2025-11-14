@@ -50,14 +50,6 @@ export default function HowItWorks() {
     setCurrentStep(Number(event.target.value))
   }
 
-  const handlePrev = () => {
-    setCurrentStep((prev) => Math.max(0, prev - 1))
-  }
-
-  const handleNext = () => {
-    setCurrentStep((prev) => Math.min(steps.length - 1, prev + 1))
-  }
-
   const maxIndex = steps.length - 1
   const progressPercent = maxIndex === 0 ? 0 : (currentStep / maxIndex) * 100
 
@@ -80,86 +72,90 @@ export default function HowItWorks() {
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="card text-center relative overflow-hidden">
-            <div className="flex justify-between items-center mb-6">
-              <button
-                onClick={handlePrev}
-                disabled={currentStep === 0}
-                className="rounded-full border border-primary-200 bg-white/80 px-3 py-2 text-accent-600 hover:bg-white transition disabled:opacity-40"
-                aria-label="Previous step"
-              >
-                ‹
-              </button>
-              <span className="text-sm font-semibold text-primary-600 uppercase tracking-widest">
-                Step {steps[currentStep].number}
-              </span>
-              <button
-                onClick={handleNext}
-                disabled={currentStep === maxIndex}
-                className="rounded-full border border-primary-200 bg-white/80 px-3 py-2 text-accent-600 hover:bg-white transition disabled:opacity-40"
-                aria-label="Next step"
-              >
-                ›
-              </button>
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={steps[currentStep].title}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -24 }}
-                transition={{ duration: 0.35, ease: 'easeOut' }}
-                className="space-y-4"
-              >
-                <div className="flex justify-center text-accent-600 mb-4">{steps[currentStep].icon}</div>
-                <h3 className="text-2xl font-bold text-gray-900">{steps[currentStep].title}</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {steps[currentStep].description}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="mt-10 px-6">
-              <div className="relative">
-                <input
-                  type="range"
-                  min={0}
-                  max={maxIndex}
-                  step={1}
-                  value={currentStep}
-                  onChange={handleRangeChange}
-                  className="w-full appearance-none bg-transparent"
-                  aria-label="Select process step"
-                />
-                <div className="absolute top-1/2 left-0 right-0 h-1 bg-primary-200 rounded-full pointer-events-none" />
-                <motion.div
-                  className="absolute -top-6 flex items-center justify-center pointer-events-none"
-                  style={{ left: `calc(${progressPercent}% - 32px)` }}
-                  transition={{ type: 'spring', stiffness: 160, damping: 16 }}
+        <div className="max-w-5xl mx-auto">
+          <div className="relative grid grid-cols-1 lg:grid-cols-[220px_auto] gap-6 lg:gap-10 items-center">
+            <div className="relative hidden lg:grid gap-6">
+              {steps.map((step, index) => (
+                <div
+                  key={step.title}
+                  className={`rounded-2xl border bg-white/70 px-6 py-5 shadow-lg transition ${
+                    index === currentStep ? 'border-accent-400 text-gray-900' : 'border-transparent text-gray-400'
+                  }`}
                 >
-                  <Image
-                    src="/images/sneaker-top.svg"
-                    alt="Current step indicator"
-                    width={64}
-                    height={64}
-                    className="drop-shadow-lg"
-                  />
-                </motion.div>
-                <div className="absolute top-1/2 left-0 right-0 flex justify-between -translate-y-1/2 pointer-events-none">
-                  {steps.map((step, index) => (
+                  <div className="flex items-center gap-4">
                     <span
-                      key={step.title}
                       className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-semibold ${
                         index === currentStep
                           ? 'border-accent-500 bg-white text-accent-600 shadow-md'
-                          : 'border-primary-200 bg-white/70 text-gray-500'
+                          : 'border-primary-200 bg-white/70'
                       }`}
                     >
                       {step.number}
                     </span>
-                  ))}
+                    <p className="font-semibold">{step.title}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="card overflow-hidden relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={steps[currentStep].title}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -24 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                  className="space-y-4 text-center"
+                >
+                  <div className="flex justify-center text-accent-600 mb-4">{steps[currentStep].icon}</div>
+                  <h3 className="text-2xl font-bold text-gray-900">{steps[currentStep].title}</h3>
+                  <p className="text-gray-600 leading-relaxed">
+                    {steps[currentStep].description}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+
+              <div className="mt-10 px-6">
+                <div className="relative">
+                  <input
+                    type="range"
+                    min={0}
+                    max={maxIndex}
+                    step={1}
+                    value={currentStep}
+                    onChange={handleRangeChange}
+                    className="w-full appearance-none bg-transparent"
+                    aria-label="Select process step"
+                  />
+                  <div className="absolute top-1/2 left-0 right-0 h-1 bg-primary-200 rounded-full pointer-events-none" />
+                  <motion.div
+                    className="absolute -top-7 flex items-center justify-center pointer-events-none"
+                    style={{ left: `calc(${progressPercent}% - 32px)` }}
+                    transition={{ type: 'spring', stiffness: 160, damping: 16 }}
+                  >
+                    <Image
+                      src="/images/sneaker-top.svg"
+                      alt="Current step indicator"
+                      width={64}
+                      height={64}
+                      className="drop-shadow-lg"
+                    />
+                  </motion.div>
+                  <div className="absolute top-1/2 left-0 right-0 flex justify-between -translate-y-1/2 pointer-events-none">
+                    {steps.map((step, index) => (
+                      <span
+                        key={step.title}
+                        className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-sm font-semibold ${
+                          index === currentStep
+                            ? 'border-accent-500 bg-white text-accent-600 shadow-md'
+                            : 'border-primary-200 bg-white/70 text-gray-500'
+                        }`}
+                      >
+                        {step.number}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
