@@ -272,9 +272,16 @@ const simulateFall = (
       
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasCollision = true
-        // Try moving horizontally first
-        const offsetX = (attempts % 2 === 0 ? 1 : -1) * (radius * 2 + 8) * Math.ceil((attempts + 1) / 2)
-        finalX = Math.max(radius, Math.min(viewportWidth - radius, currentX + offsetX))
+        // Try moving horizontally with center bias (pyramid pattern)
+        // Alternate between moving toward center and away, but prefer center
+        const directionToCenter = centerX > finalX ? 1 : -1
+        const tryDirection = attempts % 3 === 0 ? directionToCenter : (attempts % 2 === 0 ? 1 : -1)
+        const offsetX = tryDirection * (radius * 1.5 + 6) * Math.ceil((attempts + 1) / 2)
+        const candidateX = currentX + offsetX
+        
+        // Apply center bias to horizontal movement (keep pyramid shape)
+        const biasedX = candidateX * 0.7 + centerX * 0.3
+        finalX = Math.max(radius + 20, Math.min(viewportWidth - radius - 20, biasedX))
         
         // Recalculate Y based on new X - only move DOWN
         let newY = currentY // Start from physics landing position
@@ -393,6 +400,7 @@ export default function FallingSneakers() {
         
         // When a new shoe lands, existing shoes can tumble down (like rocks)
         // Only shoes that are NOT animating can tumble
+        const viewportWidth = window.innerWidth
         const viewportHeight = window.innerHeight
         const baseY = viewportHeight - PILE_BOTTOM_OFFSET
         const newSneakers = prev.map((existing) => {
@@ -443,10 +451,16 @@ export default function FallingSneakers() {
               }
               
               // Only tumble if we found a lower position (larger Y = lower on screen)
+              // Also maintain center bias for pyramid pattern
               if (lowestY > existing.endY && lowestY <= baseY) {
+                // Keep X position with slight center bias to maintain pyramid
+                const centerX = viewportWidth / 2
+                const centerBias = 0.1 // Small bias to prevent corner drift
+                const maintainedX = existing.endX * (1 - centerBias) + centerX * centerBias
+                
                 return {
                   ...existing,
-                  endX: existing.endX, // Keep X position
+                  endX: Math.max(existingRadius + 20, Math.min(viewportWidth - existingRadius - 20, maintainedX)), // Keep near center
                   endY: lowestY, // Tumble down to lowest stable position
                   // Rotation stays the same - no reorientation
                 }
