@@ -236,7 +236,7 @@ const simulateFall = (
   let finalX = currentX // Use physics landing X - NO adjustments
   let finalY = currentY // Start at physics landing Y
   
-  // Only find lowest Y position (stack on top of existing shoes) - NO horizontal movement
+  // First pass: Find lowest Y position (stack on top of existing shoes) - NO horizontal movement
   for (const existing of existingSneakers) {
     const existingX = existing.endX
     const existingY = existing.endY
@@ -258,20 +258,34 @@ const simulateFall = (
     finalY = baseY
   }
   
-  // If there's still overlap, only move DOWN - never horizontally
-  // This is a last resort - should rarely happen if physics is good
-  for (const existing of existingSneakers) {
-    const existingX = existing.endX
-    const existingY = existing.endY
-    const existingRadius = (SHOE_SIZE * existing.scale) / 2
-    
-    if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
-      // Only move DOWN - find lowest Y where we don't overlap (rigid objects)
-      const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 18 // 18px spacing for rigid objects
-      if (ourBottom > finalY) {
-        finalY = ourBottom
+  // Second pass: Strict overlap prevention - ensure NO overlap with any existing shoe
+  // Check all existing shoes and move DOWN if there's any overlap
+  let hasOverlap = true
+  let overlapAttempts = 0
+  while (hasOverlap && overlapAttempts < 50) {
+    hasOverlap = false
+    for (const existing of existingSneakers) {
+      const existingX = existing.endX
+      const existingY = existing.endY
+      const existingRadius = (SHOE_SIZE * existing.scale) / 2
+      
+      // Check if we overlap (using strict collision check)
+      if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
+        hasOverlap = true
+        // Move DOWN to sit on top of this shoe
+        const topOfExisting = existingY - existingRadius
+        const ourBottom = topOfExisting - radius - 18 // 18px spacing for rigid objects
+        if (ourBottom > finalY) {
+          finalY = ourBottom
+        }
       }
+    }
+    overlapAttempts++
+    
+    // If we've moved too far down, stop
+    if (finalY > baseY + 50) {
+      finalY = baseY
+      break
     }
   }
   
@@ -302,12 +316,12 @@ export default function FallingSneakers() {
       const viewportHeight = window.innerHeight
       const scale = 0.6 + Math.random() * 0.5
       
-          // Random start position with center bias for triangle/pyramid pattern
-          // Shoes fall from center with random spread (pyramid shape)
+          // Random start position with wider spread to prevent center grouping
+          // Shoes fall from center with wider random spread (pyramid shape)
           const centerX = viewportWidth / 2
-          const spread = 80 // Maximum spread from center
+          const spread = Math.min(viewportWidth * 0.25, 150) // Wider spread: 25% of screen or 150px max
           const randomOffset = (Math.random() - 0.5) * spread * 2 // -spread to +spread
-          const startX = centerX + randomOffset // Center with random spread
+          const startX = centerX + randomOffset // Center with wider random spread
           const startY = -SHOE_SIZE - Math.random() * 15
       
       // Simulate fall with collision detection
