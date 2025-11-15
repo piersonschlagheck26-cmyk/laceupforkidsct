@@ -45,6 +45,7 @@ const generateColorFilter = () => {
 }
 
 // Circular collision check (treat shoes as circles)
+// Added spacing to prevent overlap
 const checkCollision = (
   x1: number, y1: number, radius1: number,
   x2: number, y2: number, radius2: number
@@ -52,7 +53,8 @@ const checkCollision = (
   const dx = x1 - x2
   const dy = y1 - y2
   const distance = Math.sqrt(dx * dx + dy * dy)
-  return distance < radius1 + radius2
+  const minDistance = radius1 + radius2 + 8 // 8px spacing between shoes
+  return distance < minDistance
 }
 
 // Calculate bounce physics for circular objects
@@ -102,8 +104,8 @@ const calculateBounce = (
   const newVelocityX = velocityX + impulse * normalX
   const newVelocityY = velocityY + impulse * normalY
   
-  // Calculate bounce position - move away from collision
-  const minSeparation = fallingRadius + hitRadius + 2
+  // Calculate bounce position - move away from collision with spacing
+  const minSeparation = fallingRadius + hitRadius + 8 // 8px spacing between shoes
   const bounceX = hitX + normalX * minSeparation
   const bounceY = hitY + normalY * minSeparation
   
@@ -241,9 +243,9 @@ const simulateFall = (
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
     // If we're close enough horizontally to stack on top
-    if (Math.abs(finalX - existingX) < radius + existingRadius + 5) {
+    if (Math.abs(finalX - existingX) < radius + existingRadius + 12) {
       const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 1
+      const ourBottom = topOfExisting - radius - 8 // 8px spacing between stacked shoes
       // Only move DOWN (larger Y value) - never up
       if (ourBottom > finalY) {
         finalY = ourBottom
@@ -266,7 +268,7 @@ const simulateFall = (
     if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
       // Only move DOWN - find lowest Y where we don't overlap
       const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 1
+      const ourBottom = topOfExisting - radius - 8 // 8px spacing between shoes
       if (ourBottom > finalY) {
         finalY = ourBottom
       }
