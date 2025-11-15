@@ -45,7 +45,7 @@ const generateColorFilter = () => {
 }
 
 // Circular collision check (treat shoes as circles)
-// Added spacing to prevent overlap
+// Rigid objects with significant spacing to prevent clumping
 const checkCollision = (
   x1: number, y1: number, radius1: number,
   x2: number, y2: number, radius2: number
@@ -53,7 +53,7 @@ const checkCollision = (
   const dx = x1 - x2
   const dy = y1 - y2
   const distance = Math.sqrt(dx * dx + dy * dy)
-  const minDistance = radius1 + radius2 + 8 // 8px spacing between shoes
+  const minDistance = radius1 + radius2 + 18 // 18px spacing for rigid objects
   return distance < minDistance
 }
 
@@ -104,8 +104,8 @@ const calculateBounce = (
   const newVelocityX = velocityX + impulse * normalX
   const newVelocityY = velocityY + impulse * normalY
   
-  // Calculate bounce position - move away from collision with spacing
-  const minSeparation = fallingRadius + hitRadius + 8 // 8px spacing between shoes
+  // Calculate bounce position - move away from collision with spacing (rigid objects)
+  const minSeparation = fallingRadius + hitRadius + 18 // 18px spacing for rigid objects
   const bounceX = hitX + normalX * minSeparation
   const bounceY = hitY + normalY * minSeparation
   
@@ -137,10 +137,10 @@ const simulateFall = (
   let currentY = startY
   // Increased horizontal velocity for random dispersion (triangle pattern)
   let velocityX = (Math.random() - 0.5) * 1.5 // More random horizontal movement
-  let velocityY = 0.5 + Math.random() * 0.3
+  let velocityY = 0.3 + Math.random() * 0.2 // Slower initial velocity
   const bouncePoints: { x: number; y: number; rotation: number }[] = []
   
-  const gravity = 0.15
+  const gravity = 0.08 // Slower falling speed
   const damping = 0.98
   const stepSize = 4
   
@@ -242,10 +242,10 @@ const simulateFall = (
     const existingY = existing.endY
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
-    // If we're close enough horizontally to stack on top
-    if (Math.abs(finalX - existingX) < radius + existingRadius + 12) {
+    // If we're close enough horizontally to stack on top (rigid objects)
+    if (Math.abs(finalX - existingX) < radius + existingRadius + 20) {
       const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 8 // 8px spacing between stacked shoes
+      const ourBottom = topOfExisting - radius - 18 // 18px spacing for rigid objects
       // Only move DOWN (larger Y value) - never up
       if (ourBottom > finalY) {
         finalY = ourBottom
@@ -266,9 +266,9 @@ const simulateFall = (
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
     if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
-      // Only move DOWN - find lowest Y where we don't overlap
+      // Only move DOWN - find lowest Y where we don't overlap (rigid objects)
       const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 8 // 8px spacing between shoes
+      const ourBottom = topOfExisting - radius - 18 // 18px spacing for rigid objects
       if (ourBottom > finalY) {
         finalY = ourBottom
       }
@@ -475,8 +475,8 @@ export default function FallingSneakers() {
           rotationPath[rotationPath.length - 1] = sneaker.finalRotation // Final locked rotation
         }
         
-        // Calculate duration - CONSTANT SPEED for all shoes
-        const FALL_SPEED = 200 // pixels per second
+        // Calculate duration - CONSTANT SPEED for all shoes (slower falling)
+        const FALL_SPEED = 120 // pixels per second (slower than before)
         const totalDistance = Math.abs(sneaker.endY - sneaker.startY)
         const baseDuration = totalDistance / FALL_SPEED
         
