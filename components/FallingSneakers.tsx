@@ -56,34 +56,33 @@ const calculatePyramidPositions = (
   
   // Calculate available height for pyramid
   const pyramidHeight = buttonsTop - logoBottom
-  const levelSpacing = pyramidHeight / (totalLevels + 1) // Space between levels
+  // Distribute levels evenly from logo bottom to buttons top
+  // Top level (index 0) should be just under logo, bottom level should be above buttons
+  const levelSpacing = pyramidHeight / (totalLevels - 1) // Space between levels (5 levels = 4 gaps)
   
-  // Calculate shoe spacing within each level - slightly tighter for loose pyramid
-  const baseShoeSpacing = SHOE_SIZE * 1.1 // Slightly tighter spacing
+  // Calculate shoe spacing within each level - more spaced out, no overlap
+  // Ensure minimum spacing to prevent overlap (30% of shoe size as gap)
+  const minSpacing = SHOE_SIZE * 1.3 // More spaced out to prevent overlap
   
   levels.forEach((shoeCount, levelIndex) => {
-    const levelY = logoBottom + (levelIndex + 1) * levelSpacing
+    // Calculate Y position for this level
+    // Top level (index 0) should be just under logo
+    // Bottom level (index 4) should be above buttons
+    const levelY = logoBottom + levelIndex * levelSpacing
     
-    // Calculate total width needed for this level
-    const totalWidth = (shoeCount - 1) * baseShoeSpacing
+    // Calculate total width needed for this level with proper spacing
+    const totalWidth = (shoeCount - 1) * minSpacing
     const startX = centerX - totalWidth / 2
     
-    // Position each shoe in this level with slight random offsets for loose pyramid
+    // Position each shoe in this level - NO random offsets, precise positioning
     for (let pos = 0; pos < shoeCount; pos++) {
-      // Base position
-      const baseX = startX + pos * baseShoeSpacing
-      
-      // Add random offset for loose pyramid (not perfectly aligned)
-      // Offset gets smaller as we go up levels (more stable at top)
-      const maxOffset = (SHOE_SIZE * 0.15) * (1 - levelIndex * 0.15) // 15% of shoe size, decreasing up
-      const offsetX = (Math.random() - 0.5) * maxOffset * 2
-      const offsetY = (Math.random() - 0.5) * maxOffset * 0.5 // Less vertical offset
+      const x = startX + pos * minSpacing
       
       positions.push({
         level: levelIndex,
         position: pos,
-        x: baseX + offsetX,
-        y: levelY + offsetY,
+        x,
+        y: levelY,
       })
     }
   })
@@ -114,20 +113,20 @@ export default function FallingSneakers() {
       const viewportWidth = window.innerWidth
       const viewportHeight = window.innerHeight
       
-      // Measure logo bottom dynamically
+      // Measure logo bottom dynamically - top shoe should be just under logo
       const logoElement = document.querySelector('[alt="Lace Up for Kids logo"]')?.parentElement?.parentElement
       let logoBottom = 300 // Fallback estimate
       if (logoElement) {
         const logoRect = logoElement.getBoundingClientRect()
-        logoBottom = logoRect.bottom + 40 // Logo bottom + spacing
+        logoBottom = logoRect.bottom + 20 // Logo bottom + small spacing for top shoe
       }
       
-      // Measure buttons top dynamically
+      // Measure buttons top dynamically - bottom shoes should stack above buttons
       const buttonsContainer = document.querySelector('.btn-primary')?.parentElement
       let buttonsTop = viewportHeight - 250 // Fallback estimate
       if (buttonsContainer) {
         const buttonsRect = buttonsContainer.getBoundingClientRect()
-        buttonsTop = buttonsRect.top - 40 // Buttons top - spacing
+        buttonsTop = buttonsRect.top - 20 // Buttons top - spacing for bottom shoes
       }
       
       const pyramidPositions = calculatePyramidPositions(
