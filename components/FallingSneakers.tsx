@@ -229,24 +229,19 @@ const simulateFall = (
     }
   }
   
-  // Final position - CRITICAL: Never move up from where physics simulation ended
-  // Keep some center bias for triangle/pyramid pattern
-  const centerX = viewportWidth / 2
-  const centerBias = 0.2 // Slight bias toward center for pyramid
-  let finalX = currentX * (1 - centerBias) + centerX * centerBias
-  finalX = Math.max(radius, Math.min(viewportWidth - radius, finalX))
+  // Final position - Use physics landing position, only adjust DOWN if needed
+  // NO horizontal movement after physics simulation - shoes land where physics says
+  let finalX = currentX // Use physics landing X - NO adjustments
+  let finalY = currentY // Start at physics landing Y
   
-  // Start from where physics ended - NEVER go higher (smaller Y)
-  let finalY = currentY // Start at actual landing position from physics
-  
-  // Find the lowest point we can sit (only move DOWN, never up)
+  // Only find lowest Y position (stack on top of existing shoes) - NO horizontal movement
   for (const existing of existingSneakers) {
     const existingX = existing.endX
     const existingY = existing.endY
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
     // If we're close enough horizontally to stack on top
-    if (Math.abs(finalX - existingX) < radius + existingRadius + 2) {
+    if (Math.abs(finalX - existingX) < radius + existingRadius + 5) {
       const topOfExisting = existingY - existingRadius
       const ourBottom = topOfExisting - radius - 1
       // Only move DOWN (larger Y value) - never up
@@ -261,53 +256,21 @@ const simulateFall = (
     finalY = baseY
   }
   
-  // Ensure no overlap with existing shoes - only adjust horizontally or DOWN
-  let attempts = 0
-  while (attempts < 100) {
-    let hasCollision = false
-    for (const existing of existingSneakers) {
-      const existingX = existing.endX
-      const existingY = existing.endY
-      const existingRadius = (SHOE_SIZE * existing.scale) / 2
-      
-      if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
-        hasCollision = true
-        // Try moving horizontally with center bias (pyramid pattern)
-        // Alternate between moving toward center and away, but prefer center
-        const directionToCenter = centerX > finalX ? 1 : -1
-        const tryDirection = attempts % 3 === 0 ? directionToCenter : (attempts % 2 === 0 ? 1 : -1)
-        const offsetX = tryDirection * (radius * 1.5 + 6) * Math.ceil((attempts + 1) / 2)
-        const candidateX = currentX + offsetX
-        
-        // Apply center bias to horizontal movement (keep pyramid shape)
-        const biasedX = candidateX * 0.7 + centerX * 0.3
-        finalX = Math.max(radius + 20, Math.min(viewportWidth - radius - 20, biasedX))
-        
-        // Recalculate Y based on new X - only move DOWN
-        let newY = currentY // Start from physics landing position
-        for (const existing2 of existingSneakers) {
-          const existingX2 = existing2.endX
-          const existingY2 = existing2.endY
-          const existingRadius2 = (SHOE_SIZE * existing2.scale) / 2
-          
-          if (Math.abs(finalX - existingX2) < radius + existingRadius2 + 2) {
-            const topOfExisting = existingY2 - existingRadius2
-            const ourBottom = topOfExisting - radius - 1
-            // Only move DOWN (larger Y value)
-            if (ourBottom > newY) {
-              newY = ourBottom
-            }
-          }
-        }
-        // Only update if newY is at or below currentY (never move up)
-        if (newY >= finalY) {
-          finalY = newY
-        }
-        break
+  // If there's still overlap, only move DOWN - never horizontally
+  // This is a last resort - should rarely happen if physics is good
+  for (const existing of existingSneakers) {
+    const existingX = existing.endX
+    const existingY = existing.endY
+    const existingRadius = (SHOE_SIZE * existing.scale) / 2
+    
+    if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
+      // Only move DOWN - find lowest Y where we don't overlap
+      const topOfExisting = existingY - existingRadius
+      const ourBottom = topOfExisting - radius - 1
+      if (ourBottom > finalY) {
+        finalY = ourBottom
       }
     }
-    if (!hasCollision) break
-    attempts++
   }
   
   return { endX: finalX, endY: finalY, bouncePoints }
@@ -337,13 +300,13 @@ export default function FallingSneakers() {
       const viewportHeight = window.innerHeight
       const scale = 0.6 + Math.random() * 0.5
       
-      // Random start position with center bias for triangle/pyramid pattern
-      // More variation for random falling, but still centered
-      const centerBias = 0.3 // 30% toward center, 70% random
-      const centerX = viewportWidth / 2
-      const randomOffset = (Math.random() - 0.5) * 60 // More variation
-      const startX = centerX * centerBias + ((SOURCE_X_PERCENT / 100) * viewportWidth + randomOffset) * (1 - centerBias)
-      const startY = -SHOE_SIZE - Math.random() * 15
+          // Random start position with center bias for triangle/pyramid pattern
+          // Shoes fall from center with random spread (pyramid shape)
+          const centerX = viewportWidth / 2
+          const spread = 80 // Maximum spread from center
+          const randomOffset = (Math.random() - 0.5) * spread * 2 // -spread to +spread
+          const startX = centerX + randomOffset // Center with random spread
+          const startY = -SHOE_SIZE - Math.random() * 15
       
       // Simulate fall with collision detection
       const result = simulateFall(startX, startY, existing, viewportWidth, viewportHeight, scale)
@@ -398,80 +361,9 @@ export default function FallingSneakers() {
         const newSneaker = createSneaker(prev)
         if (!newSneaker) return prev
         
-        // When a new shoe lands, existing shoes can tumble down (like rocks)
-        // Only shoes that are NOT animating can tumble
-        const viewportWidth = window.innerWidth
-        const viewportHeight = window.innerHeight
-        const baseY = viewportHeight - PILE_BOTTOM_OFFSET
-        const newSneakers = prev.map((existing) => {
-          // Only check settled shoes (not currently falling)
-          if (existing.isAnimating) return existing
-          
-          const existingRadius = (SHOE_SIZE * existing.scale) / 2
-          const newRadius = (SHOE_SIZE * newSneaker.scale) / 2
-          
-          // Check if new shoe is above this existing shoe and close horizontally
-          if (Math.abs(newSneaker.endX - existing.endX) < existingRadius + newRadius + 2) {
-            const newShoeBottom = newSneaker.endY + newRadius
-            const existingTop = existing.endY - existingRadius
-            
-            // If new shoe is above existing shoe, existing shoe might need to tumble down
-            if (newShoeBottom < existingTop + 3 && newSneaker.endY < existing.endY) {
-              // Find the lowest stable position this shoe can tumble to
-              let lowestY = existing.endY // Start from current position
-              
-              // Try moving down incrementally to find lowest stable position
-              for (let testY = existing.endY + 2; testY <= baseY; testY += 2) {
-                let hasCollision = false
-                
-                // Check collision with new shoe
-                if (checkCollision(existing.endX, testY, existingRadius, newSneaker.endX, newSneaker.endY, newRadius)) {
-                  hasCollision = true
-                }
-                
-                // Check collision with other existing shoes
-                if (!hasCollision) {
-                  for (const other of prev) {
-                    if (other.id === existing.id || other.isAnimating) continue
-                    const otherRadius = (SHOE_SIZE * other.scale) / 2
-                    if (checkCollision(existing.endX, testY, existingRadius, other.endX, other.endY, otherRadius)) {
-                      hasCollision = true
-                      break
-                    }
-                  }
-                }
-                
-                // If no collision, this is a valid lower position
-                if (!hasCollision) {
-                  lowestY = testY
-                } else {
-                  // Hit something, stop here
-                  break
-                }
-              }
-              
-              // Only tumble if we found a lower position (larger Y = lower on screen)
-              // Also maintain center bias for pyramid pattern
-              if (lowestY > existing.endY && lowestY <= baseY) {
-                // Keep X position with slight center bias to maintain pyramid
-                const centerX = viewportWidth / 2
-                const centerBias = 0.1 // Small bias to prevent corner drift
-                const maintainedX = existing.endX * (1 - centerBias) + centerX * centerBias
-                
-                return {
-                  ...existing,
-                  endX: Math.max(existingRadius + 20, Math.min(viewportWidth - existingRadius - 20, maintainedX)), // Keep near center
-                  endY: lowestY, // Tumble down to lowest stable position
-                  // Rotation stays the same - no reorientation
-                }
-              }
-            }
-          }
-          
-          return existing
-        })
-        
-        return [...newSneakers, newSneaker]
+        // NO TUMBLING LOGIC - Once shoes are settled, they stay absolutely still
+        // Shoes only move during their fall animation, then lock in place forever
+        return [...prev, newSneaker]
       })
     }, 2000)
 
