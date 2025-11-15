@@ -44,7 +44,7 @@ const generateColorFilter = () => {
 const calculatePyramidPositions = (
   viewportWidth: number,
   viewportHeight: number,
-  logoBottom: number, // Y position just under logo
+  descriptionBottom: number, // Y position just under description text
   buttonsTop: number // Y position above donate buttons
 ): Array<{ level: number; position: number; x: number; y: number }> => {
   const positions: Array<{ level: number; position: number; x: number; y: number }> = []
@@ -55,20 +55,20 @@ const calculatePyramidPositions = (
   const totalLevels = levels.length
   
   // Calculate available height for pyramid
-  const pyramidHeight = buttonsTop - logoBottom
-  // Distribute levels evenly from logo bottom to buttons top
-  // Top level (index 0) should be just under logo, bottom level should be above buttons
+  const pyramidHeight = buttonsTop - descriptionBottom
+  // Distribute levels evenly from description bottom to buttons top
+  // Top level (index 0) should be just under description, bottom level should be above buttons
   const levelSpacing = pyramidHeight / (totalLevels - 1) // Space between levels (5 levels = 4 gaps)
   
-  // Calculate shoe spacing within each level - more spaced out, no overlap
-  // Ensure minimum spacing to prevent overlap (30% of shoe size as gap)
-  const minSpacing = SHOE_SIZE * 1.3 // More spaced out to prevent overlap
+  // Calculate shoe spacing within each level - EXTRA spaced out to prevent ANY overlap
+  // Use 50% gap between shoes to ensure they never overlap
+  const minSpacing = SHOE_SIZE * 1.5 // 50% gap - NO overlap possible
   
   levels.forEach((shoeCount, levelIndex) => {
     // Calculate Y position for this level
-    // Top level (index 0) should be just under logo
+    // Top level (index 0) should be just under description text
     // Bottom level (index 4) should be above buttons
-    const levelY = logoBottom + levelIndex * levelSpacing
+    const levelY = descriptionBottom + levelIndex * levelSpacing
     
     // Calculate total width needed for this level with proper spacing
     const totalWidth = (shoeCount - 1) * minSpacing
@@ -113,12 +113,13 @@ export default function FallingSneakers() {
       const viewportWidth = window.innerWidth
       const viewportHeight = window.innerHeight
       
-      // Measure logo bottom dynamically - top shoe should be just under logo
-      const logoElement = document.querySelector('[alt="Lace Up for Kids logo"]')?.parentElement?.parentElement
-      let logoBottom = 300 // Fallback estimate
-      if (logoElement) {
-        const logoRect = logoElement.getBoundingClientRect()
-        logoBottom = logoRect.bottom + 20 // Logo bottom + small spacing for top shoe
+      // Measure description/tagline bottom dynamically - top shoe should be just under description
+      // The description is the paragraph with "Lace Up for Kids recycles gently used shoes..."
+      const descriptionElement = document.querySelector('#home p.text-xl, #home p.text-2xl')
+      let descriptionBottom = 400 // Fallback estimate
+      if (descriptionElement) {
+        const descRect = descriptionElement.getBoundingClientRect()
+        descriptionBottom = descRect.bottom + 20 // Description bottom + small spacing for top shoe
       }
       
       // Measure buttons top dynamically - bottom shoes should stack above buttons
@@ -132,7 +133,7 @@ export default function FallingSneakers() {
       const pyramidPositions = calculatePyramidPositions(
         viewportWidth,
         viewportHeight,
-        logoBottom,
+        descriptionBottom,
         buttonsTop
       )
 
