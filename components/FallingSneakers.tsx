@@ -45,7 +45,7 @@ const generateColorFilter = () => {
 }
 
 // Circular collision check (treat shoes as circles)
-// Rigid objects with significant spacing to prevent clumping
+// Rigid objects with STRICT spacing to prevent ANY overlap or clumping
 const checkCollision = (
   x1: number, y1: number, radius1: number,
   x2: number, y2: number, radius2: number
@@ -53,7 +53,7 @@ const checkCollision = (
   const dx = x1 - x2
   const dy = y1 - y2
   const distance = Math.sqrt(dx * dx + dy * dy)
-  const minDistance = radius1 + radius2 + 18 // 18px spacing for rigid objects
+  const minDistance = radius1 + radius2 + 25 // 25px STRICT spacing - NO overlap allowed
   return distance < minDistance
 }
 
@@ -104,8 +104,8 @@ const calculateBounce = (
   const newVelocityX = velocityX + impulse * normalX
   const newVelocityY = velocityY + impulse * normalY
   
-  // Calculate bounce position - move away from collision with spacing (rigid objects)
-  const minSeparation = fallingRadius + hitRadius + 18 // 18px spacing for rigid objects
+  // Calculate bounce position - move away from collision with STRICT spacing (rigid objects)
+  const minSeparation = fallingRadius + hitRadius + 25 // 25px STRICT spacing - NO overlap
   const bounceX = hitX + normalX * minSeparation
   const bounceY = hitY + normalY * minSeparation
   
@@ -243,9 +243,9 @@ const simulateFall = (
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
     // If we're close enough horizontally to stack on top (rigid objects)
-    if (Math.abs(finalX - existingX) < radius + existingRadius + 20) {
+    if (Math.abs(finalX - existingX) < radius + existingRadius + 30) {
       const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 18 // 18px spacing for rigid objects
+      const ourBottom = topOfExisting - radius - 25 // 25px STRICT spacing - NO overlap
       // Only move DOWN (larger Y value) - never up
       if (ourBottom > finalY) {
         finalY = ourBottom
@@ -258,34 +258,59 @@ const simulateFall = (
     finalY = baseY
   }
   
-  // Second pass: Strict overlap prevention - ensure NO overlap with any existing shoe
-  // Check all existing shoes and move DOWN if there's any overlap
+  // Second pass: STRICT overlap prevention - ensure ABSOLUTELY NO overlap with ANY existing shoe
+  // Check all existing shoes and move DOWN if there's ANY overlap - iterate until NO overlap
   let hasOverlap = true
   let overlapAttempts = 0
-  while (hasOverlap && overlapAttempts < 50) {
+  const maxAttempts = 100 // Increased attempts to ensure resolution
+  while (hasOverlap && overlapAttempts < maxAttempts) {
     hasOverlap = false
+    let highestOverlapY = finalY
+    
+    // Check ALL existing shoes for overlap
     for (const existing of existingSneakers) {
       const existingX = existing.endX
       const existingY = existing.endY
       const existingRadius = (SHOE_SIZE * existing.scale) / 2
       
-      // Check if we overlap (using strict collision check)
+      // Check if we overlap (using STRICT collision check with 25px spacing)
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasOverlap = true
-        // Move DOWN to sit on top of this shoe
+        // Move DOWN to sit on top of this shoe with STRICT 25px spacing
         const topOfExisting = existingY - existingRadius
-        const ourBottom = topOfExisting - radius - 18 // 18px spacing for rigid objects
-        if (ourBottom > finalY) {
-          finalY = ourBottom
+        const ourBottom = topOfExisting - radius - 25 // 25px STRICT spacing - NO overlap
+        if (ourBottom > highestOverlapY) {
+          highestOverlapY = ourBottom
         }
       }
     }
+    
+    // Move to the highest position needed to avoid all overlaps
+    if (hasOverlap && highestOverlapY > finalY) {
+      finalY = highestOverlapY
+    }
+    
     overlapAttempts++
     
-    // If we've moved too far down, stop
-    if (finalY > baseY + 50) {
+    // Safety check - if we've moved too far down, stop
+    if (finalY > baseY + 100) {
       finalY = baseY
       break
+    }
+  }
+  
+  // Final verification pass - if still overlapping, move further down
+  for (const existing of existingSneakers) {
+    const existingX = existing.endX
+    const existingY = existing.endY
+    const existingRadius = (SHOE_SIZE * existing.scale) / 2
+    
+    if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
+      const topOfExisting = existingY - existingRadius
+      const ourBottom = topOfExisting - radius - 25 // 25px STRICT spacing
+      if (ourBottom > finalY) {
+        finalY = ourBottom
+      }
     }
   }
   
