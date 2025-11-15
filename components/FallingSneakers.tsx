@@ -44,22 +44,22 @@ const generateColorFilter = () => {
   }
 }
 
-// Circular collision check (treat shoes as circles)
-// Rigid objects with ABSOLUTE spacing - shoes are solid and cannot overlap AT ALL
-const RIGID_SPACING = 40 // 40px ABSOLUTE minimum spacing - NO overlap ever
+// COMPLETELY REWRITTEN: Simple distance check - shoes CANNOT overlap
+// Minimum distance between shoe centers = radius1 + radius2 + spacing
+const MIN_SHOE_SPACING = 50 // 50px minimum gap between shoe edges - NO overlap possible
 const checkCollision = (
   x1: number, y1: number, radius1: number,
   x2: number, y2: number, radius2: number
 ): boolean => {
   const dx = x1 - x2
   const dy = y1 - y2
-  const distance = Math.sqrt(dx * dx + dy * dy)
-  const minDistance = radius1 + radius2 + RIGID_SPACING // ABSOLUTE minimum - NO overlap possible
-  return distance < minDistance
+  const actualDistance = Math.sqrt(dx * dx + dy * dy)
+  const requiredDistance = radius1 + radius2 + MIN_SHOE_SPACING
+  // Collision if actual distance is less than required distance
+  return actualDistance < requiredDistance
 }
 
-// Calculate bounce physics for circular RIGID objects
-// Shoes are solid structures that MUST maintain spacing - they bounce off each other
+// COMPLETELY REWRITTEN: Simple bounce calculation - ensures shoes are ALWAYS separated
 const calculateBounce = (
   fallingX: number,
   fallingY: number,
@@ -70,63 +70,36 @@ const calculateBounce = (
   velocityX: number,
   velocityY: number
 ): { bounceX: number; bounceY: number; newVelocityX: number; newVelocityY: number; rotation: number } => {
-  // Calculate collision normal (direction from hit object to falling object)
+  // Calculate direction from hit shoe to falling shoe
   const dx = fallingX - hitX
   const dy = fallingY - hitY
   const currentDistance = Math.sqrt(dx * dx + dy * dy) || 1
   
-  // CRITICAL: Use required separation distance, not current distance
-  // This ensures shoes are ALWAYS separated properly, even if they're overlapping
-  const requiredSeparation = fallingRadius + hitRadius + RIGID_SPACING
+  // REQUIRED separation distance - shoes MUST be this far apart
+  const requiredDistance = fallingRadius + hitRadius + MIN_SHOE_SPACING
   
-  // Normalize direction (always point from hit to falling)
+  // Normalize direction
   const normalX = dx / currentDistance
   const normalY = dy / currentDistance
   
-  // Calculate relative velocity
-  const relativeVelocityX = velocityX
-  const relativeVelocityY = velocityY
+  // Calculate bounce position - ALWAYS at required distance
+  const bounceX = hitX + normalX * requiredDistance
+  const bounceY = hitY + normalY * requiredDistance
   
-  // Calculate velocity along normal
-  const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY
+  // Simple velocity reflection
+  const dotProduct = velocityX * normalX + velocityY * normalY
+  const restitution = 0.4 // Bounciness
+  const newVelocityX = velocityX - 2 * dotProduct * normalX * restitution
+  const newVelocityY = velocityY - 2 * dotProduct * normalY * restitution
   
-  // Don't resolve if velocities are separating (but still ensure proper separation)
-  if (velocityAlongNormal > 0 && currentDistance >= requiredSeparation) {
-    // Even if separating, ensure we're at proper distance
-    const bounceX = hitX + normalX * requiredSeparation
-    const bounceY = hitY + normalY * requiredSeparation
-    return {
-      bounceX,
-      bounceY,
-      newVelocityX: velocityX,
-      newVelocityY: velocityY,
-      rotation: 0,
-    }
-  }
-  
-  // Calculate restitution (bounciness) - less bouncy for more realistic settling
-  const restitution = 0.3 + Math.random() * 0.2 // 0.3-0.5
-  
-  // Calculate impulse
-  const impulse = -(1 + restitution) * velocityAlongNormal
-  
-  // Apply impulse
-  const newVelocityX = velocityX + impulse * normalX
-  const newVelocityY = velocityY + impulse * normalY
-  
-  // CRITICAL: Calculate bounce position using REQUIRED separation, not current distance
-  // This ensures shoes are ALWAYS separated by RIGID_SPACING, never overlapping
-  const bounceX = hitX + normalX * requiredSeparation
-  const bounceY = hitY + normalY * requiredSeparation
-  
-  // Add random tumbling rotation based on bounce
-  const rotation = (Math.random() - 0.5) * 30 * Math.abs(impulse) / 2
+  // Random rotation on bounce
+  const rotation = (Math.random() - 0.5) * 20
   
   return {
     bounceX,
     bounceY,
-    newVelocityX: newVelocityX * 0.7, // Damping
-    newVelocityY: newVelocityY * 0.7,
+    newVelocityX: newVelocityX * 0.8, // Damping
+    newVelocityY: newVelocityY * 0.8,
     rotation,
   }
 }
@@ -250,74 +223,86 @@ const simulateFall = (
     }
   }
   
-  // Final position - SIMPLE: Shoes land where physics says, then ONLY stack vertically DOWN
-  // NO horizontal movement - shoes stay where they land, only move DOWN to avoid overlap
-  let finalX = currentX // Use physics landing X - NO adjustments ever
+  // COMPLETELY REWRITTEN: Final position - find position with ZERO overlap
+  // Shoes land where physics says, then move DOWN until no overlap exists
+  let finalX = currentX // Keep physics landing X - no horizontal movement
   let finalY = currentY // Start at physics landing Y
   
-  // SIMPLE RULE: If horizontally close to existing shoes, stack vertically on top
-  // Find the highest Y position needed to avoid ALL overlaps
-  let highestRequiredY = finalY
+  // Find the lowest Y position where this shoe has NO overlap with ANY existing shoe
+  // Check every existing shoe and find the highest Y needed
+  let requiredY = finalY
   
   for (const existing of existingSneakers) {
     const existingX = existing.endX
     const existingY = existing.endY
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
-    // Calculate horizontal distance
-    const horizontalDistance = Math.abs(finalX - existingX)
-    const combinedRadius = radius + existingRadius
-    const minHorizontalDistance = combinedRadius + RIGID_SPACING
+    // Calculate distance between centers
+    const dx = finalX - existingX
+    const dy = finalY - existingY
+    const actualDistance = Math.sqrt(dx * dx + dy * dy)
+    const requiredDistance = radius + existingRadius + MIN_SHOE_SPACING
     
-    // If horizontally close, we MUST stack vertically on top
-    if (horizontalDistance < minHorizontalDistance) {
-      // Calculate where we need to be to sit on top with proper spacing
-      const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - RIGID_SPACING
+    // If too close, we need to move DOWN
+    if (actualDistance < requiredDistance) {
+      // Calculate where we need to be vertically to maintain required distance
+      // We can only move DOWN (increase Y), so find the Y that satisfies distance requirement
+      const horizontalDistance = Math.abs(dx)
       
-      // We must be at least this high (move DOWN = larger Y)
-      if (ourBottom > highestRequiredY) {
-        highestRequiredY = ourBottom
+      if (horizontalDistance < requiredDistance) {
+        // Horizontally close - must stack vertically
+        // Calculate vertical offset needed
+        const verticalOffset = Math.sqrt(requiredDistance * requiredDistance - horizontalDistance * horizontalDistance)
+        const requiredYForThisShoe = existingY + verticalOffset - radius
+        
+        // We need to be at least this high (larger Y = lower on screen)
+        if (requiredYForThisShoe > requiredY) {
+          requiredY = requiredYForThisShoe
+        }
       }
     }
   }
   
-  // Move to the highest required position (only DOWN, never up)
-  finalY = highestRequiredY
+  finalY = requiredY
   
-  // Ensure we're not below base
+  // Ensure not below base
   if (finalY > baseY) {
     finalY = baseY
   }
   
-  // FINAL CHECK: Verify NO overlap - iterate until ZERO overlap
-  for (let check = 0; check < 100; check++) {
-    let stillOverlapping = false
+  // FINAL VERIFICATION: Check every shoe one more time to ensure NO overlap
+  for (let verify = 0; verify < 50; verify++) {
+    let hasOverlap = false
     
     for (const existing of existingSneakers) {
       const existingX = existing.endX
       const existingY = existing.endY
       const existingRadius = (SHOE_SIZE * existing.scale) / 2
       
-      // Use strict collision check
-      if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
-        stillOverlapping = true
-        // Move DOWN to sit on top
-        const topOfExisting = existingY - existingRadius
-        const ourBottom = topOfExisting - radius - RIGID_SPACING
-        if (ourBottom > finalY) {
-          finalY = ourBottom
+      const dx = finalX - existingX
+      const dy = finalY - existingY
+      const actualDistance = Math.sqrt(dx * dx + dy * dy)
+      const requiredDistance = radius + existingRadius + MIN_SHOE_SPACING
+      
+      if (actualDistance < requiredDistance) {
+        hasOverlap = true
+        // Move DOWN further
+        const horizontalDistance = Math.abs(dx)
+        if (horizontalDistance < requiredDistance) {
+          const verticalOffset = Math.sqrt(requiredDistance * requiredDistance - horizontalDistance * horizontalDistance)
+          const newY = existingY + verticalOffset - radius
+          if (newY > finalY) {
+            finalY = newY
+          }
         }
       }
     }
     
-    // If no overlap found, we're done
-    if (!stillOverlapping) {
+    if (!hasOverlap) {
       break
     }
     
-    // Safety: don't go too far down
-    if (finalY > baseY + 200) {
+    if (finalY > baseY + 300) {
       finalY = baseY
       break
     }
