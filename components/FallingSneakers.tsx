@@ -25,7 +25,7 @@ interface Sneaker {
 
 const SHOE_SIZE = 80
 const SOURCE_X_PERCENT = 50
-const PILE_BOTTOM_OFFSET = 80
+const PILE_BOTTOM_OFFSET = 250 // Stop shoes well above donate buttons (buttons + margins + spacing)
 const MAX_SNEAKERS = 100
 
 // Generate random color filter for each shoe
