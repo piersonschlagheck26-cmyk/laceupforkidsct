@@ -50,15 +50,17 @@ const calculatePyramidPositions = (
   const positions: Array<{ level: number; position: number; x: number; y: number }> = []
   const centerX = viewportWidth / 2
   
-  // Pyramid structure: 5, 4, 3, 2, 1
+  // Pyramid structure: 5 on bottom, then 4, 3, 2, 1 on top
+  // levels[0] = bottom level (5 shoes), levels[4] = top level (1 shoe)
   const levels = [5, 4, 3, 2, 1]
   const totalLevels = levels.length
   
   // Calculate available height for pyramid
   const pyramidHeight = buttonsTop - descriptionBottom
-  // Distribute levels evenly from description bottom to buttons top
-  // Top level (index 0) should be just under description, bottom level should be above buttons
-  const levelSpacing = pyramidHeight / (totalLevels - 1) // Space between levels (5 levels = 4 gaps)
+  // Distribute levels with decreased spacing between levels
+  // Top level (index 4) should be just under description, bottom level (index 0) should be above buttons
+  // Use smaller spacing factor to bring levels closer together
+  const levelSpacing = pyramidHeight / (totalLevels + 2) // Decreased spacing - levels closer together
   
   // Calculate shoe spacing within each level - EXTRA spaced out to prevent ANY overlap
   // Use 50% gap between shoes to ensure they never overlap
@@ -66,9 +68,11 @@ const calculatePyramidPositions = (
   
   levels.forEach((shoeCount, levelIndex) => {
     // Calculate Y position for this level
-    // Top level (index 0) should be just under description text
-    // Bottom level (index 4) should be above buttons
-    const levelY = descriptionBottom + levelIndex * levelSpacing
+    // Reverse the order: top level (index 4 = 1 shoe) should be just under description
+    // Bottom level (index 0 = 5 shoes) should be above buttons
+    // Reverse levelIndex so level 4 (top) is at descriptionBottom, level 0 (bottom) is near buttonsTop
+    const reversedIndex = totalLevels - 1 - levelIndex
+    const levelY = descriptionBottom + reversedIndex * levelSpacing
     
     // Calculate total width needed for this level with proper spacing
     const totalWidth = (shoeCount - 1) * minSpacing
