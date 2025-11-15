@@ -45,7 +45,8 @@ const generateColorFilter = () => {
 }
 
 // Circular collision check (treat shoes as circles)
-// Rigid objects with STRICT spacing to prevent ANY overlap or clumping
+// Rigid objects with ABSOLUTE spacing - shoes are solid and cannot overlap AT ALL
+const RIGID_SPACING = 30 // 30px absolute minimum spacing between shoe edges
 const checkCollision = (
   x1: number, y1: number, radius1: number,
   x2: number, y2: number, radius2: number
@@ -53,11 +54,12 @@ const checkCollision = (
   const dx = x1 - x2
   const dy = y1 - y2
   const distance = Math.sqrt(dx * dx + dy * dy)
-  const minDistance = radius1 + radius2 + 25 // 25px STRICT spacing - NO overlap allowed
+  const minDistance = radius1 + radius2 + RIGID_SPACING // Absolute minimum - NO overlap possible
   return distance < minDistance
 }
 
-// Calculate bounce physics for circular objects
+// Calculate bounce physics for circular RIGID objects
+// Shoes are solid structures that MUST maintain spacing - they bounce off each other
 const calculateBounce = (
   fallingX: number,
   fallingY: number,
@@ -71,10 +73,15 @@ const calculateBounce = (
   // Calculate collision normal (direction from hit object to falling object)
   const dx = fallingX - hitX
   const dy = fallingY - hitY
-  const distance = Math.sqrt(dx * dx + dy * dy) || 1
+  const currentDistance = Math.sqrt(dx * dx + dy * dy) || 1
   
-  const normalX = dx / distance
-  const normalY = dy / distance
+  // CRITICAL: Use required separation distance, not current distance
+  // This ensures shoes are ALWAYS separated properly, even if they're overlapping
+  const requiredSeparation = fallingRadius + hitRadius + RIGID_SPACING
+  
+  // Normalize direction (always point from hit to falling)
+  const normalX = dx / currentDistance
+  const normalY = dy / currentDistance
   
   // Calculate relative velocity
   const relativeVelocityX = velocityX
@@ -83,11 +90,14 @@ const calculateBounce = (
   // Calculate velocity along normal
   const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY
   
-  // Don't resolve if velocities are separating
-  if (velocityAlongNormal > 0) {
+  // Don't resolve if velocities are separating (but still ensure proper separation)
+  if (velocityAlongNormal > 0 && currentDistance >= requiredSeparation) {
+    // Even if separating, ensure we're at proper distance
+    const bounceX = hitX + normalX * requiredSeparation
+    const bounceY = hitY + normalY * requiredSeparation
     return {
-      bounceX: fallingX,
-      bounceY: fallingY,
+      bounceX,
+      bounceY,
       newVelocityX: velocityX,
       newVelocityY: velocityY,
       rotation: 0,
@@ -104,10 +114,10 @@ const calculateBounce = (
   const newVelocityX = velocityX + impulse * normalX
   const newVelocityY = velocityY + impulse * normalY
   
-  // Calculate bounce position - move away from collision with STRICT spacing (rigid objects)
-  const minSeparation = fallingRadius + hitRadius + 25 // 25px STRICT spacing - NO overlap
-  const bounceX = hitX + normalX * minSeparation
-  const bounceY = hitY + normalY * minSeparation
+  // CRITICAL: Calculate bounce position using REQUIRED separation, not current distance
+  // This ensures shoes are ALWAYS separated by RIGID_SPACING, never overlapping
+  const bounceX = hitX + normalX * requiredSeparation
+  const bounceY = hitY + normalY * requiredSeparation
   
   // Add random tumbling rotation based on bounce
   const rotation = (Math.random() - 0.5) * 30 * Math.abs(impulse) / 2
@@ -142,7 +152,7 @@ const simulateFall = (
   
   const gravity = 0.08 // Slower falling speed
   const damping = 0.98
-  const stepSize = 4
+  const stepSize = 2 // Smaller steps to catch collisions earlier and prevent penetration
   
   // Add random wobble for more natural random falling
   const wobbleAmount = Math.random() * 0.4
@@ -174,13 +184,18 @@ const simulateFall = (
       velocityX *= -0.5
     }
     
-    // Check collision with existing shoes
+    // CRITICAL: Check collision with existing shoes IMMEDIATELY
+    // Shoes are rigid - they cannot penetrate each other, must bounce off immediately
+    let collided = false
     for (const existing of existingSneakers) {
       const existingX = existing.endX
       const existingY = existing.endY
       const existingRadius = (SHOE_SIZE * existing.scale) / 2
       
+      // Use collision check function which enforces RIGID_SPACING
+      // If we're too close, IMMEDIATELY bounce away - no penetration allowed
       if (checkCollision(currentX, currentY, radius, existingX, existingY, existingRadius)) {
+        collided = true
         const bounce = calculateBounce(
           currentX,
           currentY,
@@ -208,6 +223,7 @@ const simulateFall = (
           })
         }
         
+        // IMMEDIATELY move to separated position - no penetration
         currentX = bounce.bounceX
         currentY = bounce.bounceY
         velocityX = bounce.newVelocityX
@@ -217,6 +233,9 @@ const simulateFall = (
         if (Math.abs(velocityX) < 0.15 && Math.abs(velocityY) < 0.15) {
           break
         }
+        
+        // Only process first collision per step to avoid multiple bounces
+        break
       }
     }
     
@@ -243,9 +262,10 @@ const simulateFall = (
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
     // If we're close enough horizontally to stack on top (rigid objects)
-    if (Math.abs(finalX - existingX) < radius + existingRadius + 30) {
+    const RIGID_SPACING = 30 // Must match collision check
+    if (Math.abs(finalX - existingX) < radius + existingRadius + RIGID_SPACING + 10) {
       const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 25 // 25px STRICT spacing - NO overlap
+      const ourBottom = topOfExisting - radius - RIGID_SPACING // 30px absolute spacing - NO overlap
       // Only move DOWN (larger Y value) - never up
       if (ourBottom > finalY) {
         finalY = ourBottom
@@ -273,12 +293,13 @@ const simulateFall = (
       const existingY = existing.endY
       const existingRadius = (SHOE_SIZE * existing.scale) / 2
       
-      // Check if we overlap (using STRICT collision check with 25px spacing)
+      // Check if we overlap (using ABSOLUTE collision check with 30px spacing)
+      const RIGID_SPACING = 30 // Must match collision check
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasOverlap = true
-        // Move DOWN to sit on top of this shoe with STRICT 25px spacing
+        // Move DOWN to sit on top of this shoe with ABSOLUTE 30px spacing
         const topOfExisting = existingY - existingRadius
-        const ourBottom = topOfExisting - radius - 25 // 25px STRICT spacing - NO overlap
+        const ourBottom = topOfExisting - radius - RIGID_SPACING // 30px absolute spacing - NO overlap
         if (ourBottom > highestOverlapY) {
           highestOverlapY = ourBottom
         }
@@ -299,17 +320,39 @@ const simulateFall = (
     }
   }
   
-  // Final verification pass - if still overlapping, move further down
+  // Final verification pass - ABSOLUTE overlap prevention
+  // Check every shoe and ensure NO overlap whatsoever
+  const RIGID_SPACING = 30 // Must match collision check
   for (const existing of existingSneakers) {
     const existingX = existing.endX
     const existingY = existing.endY
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
-    if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
-      const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - 25 // 25px STRICT spacing
-      if (ourBottom > finalY) {
-        finalY = ourBottom
+    // Check distance - if too close, move DOWN
+    const dx = finalX - existingX
+    const dy = finalY - existingY
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    const minDistance = radius + existingRadius + RIGID_SPACING
+    
+    if (distance < minDistance) {
+      // Calculate proper separation
+      if (distance > 0.1) {
+        const normalX = dx / distance
+        const normalY = dy / distance
+        // Move to proper separation distance
+        const separatedX = existingX + normalX * minDistance
+        const separatedY = existingY + normalY * minDistance
+        // Only adjust Y (move DOWN) - never horizontally
+        if (separatedY > finalY) {
+          finalY = separatedY
+        }
+      } else {
+        // If directly on top, move DOWN
+        const topOfExisting = existingY - existingRadius
+        const ourBottom = topOfExisting - radius - RIGID_SPACING
+        if (ourBottom > finalY) {
+          finalY = ourBottom
+        }
       }
     }
   }
