@@ -133,13 +133,18 @@ const simulateFall = (
   
   let currentX = startX
   let currentY = startY
-  let velocityX = (Math.random() - 0.5) * 0.6
+  // Increased horizontal velocity for random dispersion (triangle pattern)
+  let velocityX = (Math.random() - 0.5) * 1.5 // More random horizontal movement
   let velocityY = 0.5 + Math.random() * 0.3
   const bouncePoints: { x: number; y: number; rotation: number }[] = []
   
   const gravity = 0.15
   const damping = 0.98
   const stepSize = 4
+  
+  // Add random wobble for more natural random falling
+  const wobbleAmount = Math.random() * 0.4
+  const wobbleFrequency = 0.05 + Math.random() * 0.05
   
   // Simulate physics step by step
   for (let step = 0; step < 2000; step++) {
@@ -150,8 +155,11 @@ const simulateFall = (
     velocityX *= damping
     velocityY *= damping
     
-    // Update position
-    currentX += velocityX
+    // Add random wobble for natural random falling (triangle pattern)
+    const wobble = Math.sin(currentY * wobbleFrequency) * wobbleAmount * (Math.random() - 0.5)
+    
+    // Update position with random wobble
+    currentX += velocityX + wobble
     currentY += velocityY
     
     // Boundary checks
@@ -222,7 +230,11 @@ const simulateFall = (
   }
   
   // Final position - find the lowest point on the pile
-  let finalX = Math.max(radius, Math.min(viewportWidth - radius, currentX))
+  // Keep some center bias for triangle/pyramid pattern
+  const centerX = viewportWidth / 2
+  const centerBias = 0.2 // Slight bias toward center for pyramid
+  let finalX = currentX * (1 - centerBias) + centerX * centerBias
+  finalX = Math.max(radius, Math.min(viewportWidth - radius, finalX))
   let finalY = baseY
   
   // Find the highest point where this shoe can sit (stacking logic)
@@ -305,10 +317,13 @@ export default function FallingSneakers() {
       const viewportHeight = window.innerHeight
       const scale = 0.6 + Math.random() * 0.5
       
-      // Slight random offset to start position
-      const startXOffset = (Math.random() - 0.5) * 20
-      const startX = (SOURCE_X_PERCENT / 100) * viewportWidth + startXOffset
-      const startY = -SHOE_SIZE - Math.random() * 10
+      // Random start position with center bias for triangle/pyramid pattern
+      // More variation for random falling, but still centered
+      const centerBias = 0.3 // 30% toward center, 70% random
+      const centerX = viewportWidth / 2
+      const randomOffset = (Math.random() - 0.5) * 60 // More variation
+      const startX = centerX * centerBias + ((SOURCE_X_PERCENT / 100) * viewportWidth + randomOffset) * (1 - centerBias)
+      const startY = -SHOE_SIZE - Math.random() * 15
       
       // Simulate fall with collision detection
       const result = simulateFall(startX, startY, existing, viewportWidth, viewportHeight, scale)
@@ -316,11 +331,12 @@ export default function FallingSneakers() {
       // Generate random color properties
       const colorProps = generateColorFilter()
       
-      // Random rotation - this is the FINAL rotation that will NEVER change
-      const rotation = (Math.random() - 0.5) * 30
-      // Calculate final rotation from all bounce rotations
+      // Random initial rotation - completely random angle
+      const rotation = (Math.random() - 0.5) * 360 // Full 360 degree random rotation
+      // Calculate final rotation from all bounce rotations (tumbling adds to rotation)
       const cumulativeBounceRotation = result.bouncePoints.reduce((sum, bounce) => sum + bounce.rotation, 0)
       const finalRotation = rotation + cumulativeBounceRotation // Total rotation from tumbling
+      // This finalRotation is LOCKED and will NEVER change
       
       // Random initial scale for animation
       const initialScale = 0.7 + Math.random() * 0.2
@@ -415,10 +431,11 @@ export default function FallingSneakers() {
         // Build animation path: start -> bounces -> end
         const yPath = [sneaker.startY]
         const xPath = [sneaker.startX]
-        const rotationPath = [0]
+        // Start rotation from initial random rotation (not 0)
+        const rotationPath = [sneaker.rotation]
         
-        // Add bounce points with rotation
-        let cumulativeRotation = 0
+        // Add bounce points with rotation (tumbling adds to initial rotation)
+        let cumulativeRotation = sneaker.rotation
         sneaker.bouncePoints.forEach((bounce) => {
           const lastY = yPath[yPath.length - 1]
           const lastX = xPath[xPath.length - 1]
@@ -435,7 +452,7 @@ export default function FallingSneakers() {
           }
         })
         
-        // Add final landing position
+        // Add final landing position with final rotation
         const lastY = yPath[yPath.length - 1]
         const lastX = xPath[xPath.length - 1]
         const finalDistance = Math.sqrt(
@@ -445,11 +462,11 @@ export default function FallingSneakers() {
         if (finalDistance > 5) {
           yPath.push(sneaker.endY)
           xPath.push(sneaker.endX)
-          rotationPath.push(sneaker.finalRotation)
+          rotationPath.push(sneaker.finalRotation) // Final locked rotation
         } else {
           yPath[yPath.length - 1] = sneaker.endY
           xPath[xPath.length - 1] = sneaker.endX
-          rotationPath[rotationPath.length - 1] = sneaker.finalRotation
+          rotationPath[rotationPath.length - 1] = sneaker.finalRotation // Final locked rotation
         }
         
         // Calculate duration - CONSTANT SPEED for all shoes
@@ -481,7 +498,7 @@ export default function FallingSneakers() {
               y: sneaker.startY,
               opacity: sneaker.opacity,
               scale: sneaker.initialScale,
-              rotate: 0,
+              rotate: sneaker.rotation, // Start with initial random rotation
             }}
             animate={{
               x: xPath,
