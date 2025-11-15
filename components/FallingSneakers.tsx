@@ -250,110 +250,78 @@ const simulateFall = (
     }
   }
   
-  // Final position - Use physics landing position, only adjust DOWN if needed
-  // NO horizontal movement after physics simulation - shoes land where physics says
+  // Final position - SIMPLIFIED: Shoes stack VERTICALLY, never blend/mesh together
+  // NO horizontal movement - shoes land where physics says, then stack vertically
   let finalX = currentX // Use physics landing X - NO adjustments
   let finalY = currentY // Start at physics landing Y
   
-  // First pass: Find lowest Y position (stack on top of existing shoes) - NO horizontal movement
+  // SIMPLE RULE: If shoes are close horizontally, they MUST stack vertically
+  // Check ALL existing shoes and find the highest Y position needed to avoid overlap
+  let highestRequiredY = finalY
+  
   for (const existing of existingSneakers) {
     const existingX = existing.endX
     const existingY = existing.endY
     const existingRadius = (SHOE_SIZE * existing.scale) / 2
     
-    // If we're close enough horizontally to stack on top (rigid objects)
-    const RIGID_SPACING = 30 // Must match collision check
-    if (Math.abs(finalX - existingX) < radius + existingRadius + RIGID_SPACING + 10) {
+    // Calculate horizontal distance
+    const horizontalDistance = Math.abs(finalX - existingX)
+    const combinedRadius = radius + existingRadius
+    const minHorizontalDistance = combinedRadius + RIGID_SPACING
+    
+    // If horizontally close, we MUST stack vertically on top
+    if (horizontalDistance < minHorizontalDistance) {
+      // Calculate where we need to be to sit on top with proper spacing
       const topOfExisting = existingY - existingRadius
-      const ourBottom = topOfExisting - radius - RIGID_SPACING // 30px absolute spacing - NO overlap
-      // Only move DOWN (larger Y value) - never up
-      if (ourBottom > finalY) {
-        finalY = ourBottom
+      const ourBottom = topOfExisting - radius - RIGID_SPACING
+      
+      // We must be at least this high (lower Y = higher on screen, but we use larger Y = lower)
+      // So we need ourBottom to be >= finalY, meaning finalY must be <= ourBottom
+      // But we only move DOWN, so if ourBottom > finalY, we move to ourBottom
+      if (ourBottom > highestRequiredY) {
+        highestRequiredY = ourBottom
       }
     }
   }
+  
+  // Move to the highest required position (only DOWN, never up)
+  finalY = highestRequiredY
   
   // Ensure we're not below base
   if (finalY > baseY) {
     finalY = baseY
   }
   
-  // Second pass: STRICT overlap prevention - ensure ABSOLUTELY NO overlap with ANY existing shoe
-  // Check all existing shoes and move DOWN if there's ANY overlap - iterate until NO overlap
-  let hasOverlap = true
-  let overlapAttempts = 0
-  const maxAttempts = 100 // Increased attempts to ensure resolution
-  while (hasOverlap && overlapAttempts < maxAttempts) {
-    hasOverlap = false
-    let highestOverlapY = finalY
+  // FINAL CHECK: Verify NO overlap with ANY shoe - if overlap exists, move DOWN further
+  for (let check = 0; check < 50; check++) {
+    let stillOverlapping = false
     
-    // Check ALL existing shoes for overlap
     for (const existing of existingSneakers) {
       const existingX = existing.endX
       const existingY = existing.endY
       const existingRadius = (SHOE_SIZE * existing.scale) / 2
       
-      // Check if we overlap (using ABSOLUTE collision check with 30px spacing)
-      const RIGID_SPACING = 30 // Must match collision check
+      // Use strict collision check
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
-        hasOverlap = true
-        // Move DOWN to sit on top of this shoe with ABSOLUTE 30px spacing
-        const topOfExisting = existingY - existingRadius
-        const ourBottom = topOfExisting - radius - RIGID_SPACING // 30px absolute spacing - NO overlap
-        if (ourBottom > highestOverlapY) {
-          highestOverlapY = ourBottom
-        }
-      }
-    }
-    
-    // Move to the highest position needed to avoid all overlaps
-    if (hasOverlap && highestOverlapY > finalY) {
-      finalY = highestOverlapY
-    }
-    
-    overlapAttempts++
-    
-    // Safety check - if we've moved too far down, stop
-    if (finalY > baseY + 100) {
-      finalY = baseY
-      break
-    }
-  }
-  
-  // Final verification pass - ABSOLUTE overlap prevention
-  // Check every shoe and ensure NO overlap whatsoever
-  const RIGID_SPACING = 30 // Must match collision check
-  for (const existing of existingSneakers) {
-    const existingX = existing.endX
-    const existingY = existing.endY
-    const existingRadius = (SHOE_SIZE * existing.scale) / 2
-    
-    // Check distance - if too close, move DOWN
-    const dx = finalX - existingX
-    const dy = finalY - existingY
-    const distance = Math.sqrt(dx * dx + dy * dy)
-    const minDistance = radius + existingRadius + RIGID_SPACING
-    
-    if (distance < minDistance) {
-      // Calculate proper separation
-      if (distance > 0.1) {
-        const normalX = dx / distance
-        const normalY = dy / distance
-        // Move to proper separation distance
-        const separatedX = existingX + normalX * minDistance
-        const separatedY = existingY + normalY * minDistance
-        // Only adjust Y (move DOWN) - never horizontally
-        if (separatedY > finalY) {
-          finalY = separatedY
-        }
-      } else {
-        // If directly on top, move DOWN
+        stillOverlapping = true
+        // Move DOWN to sit on top
         const topOfExisting = existingY - existingRadius
         const ourBottom = topOfExisting - radius - RIGID_SPACING
         if (ourBottom > finalY) {
           finalY = ourBottom
         }
       }
+    }
+    
+    // If no overlap found, we're done
+    if (!stillOverlapping) {
+      break
+    }
+    
+    // Safety: don't go too far down
+    if (finalY > baseY + 200) {
+      finalY = baseY
+      break
     }
   }
   
@@ -659,3 +627,4 @@ export default function FallingSneakers() {
     </div>
   )
 }
+
