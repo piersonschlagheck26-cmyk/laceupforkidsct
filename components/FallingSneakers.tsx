@@ -229,15 +229,17 @@ const simulateFall = (
     }
   }
   
-  // Final position - find the lowest point on the pile
+  // Final position - CRITICAL: Never move up from where physics simulation ended
   // Keep some center bias for triangle/pyramid pattern
   const centerX = viewportWidth / 2
   const centerBias = 0.2 // Slight bias toward center for pyramid
   let finalX = currentX * (1 - centerBias) + centerX * centerBias
   finalX = Math.max(radius, Math.min(viewportWidth - radius, finalX))
-  let finalY = baseY
   
-  // Find the highest point where this shoe can sit (stacking logic)
+  // Start from where physics ended - NEVER go higher (smaller Y)
+  let finalY = currentY // Start at actual landing position from physics
+  
+  // Find the lowest point we can sit (only move DOWN, never up)
   for (const existing of existingSneakers) {
     const existingX = existing.endX
     const existingY = existing.endY
@@ -247,13 +249,19 @@ const simulateFall = (
     if (Math.abs(finalX - existingX) < radius + existingRadius + 2) {
       const topOfExisting = existingY - existingRadius
       const ourBottom = topOfExisting - radius - 1
-      if (ourBottom < finalY) {
+      // Only move DOWN (larger Y value) - never up
+      if (ourBottom > finalY) {
         finalY = ourBottom
       }
     }
   }
   
-  // Ensure no overlap with existing shoes
+  // Ensure we're not below base
+  if (finalY > baseY) {
+    finalY = baseY
+  }
+  
+  // Ensure no overlap with existing shoes - only adjust horizontally or DOWN
   let attempts = 0
   while (attempts < 100) {
     let hasCollision = false
@@ -264,12 +272,12 @@ const simulateFall = (
       
       if (checkCollision(finalX, finalY, radius, existingX, existingY, existingRadius)) {
         hasCollision = true
-        // Try moving horizontally
+        // Try moving horizontally first
         const offsetX = (attempts % 2 === 0 ? 1 : -1) * (radius * 2 + 8) * Math.ceil((attempts + 1) / 2)
         finalX = Math.max(radius, Math.min(viewportWidth - radius, currentX + offsetX))
         
-        // Recalculate Y based on new X
-        finalY = baseY
+        // Recalculate Y based on new X - only move DOWN
+        let newY = currentY // Start from physics landing position
         for (const existing2 of existingSneakers) {
           const existingX2 = existing2.endX
           const existingY2 = existing2.endY
@@ -278,10 +286,15 @@ const simulateFall = (
           if (Math.abs(finalX - existingX2) < radius + existingRadius2 + 2) {
             const topOfExisting = existingY2 - existingRadius2
             const ourBottom = topOfExisting - radius - 1
-            if (ourBottom < finalY) {
-              finalY = ourBottom
+            // Only move DOWN (larger Y value)
+            if (ourBottom > newY) {
+              newY = ourBottom
             }
           }
+        }
+        // Only update if newY is at or below currentY (never move up)
+        if (newY >= finalY) {
+          finalY = newY
         }
         break
       }
@@ -377,7 +390,74 @@ export default function FallingSneakers() {
       setSneakers((prev) => {
         const newSneaker = createSneaker(prev)
         if (!newSneaker) return prev
-        return [...prev, newSneaker]
+        
+        // When a new shoe lands, existing shoes can tumble down (like rocks)
+        // Only shoes that are NOT animating can tumble
+        const viewportHeight = window.innerHeight
+        const baseY = viewportHeight - PILE_BOTTOM_OFFSET
+        const newSneakers = prev.map((existing) => {
+          // Only check settled shoes (not currently falling)
+          if (existing.isAnimating) return existing
+          
+          const existingRadius = (SHOE_SIZE * existing.scale) / 2
+          const newRadius = (SHOE_SIZE * newSneaker.scale) / 2
+          
+          // Check if new shoe is above this existing shoe and close horizontally
+          if (Math.abs(newSneaker.endX - existing.endX) < existingRadius + newRadius + 2) {
+            const newShoeBottom = newSneaker.endY + newRadius
+            const existingTop = existing.endY - existingRadius
+            
+            // If new shoe is above existing shoe, existing shoe might need to tumble down
+            if (newShoeBottom < existingTop + 3 && newSneaker.endY < existing.endY) {
+              // Find the lowest stable position this shoe can tumble to
+              let lowestY = existing.endY // Start from current position
+              
+              // Try moving down incrementally to find lowest stable position
+              for (let testY = existing.endY + 2; testY <= baseY; testY += 2) {
+                let hasCollision = false
+                
+                // Check collision with new shoe
+                if (checkCollision(existing.endX, testY, existingRadius, newSneaker.endX, newSneaker.endY, newRadius)) {
+                  hasCollision = true
+                }
+                
+                // Check collision with other existing shoes
+                if (!hasCollision) {
+                  for (const other of prev) {
+                    if (other.id === existing.id || other.isAnimating) continue
+                    const otherRadius = (SHOE_SIZE * other.scale) / 2
+                    if (checkCollision(existing.endX, testY, existingRadius, other.endX, other.endY, otherRadius)) {
+                      hasCollision = true
+                      break
+                    }
+                  }
+                }
+                
+                // If no collision, this is a valid lower position
+                if (!hasCollision) {
+                  lowestY = testY
+                } else {
+                  // Hit something, stop here
+                  break
+                }
+              }
+              
+              // Only tumble if we found a lower position (larger Y = lower on screen)
+              if (lowestY > existing.endY && lowestY <= baseY) {
+                return {
+                  ...existing,
+                  endX: existing.endX, // Keep X position
+                  endY: lowestY, // Tumble down to lowest stable position
+                  // Rotation stays the same - no reorientation
+                }
+              }
+            }
+          }
+          
+          return existing
+        })
+        
+        return [...newSneakers, newSneaker]
       })
     }, 2000)
 
@@ -392,17 +472,35 @@ export default function FallingSneakers() {
     <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
       {sneakers.map((sneaker) => {
         // If shoe has finished animating, use STATIC positioning (locked forever)
+        // But allow smooth tumbling down if position changes
         if (!sneaker.isAnimating) {
           return (
-            <div
+            <motion.div
               key={sneaker.id}
               className="absolute"
-              style={{
-                left: `${sneaker.endX}px`,
-                top: `${sneaker.endY}px`,
-                transform: `translate(-50%, -50%) rotate(${sneaker.finalRotation}deg) scale(${sneaker.scale})`,
-                transformOrigin: 'center center',
+              initial={{
+                x: sneaker.endX,
+                y: sneaker.endY,
+                rotate: sneaker.finalRotation,
+                scale: sneaker.scale,
                 opacity: sneaker.opacity,
+              }}
+              animate={{
+                x: sneaker.endX,
+                y: sneaker.endY,
+                rotate: sneaker.finalRotation, // NEVER changes
+                scale: sneaker.scale,
+                opacity: sneaker.opacity,
+              }}
+              transition={{
+                x: { duration: 0.3, ease: 'easeOut' },
+                y: { duration: 0.3, ease: 'easeOut' }, // Smooth tumbling down
+                rotate: { duration: 0 }, // Instant - rotation never changes
+                scale: { duration: 0 },
+                opacity: { duration: 0 },
+              }}
+              style={{
+                transformOrigin: 'center center',
                 pointerEvents: 'none',
               }}
             >
@@ -424,7 +522,7 @@ export default function FallingSneakers() {
                 unoptimized
                 priority={false}
               />
-            </div>
+            </motion.div>
           )
         }
 
