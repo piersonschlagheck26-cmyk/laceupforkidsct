@@ -22,7 +22,7 @@
   }
   
   .btn-primary {
-    @apply relative backdrop-blur-3xl font-semibold py-3 px-6 rounded-2xl border-2 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.3)] hover:brightness-110 hover:-translate-y-0.5;
+    @apply relative backdrop-blur-3xl font-semibold py-2.5 px-5 rounded-2xl border-2 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.3)] hover:brightness-110 hover:-translate-y-0.5;
     background: linear-gradient(135deg, rgba(245, 171, 5, 1) 0%, rgba(228, 71, 34, 1) 30%, rgba(196, 55, 26, 1) 60%, rgba(228, 71, 34, 1) 100%);
     color: #ffffff;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.8);
@@ -60,7 +60,7 @@
   }
   
   .btn-secondary {
-    @apply relative backdrop-blur-3xl hover:backdrop-blur-3xl font-semibold py-3 px-6 rounded-2xl border-2 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:-translate-y-0.5;
+    @apply relative backdrop-blur-3xl hover:backdrop-blur-3xl font-semibold py-2.5 px-5 rounded-2xl border-2 transition-all duration-300 shadow-2xl hover:shadow-[0_12px_48px_rgba(0,0,0,0.2)] hover:-translate-y-0.5;
     background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 255, 255, 0.85) 100%);
     color: #9f2b13;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 8px rgba(255, 255, 255, 0.9);

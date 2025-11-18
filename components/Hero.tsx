@@ -71,10 +71,10 @@ export default function Hero() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-12 sm:mb-14 md:mb-16 px-4">
-            <button onClick={handleDonateClick} className="btn-primary text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 w-full sm:w-auto">
+            <button onClick={handleDonateClick} className="btn-primary text-base sm:text-lg px-5 sm:px-6 py-2.5 sm:py-3 w-full sm:w-auto">
               Donate Now
             </button>
-            <button onClick={scrollToHowItWorks} className="btn-secondary text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 w-full sm:w-auto">
+            <button onClick={scrollToHowItWorks} className="btn-secondary text-base sm:text-lg px-5 sm:px-6 py-2.5 sm:py-3 w-full sm:w-auto">
               See How It Works
             </button>
           </div>
