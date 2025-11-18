@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import RotatingBelt from './RotatingBelt'
 
 export default function Hero() {
