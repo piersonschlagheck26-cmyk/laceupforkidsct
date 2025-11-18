@@ -12,10 +12,13 @@ interface Sneaker {
   endX: number
   startY: number
   endY: number
+  midX: number // Pre-calculated arc midpoint (random on page load)
+  midY: number // Pre-calculated arc midpoint
   scale: number
   colorFilter: string
   rotation: number
   finalRotation: number
+  tumblingRotations: number[] // Pre-calculated tumbling rotations (random on page load)
   opacity: number
   isAnimating: boolean
   hasFinished: boolean
@@ -74,13 +77,31 @@ const calculatePyramidPositions = (
     const reversedIndex = totalLevels - 1 - levelIndex
     const levelY = descriptionBottom + reversedIndex * levelSpacing
     
-    // Calculate total width needed for this level with proper spacing
-    const totalWidth = (shoeCount - 1) * minSpacing
-    const startX = centerX - totalWidth / 2
+    // Calculate base positions with random spacing variation (maintains pyramid but with noticeable variation)
+    // Start with evenly spaced positions, then add random variation
+    const baseSpacing = minSpacing
+    const totalBaseWidth = (shoeCount - 1) * baseSpacing
+    const baseStartX = centerX - totalBaseWidth / 2
     
-    // Position each shoe in this level - NO random offsets, precise positioning
+    // Build positions with random spacing variation
+    const shoePositions: number[] = []
+    let currentX = baseStartX
+    
     for (let pos = 0; pos < shoeCount; pos++) {
-      const x = startX + pos * minSpacing
+      // Add random variation to spacing (20-40% of base spacing)
+      const spacingVariation = (Math.random() - 0.5) * baseSpacing * 0.3
+      currentX += baseSpacing + spacingVariation
+      
+      shoePositions.push(currentX)
+    }
+    
+    // Center the entire level after adding variations
+    const actualWidth = shoePositions[shoePositions.length - 1] - shoePositions[0]
+    const offsetX = centerX - (shoePositions[0] + actualWidth / 2)
+    
+    // Position each shoe with random spacing variation
+    for (let pos = 0; pos < shoeCount; pos++) {
+      const x = shoePositions[pos] + offsetX
       
       positions.push({
         level: levelIndex,
@@ -145,12 +166,25 @@ export default function FallingSneakers() {
       const allSneakers: Sneaker[] = pyramidPositions.map((pos, index) => {
       const colorProps = generateColorFilter()
       const scale = 0.9 + Math.random() * 0.2 // Slightly different sizes (0.9-1.1)
-      const rotation = (Math.random() - 0.5) * 360 // Random rotation
+      const rotation = (Math.random() - 0.5) * 360 // Random rotation (different on each page load)
+      const finalRotation = rotation + (Math.random() - 0.5) * 40 // Visible tumbling adds moderate rotation
       const opacity = 0.5 + Math.random() * 0.2 // Transparency variation
+      
+      // Pre-calculate tumbling rotations (random on each page load, not on every render)
+      const tumblingRotations = [
+        rotation,
+        rotation + (Math.random() - 0.5) * 20, // Visible tumbling
+        rotation + (Math.random() - 0.5) * 30, // Visible tumbling
+        finalRotation,
+      ]
       
       // Start position: random X near center, top of screen
       const startX = viewportWidth / 2 + (Math.random() - 0.5) * 100
       const startY = -SHOE_SIZE - Math.random() * 50
+      
+      // Pre-calculate arc midpoint for curved fall (random on page load)
+      const midX = (startX + pos.x) / 2 + (Math.random() - 0.5) * 30 // Slight horizontal arc
+      const midY = (startY + pos.y) / 2
       
       return {
         id: `sneaker-${index}`,
@@ -160,10 +194,13 @@ export default function FallingSneakers() {
         endX: pos.x,
         startY,
         endY: pos.y,
+        midX, // Pre-calculated arc midpoint
+        midY, // Pre-calculated arc midpoint
         scale,
         colorFilter: colorProps.filterString,
         rotation,
-        finalRotation: rotation + (Math.random() - 0.5) * 40, // Visible tumbling adds moderate rotation
+        finalRotation,
+        tumblingRotations, // Pre-calculated, random on page load
         opacity,
         isAnimating: false,
         hasFinished: false,
@@ -260,13 +297,8 @@ export default function FallingSneakers() {
           )
         }
 
-        // Animate falling with visible tumbling
-        const tumblingRotations = [
-          sneaker.rotation,
-          sneaker.rotation + (Math.random() - 0.5) * 20, // Visible tumbling
-          sneaker.rotation + (Math.random() - 0.5) * 30, // Visible tumbling
-          sneaker.finalRotation,
-        ]
+        // Animate falling with slight arc/curve but land exactly in position
+        // Use pre-calculated arc midpoint (random on page load)
 
         return (
           <motion.div
@@ -280,19 +312,21 @@ export default function FallingSneakers() {
               rotate: sneaker.rotation,
             }}
             animate={{
-              x: sneaker.endX,
-              y: sneaker.endY,
+              x: [sneaker.startX, sneaker.midX, sneaker.endX], // Slight arc path
+              y: [sneaker.startY, sneaker.midY, sneaker.endY], // Curved fall
               opacity: sneaker.opacity,
               scale: sneaker.scale,
-              rotate: tumblingRotations,
+              rotate: sneaker.tumblingRotations,
             }}
             transition={{
               x: {
                 duration: FALL_DURATION,
-                ease: [0.3, 0, 0.7, 1], // Ease out with slight curve
+                times: [0, 0.5, 1],
+                ease: [0.3, 0, 0.7, 1], // Ease out with curve
               },
               y: {
                 duration: FALL_DURATION,
+                times: [0, 0.5, 1],
                 ease: [0.2, 0, 0.6, 1], // Gravity curve
               },
               opacity: {
