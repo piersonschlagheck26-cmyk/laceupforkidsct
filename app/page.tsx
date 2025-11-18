@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Navigation from '@/components/Navigation'
+import DonationCounter from '@/components/DonationCounter'
 import Hero from '@/components/Hero'
 import WhatWeDo from '@/components/WhatWeDo'
 import OurMission from '@/components/OurMission'
@@ -37,6 +38,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Navigation activeSection={activeSection} />
+      <DonationCounter targetCount={1250} />
       <Hero />
       <WhatWeDo />
       <OurMission />
