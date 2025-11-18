@@ -10,7 +10,7 @@ interface DonationCounterProps {
 
 export default function DonationCounter({ 
   targetCount, 
-  caption = "pairs donated and counting, help us with our mission!" 
+  caption = "Pairs Donated, and Counting." 
 }: DonationCounterProps) {
   const [count, setCount] = useState(0)
   const [hasStarted, setHasStarted] = useState(false)
