@@ -17,7 +17,7 @@ const teamMembers = [
   },
   {
     name: 'Pierson Schlagheck',
-    role: 'Website Developer and Social Media Manager',
+    role: 'Website Developer & Social Media Manager',
     bio: 'Junior year student who coordinates initiatives and manages advertising. Loves organizing community events and making connections that drive positive change.',
     // image: '/images/team-placeholder-2.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
     social: {
