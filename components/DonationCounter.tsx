@@ -26,7 +26,7 @@ export default function DonationCounter({
   useEffect(() => {
     if (!hasStarted) return
 
-    const duration = 3000 // 3 seconds total
+    const duration = 4000 // 4 seconds total
     const startTime = Date.now()
     const startValue = 0
     const endValue = targetCount
