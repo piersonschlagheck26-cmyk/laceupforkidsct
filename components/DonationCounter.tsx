@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 
 interface DonationCounterProps {
   targetCount: number
@@ -9,7 +10,7 @@ interface DonationCounterProps {
 
 export default function DonationCounter({ 
   targetCount, 
-  caption = "pairs and counting, help us with our mission" 
+  caption = "pairs donated and counting, help us with our mission!" 
 }: DonationCounterProps) {
   const [count, setCount] = useState(0)
   const [hasStarted, setHasStarted] = useState(false)
@@ -70,15 +71,29 @@ export default function DonationCounter({
 
       <div className="container-custom relative z-10">
         <div className="text-center">
+          {/* Logo */}
+          <div className="mb-8 sm:mb-10 md:mb-12 flex justify-center">
+            <div className="relative w-32 h-40 sm:w-40 sm:h-48 md:w-48 md:h-56 lg:w-52 lg:h-64 drop-shadow-2xl">
+              <Image
+                src="/assets/logo.png"
+                alt="Lace Up for Kids logo"
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
+          </div>
+
           {/* Large Counter Number */}
           <div className="mb-6 sm:mb-8 md:mb-10 relative inline-block">
-            {/* Radial gradient background behind numbers */}
+            {/* Radial gradient background behind numbers - circular fade blending into background */}
             <div 
               className="absolute inset-0 -z-10"
               style={{
-                background: 'radial-gradient(circle, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 40%, transparent 70%)',
-                transform: 'scale(1.5)',
-                filter: 'blur(20px)'
+                background: 'radial-gradient(circle at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 25%, rgba(0, 0, 0, 0.15) 50%, transparent 75%)',
+                transform: 'scale(2)',
+                filter: 'blur(30px)',
+                opacity: 0.8
               }}
             ></div>
             <span 

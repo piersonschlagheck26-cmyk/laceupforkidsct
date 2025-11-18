@@ -19,7 +19,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-20"
+      className="relative overflow-hidden"
     >
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary-100 via-white to-accent-50">
@@ -31,19 +31,6 @@ export default function Hero() {
       {/* Content */}
       <div className="container-custom section-padding relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Logo */}
-          <div className="mb-6 sm:mb-8 md:mb-10 flex justify-center">
-            <div className="relative w-32 h-40 sm:w-40 sm:h-48 md:w-48 md:h-56 lg:w-52 lg:h-64 drop-shadow-2xl">
-              <Image
-                src="/assets/logo.png"
-                alt="Lace Up for Kids logo"
-                fill
-                priority
-                className="object-contain"
-              />
-            </div>
-          </div>
-
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-gray-900 mb-4 sm:mb-5 md:mb-6 relative px-2 sm:px-4">
             <span className="relative z-10 block leading-tight sm:leading-snug md:leading-normal" style={{
