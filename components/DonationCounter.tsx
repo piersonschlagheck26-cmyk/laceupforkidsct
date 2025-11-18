@@ -73,8 +73,10 @@ export default function DonationCounter({
           {/* Large Counter Number */}
           <div className="mb-4 sm:mb-6">
             <span 
-              className="inline-block text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-white"
+              className="inline-block font-extrabold text-white"
               style={{
+                fontSize: 'clamp(6rem, 12vw, 12rem)',
+                lineHeight: '1',
                 textShadow: '0 4px 20px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4)',
                 fontVariantNumeric: 'tabular-nums'
               }}
