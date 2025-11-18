@@ -38,7 +38,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Navigation activeSection={activeSection} />
-      <DonationCounter targetCount={1250} />
+      <DonationCounter targetCount={58} />
       <Hero />
       <WhatWeDo />
       <OurMission />
