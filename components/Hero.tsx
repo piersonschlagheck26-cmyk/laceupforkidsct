@@ -21,7 +21,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 sm:pt-20"
     >
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary-100 via-white to-accent-50">
@@ -39,8 +39,8 @@ export default function Hero() {
       <div className="container-custom section-padding relative z-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Logo */}
-          <div className="mb-10 flex justify-center">
-            <div className="relative w-40 h-48 sm:w-48 sm:h-56 drop-shadow-2xl">
+          <div className="mb-6 sm:mb-8 md:mb-10 flex justify-center">
+            <div className="relative w-32 h-40 sm:w-40 sm:h-48 md:w-48 md:h-56 lg:w-52 lg:h-64 drop-shadow-2xl">
               <Image
                 src="/assets/logo.png"
                 alt="Lace Up for Kids logo"
@@ -52,8 +52,8 @@ export default function Hero() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 mb-6 relative">
-            <span className="relative z-10" style={{
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-gray-900 mb-4 sm:mb-5 md:mb-6 relative px-2 sm:px-4">
+            <span className="relative z-10 block leading-tight sm:leading-snug md:leading-normal" style={{
               textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 255, 255, 0.7), 0 0 60px rgba(255, 255, 255, 0.5), 0 2px 4px rgba(0, 0, 0, 0.1)'
             }}>
               Turning Sneakers into Support
@@ -61,8 +61,8 @@ export default function Hero() {
           </h1>
 
           {/* Tagline */}
-          <p className="text-xl sm:text-2xl text-gray-800 mb-10 font-medium leading-relaxed max-w-2xl mx-auto relative">
-            <span className="relative z-10" style={{
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-800 mb-6 sm:mb-8 md:mb-10 font-medium leading-relaxed max-w-2xl mx-auto relative px-4 sm:px-6 md:px-8">
+            <span className="relative z-10 block" style={{
               textShadow: '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(0, 0, 0, 0.1)'
             }}>
               Lace Up for Kids recycles gently used shoes and transforms them into hope for families staying at Ronald McDonald House.
@@ -70,11 +70,11 @@ export default function Hero() {
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <button onClick={handleDonateClick} className="btn-primary text-lg px-10 py-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-12 sm:mb-14 md:mb-16 px-4">
+            <button onClick={handleDonateClick} className="btn-primary text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 w-full sm:w-auto">
               Donate Now
             </button>
-            <button onClick={scrollToHowItWorks} className="btn-secondary text-lg px-10 py-4">
+            <button onClick={scrollToHowItWorks} className="btn-secondary text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 w-full sm:w-auto">
               See How It Works
             </button>
           </div>
