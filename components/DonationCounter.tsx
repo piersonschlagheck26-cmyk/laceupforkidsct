@@ -71,15 +71,25 @@ export default function DonationCounter({
       <div className="container-custom relative z-10">
         <div className="text-center">
           {/* Large Counter Number */}
-          <div className="mb-6 sm:mb-8 md:mb-10">
+          <div className="mb-6 sm:mb-8 md:mb-10 relative inline-block">
+            {/* Radial gradient background behind numbers */}
+            <div 
+              className="absolute inset-0 -z-10"
+              style={{
+                background: 'radial-gradient(circle, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 40%, transparent 70%)',
+                transform: 'scale(1.5)',
+                filter: 'blur(20px)'
+              }}
+            ></div>
             <span 
-              className="inline-block font-extrabold text-white"
+              className="relative inline-block font-extrabold text-white"
               style={{
                 fontSize: 'clamp(6rem, 12vw, 12rem)',
                 lineHeight: '1',
-                textShadow: '0 6px 30px rgba(0, 0, 0, 0.4), 0 3px 12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)',
+                textShadow: '0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4), 0 6px 30px rgba(0, 0, 0, 0.5), 0 3px 12px rgba(0, 0, 0, 0.6)',
                 fontVariantNumeric: 'tabular-nums',
-                letterSpacing: '-0.02em'
+                letterSpacing: '-0.02em',
+                filter: 'drop-shadow(0 0 30px rgba(255, 255, 255, 0.5))'
               }}
             >
               {formattedCount}
