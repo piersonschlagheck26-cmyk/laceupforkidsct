@@ -90,10 +90,10 @@ export default function DonationCounter({
             <div 
               className="absolute inset-0 -z-10"
               style={{
-                background: 'radial-gradient(circle at center, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 25%, rgba(0, 0, 0, 0.15) 50%, transparent 75%)',
-                transform: 'scale(2)',
-                filter: 'blur(30px)',
-                opacity: 0.8
+                background: 'radial-gradient(circle at center, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 20%, rgba(0, 0, 0, 0.2) 40%, rgba(245, 171, 5, 0.3) 60%, rgba(245, 171, 5, 0.1) 80%, transparent 100%)',
+                transform: 'scale(2.5)',
+                filter: 'blur(40px)',
+                opacity: 0.9
               }}
             ></div>
             <span 
