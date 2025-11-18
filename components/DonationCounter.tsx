@@ -61,9 +61,9 @@ export default function DonationCounter({
   const formattedCount = count.toLocaleString()
 
   return (
-    <section className="relative bg-gradient-to-br from-primary-500 via-primary-400 to-accent-500 py-12 sm:py-16 md:py-20 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-primary-500 via-primary-400 to-accent-500 py-16 sm:py-20 md:py-24 lg:py-28 overflow-hidden shadow-2xl">
       {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-15">
         <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
       </div>
@@ -71,14 +71,15 @@ export default function DonationCounter({
       <div className="container-custom relative z-10">
         <div className="text-center">
           {/* Large Counter Number */}
-          <div className="mb-4 sm:mb-6">
+          <div className="mb-6 sm:mb-8 md:mb-10">
             <span 
               className="inline-block font-extrabold text-white"
               style={{
                 fontSize: 'clamp(6rem, 12vw, 12rem)',
                 lineHeight: '1',
-                textShadow: '0 4px 20px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.4)',
-                fontVariantNumeric: 'tabular-nums'
+                textShadow: '0 6px 30px rgba(0, 0, 0, 0.4), 0 3px 12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 0, 0, 0.3)',
+                fontVariantNumeric: 'tabular-nums',
+                letterSpacing: '-0.02em'
               }}
             >
               {formattedCount}
@@ -86,7 +87,9 @@ export default function DonationCounter({
           </div>
 
           {/* Caption */}
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white font-medium px-4">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-semibold px-4" style={{
+            textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
+          }}>
             {caption}
           </p>
         </div>
