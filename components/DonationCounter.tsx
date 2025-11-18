@@ -27,7 +27,7 @@ export default function DonationCounter({
   useEffect(() => {
     if (!hasStarted) return
 
-    const duration = 4000 // 4 seconds total
+    const duration = 8000 // 8 seconds total
     const startTime = Date.now()
     const startValue = 0
     const endValue = targetCount
@@ -72,8 +72,8 @@ export default function DonationCounter({
       <div className="container-custom relative z-10">
         <div className="text-center">
           {/* Logo */}
-          <div className="mb-8 sm:mb-10 md:mb-12 flex justify-center">
-            <div className="relative w-32 h-40 sm:w-40 sm:h-48 md:w-48 md:h-56 lg:w-52 lg:h-64 drop-shadow-2xl">
+          <div className="mb-6 sm:mb-8 md:mb-10 flex justify-center">
+            <div className="relative w-24 h-30 sm:w-28 sm:h-36 md:w-32 md:h-40 lg:w-36 lg:h-44 drop-shadow-2xl">
               <Image
                 src="/assets/logo.png"
                 alt="Lace Up for Kids logo"
@@ -99,7 +99,7 @@ export default function DonationCounter({
             <span 
               className="relative inline-block font-extrabold text-white"
               style={{
-                fontSize: 'clamp(6rem, 12vw, 12rem)',
+                fontSize: 'clamp(8rem, 16vw, 16rem)',
                 lineHeight: '1',
                 textShadow: '0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4), 0 6px 30px rgba(0, 0, 0, 0.5), 0 3px 12px rgba(0, 0, 0, 0.6)',
                 fontVariantNumeric: 'tabular-nums',
@@ -112,7 +112,7 @@ export default function DonationCounter({
           </div>
 
           {/* Caption */}
-          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-semibold px-4" style={{
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white font-semibold px-4" style={{
             textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)'
           }}>
             {caption}
