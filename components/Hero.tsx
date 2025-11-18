@@ -1,9 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import RotatingBelt from './RotatingBelt'
-import FallingSneakers from './FallingSneakers'
 
 export default function Hero() {
   const handleDonateClick = () => {
@@ -28,11 +26,6 @@ export default function Hero() {
         <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-[0.07]"></div>
         <div className="absolute -top-32 -left-24 w-72 h-72 bg-gradient-to-br from-accent-200/70 to-primary-200/40 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-32 -right-24 w-72 h-72 bg-gradient-to-tr from-primary-300/60 to-accent-200/50 rounded-full blur-3xl"></div>
-      </div>
-
-      {/* Falling Sneakers Animation */}
-      <div className="absolute inset-0 z-[5]">
-        <FallingSneakers />
       </div>
 
       {/* Content */}
