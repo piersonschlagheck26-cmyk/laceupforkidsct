@@ -39,8 +39,7 @@ export default function Navigation({ activeSection }: NavigationProps) {
   }
 
   const handleDonateClick = () => {
-    // TODO: Replace with actual donation modal/flow
-    alert('Donation information: Please email us at donate@laceupforkids.org or mail checks to [Your Address]. Online donations coming soon!')
+    window.open('https://checkout.square.site/merchant/ML1J6RRKZS13T/checkout/ZUCJRQEDF3TKAF3FMRIFUKRX?src=webqr', '_blank')
   }
 
   return (

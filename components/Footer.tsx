@@ -4,8 +4,7 @@ import Image from 'next/image'
 
 export default function Footer() {
   const handleDonateClick = () => {
-    // TODO: Replace with actual donation modal/flow
-    alert('Donation information: Please email us at laceupforkidsct@gmail.com or mail checks to [Your Address]. Online donations coming soon!')
+    window.open('https://checkout.square.site/merchant/ML1J6RRKZS13T/checkout/ZUCJRQEDF3TKAF3FMRIFUKRX?src=webqr', '_blank')
   }
 
   const scrollToTop = () => {
