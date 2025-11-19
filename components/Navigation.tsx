@@ -88,7 +88,7 @@ export default function Navigation({ activeSection }: NavigationProps) {
                   priority
                 />
             </div>
-              <span className="font-bold text-xl text-gray-900 tracking-wide">Lace Up for Kids</span>
+              <span className="font-bold text-xl text-black tracking-wide">Lace Up for Kids</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -100,7 +100,7 @@ export default function Navigation({ activeSection }: NavigationProps) {
                   className={`text-sm font-semibold transition-colors ${
                   activeSection === link.href.replace('#', '')
                       ? 'text-accent-600'
-                      : 'text-gray-800 hover:text-accent-600'
+                      : 'text-black hover:text-accent-600'
                 }`}
               >
                 {link.label}
@@ -117,7 +117,7 @@ export default function Navigation({ activeSection }: NavigationProps) {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden p-2 text-gray-800"
+              className="lg:hidden p-2 text-black"
             aria-label="Toggle menu"
           >
             <svg
@@ -148,7 +148,7 @@ export default function Navigation({ activeSection }: NavigationProps) {
                   className={`relative block w-full text-left py-2 px-4 rounded-2xl backdrop-blur-xl transition-all duration-300 ${
                   activeSection === link.href.replace('#', '')
                       ? 'bg-white/25 border border-white/30 text-accent-700 shadow-lg'
-                      : 'text-gray-800 hover:bg-white/20 border border-transparent hover:border-white/20'
+                      : 'text-black hover:bg-white/20 border border-transparent hover:border-white/20'
                 }`}
                   style={{
                     boxShadow: activeSection === link.href.replace('#', '')
