@@ -69,7 +69,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="mailto:laceupforkidsct@gmail.com" className="hover:text-primary-200 transition-colors">
-                  Email: laceupforkidsct@gmail.com
+                  Email: laceupforkidsct.org
                 </a>
               </li>
               <li className="text-gray-400">
