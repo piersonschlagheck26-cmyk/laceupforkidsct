@@ -41,18 +41,22 @@ const crewMembers = [
   {
     name: 'Lewis Thoreen',
     role: 'Secretary & DSW and Marathon Sports Coordinator',
+    bio: 'Manages development, collection, and communication at DSW and Marathon Sports locations.',
   },
   {
     name: 'Ben Adams',
     role: 'Leete and Adams Coordinator',
+    bio: 'Handles development, collection, and communication efforts at the Leete and Adams site.',
   },
   {
     name: 'Kieran Keefe',
     role: 'Baldwin Coordinator',
+    bio: 'Oversees development, collection, and communication operations at the Baldwin location.',
   },
   {
     name: 'Grant Davis',
     role: 'Bishops Coordinator',
+    bio: 'Coordinates development, collection, and communication activities at the Bishops site.',
   },
 ]
 
@@ -165,27 +169,30 @@ export default function WhoWeAre() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
             {crewMembers.map((member, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                className="card text-center hover:scale-105 transition-transform"
+                className="card text-center hover:scale-105 transition-transform p-4"
               >
                 {/* Avatar */}
-                <div className="mb-4 flex justify-center">
-                  <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-primary-100 shadow-lg">
-                    <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-2xl font-bold">
+                <div className="mb-3 flex justify-center">
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden border-3 border-primary-100 shadow-md">
+                    <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-lg font-bold">
                       {member.name.split(' ').map(n => n[0]).join('')}
                     </div>
                   </div>
                 </div>
 
                 {/* Name and Role */}
-                <h3 className="text-lg font-bold text-gray-900 mb-1">{member.name}</h3>
-                <p className="text-primary-600 font-semibold text-sm">{member.role}</p>
+                <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
+                <p className="text-primary-600 font-semibold text-xs mb-2">{member.role}</p>
+                
+                {/* Bio */}
+                <p className="text-gray-700 text-xs leading-relaxed">{member.bio}</p>
               </motion.div>
             ))}
           </div>
