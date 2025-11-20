@@ -14,7 +14,7 @@ const teamMembers = [
   {
     name: 'Pierson Schlagheck',
     role: 'Website Developer & Social Media Manager',
-    bio: 'Junior year student who coordinates initiatives and manages advertising. Loves organizing community events and making connections that drive positive change.',
+    bio: 'Pierson is a junior at Guilford High School with interests in website development and making genuine impacts in his community. A long time volunteer at local soup kitchens and a contributor to many food drives, Pierson has extensive firsthand experience assisting people in need. Pierson was inspired to join Lace Up For Kids to continue his efforts in providing for disadvantaged children and has large aspirations for the expansion of the organization.',
     // image: '/images/team-placeholder-2.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
   },
   {
