@@ -9,19 +9,19 @@ const teamMembers = [
     name: 'Shane Tandler',
     role: 'Founder & Director',
     bio: 'Shane is a junior at GHS who started Lace Up For Kids, driven by his passion for helping young kids flourish. Through working as a Mathnasium tutor and an instructor at Calvin Leete Elementary School, he discovered the impact and reward that supporting a younger generation can bring. Shane was inspired by the mission of the Ronald McDonald House from a young age, when he & his family helped cook meals for residents in the New Haven location. Ever since then, he has strived to have the positive impact in his community that he knows is possible.',
-    // image: '/images/team-placeholder-1.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
+    image: '/images/SHANE_headshot.JPG',
   },
   {
     name: 'Pierson Schlagheck',
     role: 'Chief Marketing Officer',
     bio: 'Pierson is a junior at Guilford High School with interests in website development and making genuine impacts in his community. A long time volunteer at local soup kitchens and a contributor to many food drives, Pierson has extensive firsthand experience assisting people in need. Pierson was inspired to join Lace Up For Kids to continue his efforts in providing for disadvantaged children and has large aspirations for the expansion of the organization.',
-    // image: '/images/team-placeholder-2.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
+    image: '/images/PIERSON_headshot.JPG',
   },
   {
     name: 'Conor Farrell',
     role: 'Chief Operating Officer',
     bio: 'Junior dedicated to spreading awareness about our mission. Arranges shoe collection locations and product handling.',
-    // image: '/images/team-placeholder-3.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
+    image: '/images/CONOR_headshot.JPG',
   },
 ]
 
@@ -86,10 +86,18 @@ export default function WhoWeAre() {
               {/* Avatar */}
               <div className="mb-6 flex justify-center">
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-primary-100 shadow-lg">
-                  {/* TODO: Replace with actual image */}
-                  <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-4xl font-bold">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </div>
+                  {member.image ? (
+                    <Image
+                      src={member.image}
+                      alt={`${member.name} headshot`}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-4xl font-bold">
+                      {member.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                  )}
                 </div>
               </div>
 
