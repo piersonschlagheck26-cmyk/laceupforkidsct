@@ -26,37 +26,57 @@ export default function UpcomingEvents() {
             </p>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="card text-left max-w-2xl mx-auto"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Song Strong 5K</h3>
-                <p className="text-accent-600 font-semibold mb-3">June 6th, 2026</p>
+          <div className="space-y-6 max-w-2xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="card text-left"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Song Strong 5K</h3>
+                  <p className="text-accent-600 font-semibold mb-3">June 6th, 2026</p>
+                </div>
               </div>
-            </div>
-            
-            <p className="text-gray-800 leading-relaxed mb-4">
-              Join us at the Song Strong 5K! Visit our booth to learn more about Lace Up for Kids, donate shoes, and make monetary donations to support our mission of helping families at Ronald McDonald House.
-            </p>
-            
-            <div className="pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-700 mb-2">
-                For more information about the event, visit{' '}
-                <a 
-                  href="https://songstrong.org" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary-600 hover:text-primary-700 font-semibold underline transition-colors"
-                >
-                  songstrong.org
-                </a>
+              
+              <p className="text-gray-800 leading-relaxed mb-4">
+                Join us at the Song Strong 5K! Visit our booth to learn more about Lace Up for Kids, donate shoes, and make monetary donations to support our mission of helping families at Ronald McDonald House.
               </p>
-            </div>
-          </motion.div>
+              
+              <div className="pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-700 mb-2">
+                  For more information about the event, visit{' '}
+                  <a 
+                    href="https://songstrong.org" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary-600 hover:text-primary-700 font-semibold underline transition-colors"
+                  >
+                    songstrong.org
+                  </a>
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="card text-left"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Guilford Tree Lighting</h3>
+                  <p className="text-accent-600 font-semibold mb-3">December 5th, 2025</p>
+                </div>
+              </div>
+              
+              <p className="text-gray-800 leading-relaxed">
+                Join us at the Guilford Tree Lighting! There will be a collection box in the Guilford Community Center where you can drop off your shoe donations.
+              </p>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

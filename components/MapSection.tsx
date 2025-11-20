@@ -11,6 +11,12 @@ const locations = [
     address: '420 Church Street, Guilford, CT',
     description: 'Leave your donations with reception; volunteers collect them weekly.',
   },
+  {
+    name: 'Nathanael B. Greene Community Center',
+    address: '32 Church Street, Guilford, CT',
+    description: 'COMING SOON - Available from December 1 - December 12.',
+    comingSoon: true,
+  },
 ]
 
 export default function MapSection() {
@@ -29,8 +35,15 @@ export default function MapSection() {
 
         <div className="max-w-3xl mx-auto space-y-6">
           {locations.map((location) => (
-            <div key={location.name} className="card text-left">
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">{location.name}</h3>
+            <div key={location.name} className={`card text-left ${location.comingSoon ? 'border-2 border-accent-400 bg-accent-50/30' : ''}`}>
+              <div className="flex items-start justify-between mb-1">
+                <h3 className="text-2xl font-bold text-gray-900">{location.name}</h3>
+                {location.comingSoon && (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-accent-400 text-ember-900 uppercase tracking-wide">
+                    COMING SOON
+                  </span>
+                )}
+              </div>
               <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
               <p className="text-gray-800 leading-relaxed">{location.description}</p>
             </div>
