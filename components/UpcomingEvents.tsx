@@ -73,7 +73,7 @@ export default function UpcomingEvents() {
               </div>
               
               <p className="text-gray-800 leading-relaxed">
-                There will be brochures to learn more info. There will be a collection box in the Nathanael B. Greene Community Center where you can drop off your shoe donations.
+                Stop by to discover how you can make a difference! Pick up brochures to learn more about our mission, and bring your gently used shoes to drop off at the collection box in the Nathanael B. Greene Community Center.
               </p>
             </motion.div>
           </div>
