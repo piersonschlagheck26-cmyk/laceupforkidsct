@@ -37,6 +37,25 @@ const teamMembers = [
   },
 ]
 
+const crewMembers = [
+  {
+    name: 'Lewis Thoreen',
+    role: 'Secretary & DSW and Marathon Sports Coordinator',
+  },
+  {
+    name: 'Ben Adams',
+    role: 'Leete and Adams Coordinator',
+  },
+  {
+    name: 'Kieran Keefe',
+    role: 'Baldwin Coordinator',
+  },
+  {
+    name: 'Grant Davis',
+    role: 'Bishops Coordinator',
+  },
+]
+
 export default function WhoWeAre() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
@@ -129,6 +148,48 @@ export default function WhoWeAre() {
             </motion.div>
           ))}
         </div>
+
+        {/* Our Crew Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-20"
+        >
+          <div className="text-center mb-12">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+              Our Crew
+            </h2>
+            <p className="text-lg text-gray-800 max-w-2xl mx-auto">
+              Dedicated coordinators managing our collection locations and operations
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {crewMembers.map((member, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
+                className="card text-center hover:scale-105 transition-transform"
+              >
+                {/* Avatar */}
+                <div className="mb-4 flex justify-center">
+                  <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-primary-100 shadow-lg">
+                    <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-2xl font-bold">
+                      {member.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Name and Role */}
+                <h3 className="text-lg font-bold text-gray-900 mb-1">{member.name}</h3>
+                <p className="text-primary-600 font-semibold text-sm">{member.role}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   )
