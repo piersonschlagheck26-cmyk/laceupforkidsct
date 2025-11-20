@@ -13,13 +13,13 @@ const teamMembers = [
   },
   {
     name: 'Pierson Schlagheck',
-    role: 'Website Developer & Social Media Manager',
+    role: 'Chief Marketing Officer',
     bio: 'Pierson is a junior at Guilford High School with interests in website development and making genuine impacts in his community. A long time volunteer at local soup kitchens and a contributor to many food drives, Pierson has extensive firsthand experience assisting people in need. Pierson was inspired to join Lace Up For Kids to continue his efforts in providing for disadvantaged children and has large aspirations for the expansion of the organization.',
     // image: '/images/team-placeholder-2.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
   },
   {
     name: 'Conor Farrell',
-    role: 'Operations Coordinator',
+    role: 'Chief Operating Officer',
     bio: 'Junior dedicated to spreading awareness about our mission. Arranges shoe collection locations and product handling.',
     // image: '/images/team-placeholder-3.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
   },
