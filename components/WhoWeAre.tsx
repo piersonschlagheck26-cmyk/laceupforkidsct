@@ -46,6 +46,11 @@ const crewMembers = [
     role: 'Bishops Coordinator',
     bio: 'Coordinates development, collection, and communication activities at the Bishops site.',
   },
+  {
+    name: 'Cade Rinehart',
+    role: 'Northford Ice Rink and A.W. Cox Coordinator',
+    bio: 'Manages development, collection, and communication at the Northford Ice Rink and A.W. Cox locations.',
+  },
 ]
 
 export default function WhoWeAre() {
