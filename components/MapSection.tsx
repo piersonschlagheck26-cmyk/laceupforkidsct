@@ -14,7 +14,7 @@ const locations = [
   {
     name: 'Nathanael B. Greene Community Center',
     address: '32 Church Street, Guilford, CT',
-    description: 'COMING SOON - Available from December 1 - December 12.',
+    description: 'Available from December 1 - December 12.',
     comingSoon: true,
   },
 ]
@@ -45,15 +45,7 @@ export default function MapSection() {
                 )}
               </div>
               <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
-              <p className="text-gray-800 leading-relaxed">
-                {location.comingSoon ? (
-                  <>
-                    <span className="font-bold text-accent-600">COMING SOON</span> - {location.description.replace('COMING SOON - ', '')}
-                  </>
-                ) : (
-                  location.description
-                )}
-              </p>
+              <p className="text-gray-800 leading-relaxed">{location.description}</p>
             </div>
           ))}
         </div>
