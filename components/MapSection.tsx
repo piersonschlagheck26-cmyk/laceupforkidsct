@@ -45,7 +45,15 @@ export default function MapSection() {
                 )}
               </div>
               <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
-              <p className="text-gray-800 leading-relaxed">{location.description}</p>
+              <p className="text-gray-800 leading-relaxed">
+                {location.comingSoon ? (
+                  <>
+                    <span className="font-bold text-accent-600">COMING SOON</span> - {location.description.replace('COMING SOON - ', '')}
+                  </>
+                ) : (
+                  location.description
+                )}
+              </p>
             </div>
           ))}
         </div>
