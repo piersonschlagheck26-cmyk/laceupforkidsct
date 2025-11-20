@@ -180,7 +180,7 @@ export default function WhoWeAre() {
               >
                 {/* Avatar */}
                 <div className="mb-3 flex justify-center">
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden border-3 border-primary-100 shadow-md">
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary-100 shadow-md">
                     <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-lg font-bold">
                       {member.name.split(' ').map(n => n[0]).join('')}
                     </div>
