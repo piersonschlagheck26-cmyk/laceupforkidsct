@@ -41,7 +41,7 @@ export default function UpcomingEvents() {
               </div>
               
               <p className="text-gray-800 leading-relaxed mb-4">
-                Join us at the Song Strong 5K! Visit our booth to learn more about Lace Up for Kids, donate shoes, and make monetary donations to support our mission of helping families at Ronald McDonald House.
+                Join us at the Song Strong 5K! Visit our booth to learn more about Lace Up for Kids, donate shoes, and make monetary donations to support our mission of helping families at RMH CTMA.
               </p>
               
               <div className="pt-4 border-t border-gray-200">

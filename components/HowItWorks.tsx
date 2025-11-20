@@ -36,7 +36,7 @@ import { useInView } from 'framer-motion'
       ),
       title: 'Proceeds Donated',
     description:
-      '100% of the proceeds from shoe sales go directly to Ronald McDonald House, helping families stay close to their children during medical treatment.',
+      '100% of the proceeds from shoe sales go directly to RMH CTMA, helping families stay close to their children during medical treatment.',
     },
   ]
 

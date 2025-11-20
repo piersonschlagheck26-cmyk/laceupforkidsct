@@ -6,10 +6,10 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Lace Up for Kids | Donate Shoes, Support Families',
-  description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates proceeds to Ronald McDonald House to support families in need.',
+  description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates proceeds to RMH CTMA to support families in need.',
   openGraph: {
     title: 'Lace Up for Kids | Donate Shoes, Support Families',
-    description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates proceeds to Ronald McDonald House to support families in need.',
+    description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates proceeds to RMH CTMA to support families in need.',
     url: process.env.NEXT_PUBLIC_SITE_URL || 'https://laceupforkidsct.org',
     siteName: 'Lace Up for Kids',
     type: 'website',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Lace Up for Kids | Donate Shoes, Support Families',
-    description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates proceeds to Ronald McDonald House to support families in need.',
+    description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates proceeds to RMH CTMA to support families in need.',
   },
 }
 

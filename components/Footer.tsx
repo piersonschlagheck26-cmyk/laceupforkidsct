@@ -29,7 +29,7 @@ export default function Footer() {
               <span className="font-bold text-xl text-white tracking-wide">Lace Up for Kids</span>
             </div>
             <p className="text-gray-300/90 mb-5 max-w-md leading-relaxed">
-              Turning old shoes into hope for families in need. A teen-led nonprofit supporting Ronald McDonald House through sustainable shoe collection and donation.
+              Turning old shoes into hope for families in need. A teen-led nonprofit supporting RMH CTMA through sustainable shoe collection and donation.
             </p>
             <button onClick={handleDonateClick} className="btn-primary text-sm">
               Donate Now
