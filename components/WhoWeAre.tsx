@@ -51,6 +51,11 @@ const crewMembers = [
     role: 'Northford Rink and Cox Coordinator',
     bio: 'Manages development, collection, and communication at the Northford Ice Rink and A.W. Cox locations.',
   },
+  {
+    name: 'Owen Stoddard',
+    role: 'Graphic Designer & GBL Coordinator',
+    bio: 'Manages development, collection, and communication at the Guilford Basketball League location.',
+  },
 ]
 
 export default function WhoWeAre() {
@@ -127,14 +132,14 @@ export default function WhoWeAre() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4 max-w-6xl mx-auto">
             {crewMembers.map((member, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                className="card text-center hover:scale-105 transition-transform p-4"
+                className="card text-center hover:scale-105 transition-transform p-4 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
               >
                 {/* Avatar */}
                 <div className="mb-3 flex justify-center">
