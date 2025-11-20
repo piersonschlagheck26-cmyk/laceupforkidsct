@@ -48,7 +48,7 @@ const crewMembers = [
   },
   {
     name: 'Cade Rinehart',
-    role: 'Northford Ice Rink and A.W. Cox Coordinator',
+    role: 'Northford Rink and Cox Coordinator',
     bio: 'Manages development, collection, and communication at the Northford Ice Rink and A.W. Cox locations.',
   },
 ]
