@@ -8,7 +8,7 @@ const teamMembers = [
   {
     name: 'Shane Tandler',
     role: 'Founder & Director',
-    bio: 'A high school junior passionate about community service and environmental sustainability. Started Lace Up for Kids after seeing the need for both waste reduction and family support.',
+    bio: 'Shane is a junior at GHS who started Lace Up For Kids, driven by his passion for helping young kids flourish. Through working as a Mathnasium tutor and an instructor at Calvin Leete Elementary School, he discovered the impact and reward that supporting a younger generation can bring. Shane was inspired by the mission of the Ronald McDonald House from a young age, when he & his family helped cook meals for residents in the New Haven location. Ever since then, he has strived to have the positive impact in his community that he knows is possible.',
     // image: '/images/team-placeholder-1.jpg', // TODO: Replace with actual headshot (not used - using gradient instead)
   },
   {
