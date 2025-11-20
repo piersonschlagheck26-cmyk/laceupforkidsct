@@ -9,6 +9,7 @@ import OurMission from '@/components/OurMission'
 import HowItWorks from '@/components/HowItWorks'
 import WhoWeAre from '@/components/WhoWeAre'
 import MapSection from '@/components/MapSection'
+import UpcomingEvents from '@/components/UpcomingEvents'
 import Footer from '@/components/Footer'
 
 export default function Home() {
@@ -44,6 +45,7 @@ export default function Home() {
       <OurMission />
       <HowItWorks />
       <MapSection />
+      <UpcomingEvents />
       <WhoWeAre />
       <Footer />
     </main>
