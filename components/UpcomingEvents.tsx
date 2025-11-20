@@ -73,7 +73,7 @@ export default function UpcomingEvents() {
               </div>
               
               <p className="text-gray-800 leading-relaxed">
-                Join us at the Guilford Tree Lighting! There will be a collection box in the Guilford Community Center where you can drop off your shoe donations.
+                Join us at the Guilford Tree Lighting! There will be a collection box in the Nathanael B. Greene Community Center where you can drop off your shoe donations.
               </p>
             </motion.div>
           </div>
