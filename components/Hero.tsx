@@ -43,7 +43,7 @@ export default function Hero() {
             <span className="relative z-10 block" style={{
               textShadow: '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(0, 0, 0, 0.1)'
             }}>
-              Lace Up for Kids recycles gently used shoes and transforms them into hope for families staying at RMH CTMA.
+              Lace Up for Kids recycles gently used shoes and transforms them into hope for families staying at Ronald McDonald House.
             </span>
           </p>
 
