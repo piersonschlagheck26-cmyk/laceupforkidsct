@@ -20,7 +20,7 @@ const teamMembers = [
   {
     name: 'Conor Farrell',
     role: 'Chief Operating Officer',
-    bio: 'Junior dedicated to spreading awareness about our mission. Arranges shoe collection locations and product handling.',
+    bio: 'Conor is a junior dedicated to supporting children and families in need through effective operational fundraising. Through volunteering through various opportunities, such as a Habitat for Humanity service trip, he learned that promoting inclusivity and establishing healthy and supportive communication is key to creating strong connections through his community. Conor was motivated to join Lace Up For Kids because he loves working with his peers to see real change occur for children in need and saw the organization as a creative opportunity to do so.',
     image: '/images/CONOR_headshot.JPG',
   },
 ]
@@ -34,7 +34,7 @@ const crewMembers = [
   {
     name: 'Ben Adams',
     role: 'Community Ambassador',
-    bio: 'Builds relationships with local organizations and community members, spreading awareness about our mission and expanding our network of support.',
+    bio: 'Ben is a freshman at Guilford High School who genuinely wants to give back to the community around him. He\'s especially inspired by the work of the Ronald McDonald House and loves being involved in sustainability and sneaker-recycling efforts that help reduce waste and support an amazing cause.',
   },
   {
     name: 'Owen Stoddard',
