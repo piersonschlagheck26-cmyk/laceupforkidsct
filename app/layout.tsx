@@ -7,6 +7,10 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Lace Up for Kids | Donate Shoes, Support Families',
   description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates net proceeds to RMH CTMA to support families in need.',
+  icons: {
+    icon: '/assets/logo.png',
+    apple: '/assets/logo.png',
+  },
   openGraph: {
     title: 'Lace Up for Kids | Donate Shoes, Support Families',
     description: 'Lace Up for Kids collects gently used shoes, trades them for funds, and donates net proceeds to RMH CTMA to support families in need.',

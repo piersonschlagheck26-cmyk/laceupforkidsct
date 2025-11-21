@@ -35,6 +35,24 @@ export default function UpcomingEvents() {
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Guilford Tree Lighting</h3>
+                  <p className="text-accent-600 font-semibold mb-3">December 5th, 2025</p>
+                </div>
+              </div>
+              
+              <p className="text-gray-800 leading-relaxed">
+                Stop by to discover how you can make a difference! Pick up brochures to learn more about our mission, and bring your gently used shoes to drop off at the collection box in the Nathanael B. Greene Community Center.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="card text-left"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Song Strong 5K</h3>
                   <p className="text-accent-600 font-semibold mb-3">June 6th, 2026</p>
                 </div>
@@ -57,24 +75,6 @@ export default function UpcomingEvents() {
                   </a>
                 </p>
               </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="card text-left"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Guilford Tree Lighting</h3>
-                  <p className="text-accent-600 font-semibold mb-3">December 5th, 2025</p>
-                </div>
-              </div>
-              
-              <p className="text-gray-800 leading-relaxed">
-                Stop by to discover how you can make a difference! Pick up brochures to learn more about our mission, and bring your gently used shoes to drop off at the collection box in the Nathanael B. Greene Community Center.
-              </p>
             </motion.div>
           </div>
         </motion.div>
