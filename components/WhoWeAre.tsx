@@ -41,6 +41,11 @@ const crewMembers = [
     role: 'Graphic Designer',
     bio: 'Creates visual content and designs that communicate our mission and engage the community through compelling graphics and branding.',
   },
+  {
+    name: 'Grant Davis',
+    role: 'Site Coordinator',
+    bio: 'Grant is currently a junior at Guilford High School. He loves to pursue his athletic interests in lacrosse and has been looking for an opportunity to volunteer in his community. He joined Lace Up For Kids as an avenue to both collaborate with his friends and to increase his involvement in charitable efforts.',
+  },
 ]
 
 export default function WhoWeAre() {
@@ -124,7 +129,7 @@ export default function WhoWeAre() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                className="card text-center hover:scale-105 transition-transform p-4 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
+                className="card text-center hover:scale-105 transition-transform p-4 w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-1rem)]"
               >
                 {/* Avatar */}
                 <div className="mb-3 flex justify-center">
