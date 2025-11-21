@@ -28,33 +28,33 @@ const teamMembers = [
 const crewMembers = [
   {
     name: 'Lewis Thoreen',
-    role: 'Secretary & Marathon Sports Coordinator',
-    bio: 'Manages development, collection, and communication at Marathon Sports locations.',
+    role: 'Secretary & Site Manager',
+    bio: 'Manages development, collection, and communication at collection sites.',
   },
   {
     name: 'Ben Adams',
-    role: 'Leete and Adams Coordinator',
-    bio: 'Handles development, collection, and communication efforts at the Leete and Adams site.',
+    role: 'Site Manager',
+    bio: 'Handles development, collection, and communication efforts at collection sites.',
   },
   {
     name: 'Kieran Keefe',
-    role: 'Baldwin Coordinator',
-    bio: 'Oversees development, collection, and communication operations at the Baldwin location.',
+    role: 'Site Manager',
+    bio: 'Oversees development, collection, and communication operations at collection sites.',
   },
   {
     name: 'Grant Davis',
-    role: 'Bishops Coordinator',
-    bio: 'Coordinates development, collection, and communication activities at the Bishops site.',
+    role: 'Site Manager',
+    bio: 'Coordinates development, collection, and communication activities at collection sites.',
   },
   {
     name: 'Cade Rinehart',
-    role: 'Northford Rink and Cox Coordinator',
-    bio: 'Manages development, collection, and communication at the Northford Ice Rink and A.W. Cox locations.',
+    role: 'Site Manager',
+    bio: 'Manages development, collection, and communication at collection sites.',
   },
   {
     name: 'Owen Stoddard',
-    role: 'Graphic Designer & GBL Coordinator',
-    bio: 'Manages development, collection, and communication at the Guilford Basketball League location.',
+    role: 'Graphic Designer & Site Manager',
+    bio: 'Manages development, collection, and communication at collection sites.',
   },
 ]
 
