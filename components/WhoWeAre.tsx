@@ -30,21 +30,25 @@ const crewMembers = [
     name: 'Lewis Thoreen',
     role: 'Secretary',
     bio: 'Handles organizational documentation, record-keeping, and administrative tasks to ensure smooth operations.',
+    image: '/images/LEWIS_headshot.JPG',
   },
   {
     name: 'Ben Adams',
     role: 'Community Ambassador',
     bio: 'Ben is a freshman at Guilford High School who genuinely wants to give back to the community around him. He\'s especially inspired by the work of the Ronald McDonald House and loves being involved in sustainability and sneaker-recycling efforts that help reduce waste and support an amazing cause.',
+    image: '/images/BEN_headshot.jpeg',
   },
   {
     name: 'Owen Stoddard',
     role: 'Graphic Designer',
     bio: 'Creates visual content and designs that communicate our mission and engage the community through compelling graphics and branding.',
+    image: '/images/OWEN_headshot.jpeg',
   },
   {
     name: 'Grant Davis',
     role: 'Site Coordinator',
     bio: 'Grant is currently a junior at Guilford High School. He loves to pursue his athletic interests in lacrosse and has been looking for an opportunity to volunteer in his community. He joined Lace Up For Kids as an avenue to both collaborate with his friends and to increase his involvement in charitable efforts.',
+    image: '/images/GRANT_headshot.jpeg',
   },
 ]
 
@@ -134,9 +138,18 @@ export default function WhoWeAre() {
                 {/* Avatar */}
                 <div className="mb-3 flex justify-center">
                   <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary-100 shadow-md">
-                    <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-lg font-bold">
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </div>
+                    {member.image ? (
+                      <Image
+                        src={member.image}
+                        alt={`${member.name} headshot`}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-lg font-bold">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                    )}
                   </div>
                 </div>
 
