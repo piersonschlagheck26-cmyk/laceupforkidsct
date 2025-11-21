@@ -62,13 +62,13 @@ export default function OurMission() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">RMH of CT and MA</h3>
+              <h3 className="text-2xl font-bold text-gray-900">Ronald McDonald House of Connecticut and Massachusetts</h3>
             </div>
             <p className="text-gray-600 leading-relaxed mb-4">
-              RMH CTMA provides a home away from home for families with seriously ill children receiving treatment at nearby hospitals. They offer comfort, support, and resources to help families stay close to their children during medical crises, reducing the financial and emotional burden of extended hospital stays.
+              RMHC-CTMA provides a home away from home for families with seriously ill children receiving treatment at nearby hospitals. With a house in New Haven, Connecticut, and additional locations throughout the region, they offer comfort, support, and resources to help families stay close to their children during medical crises, reducing the financial and emotional burden of extended hospital stays.
             </p>
             <a
-              href="https://www.rmhctma.org"
+              href="https://www.rmhc-ctma.org"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-accent-600 font-semibold hover:text-accent-500 transition-colors"
