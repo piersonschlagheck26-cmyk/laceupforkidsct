@@ -28,7 +28,7 @@ const teamMembers = [
 const crewMembers = [
   {
     name: 'Lewis Thoreen',
-    role: 'Secretary & Site Manager',
+    role: 'Secretary',
     bio: 'Manages development, collection, and communication at collection sites.',
   },
   {
@@ -53,7 +53,7 @@ const crewMembers = [
   },
   {
     name: 'Owen Stoddard',
-    role: 'Graphic Designer & Site Manager',
+    role: 'Graphic Designer',
     bio: 'Manages development, collection, and communication at collection sites.',
   },
 ]
