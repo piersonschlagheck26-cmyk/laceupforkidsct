@@ -28,8 +28,8 @@ const teamMembers = [
 const crewMembers = [
   {
     name: 'Lewis Thoreen',
-    role: 'Secretary & DSW and Marathon Sports Coordinator',
-    bio: 'Manages development, collection, and communication at DSW and Marathon Sports locations.',
+    role: 'Secretary & Marathon Sports Coordinator',
+    bio: 'Manages development, collection, and communication at Marathon Sports locations.',
   },
   {
     name: 'Ben Adams',
