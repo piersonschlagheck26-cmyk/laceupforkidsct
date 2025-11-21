@@ -29,32 +29,17 @@ const crewMembers = [
   {
     name: 'Lewis Thoreen',
     role: 'Secretary',
-    bio: 'Manages development, collection, and communication at collection sites.',
+    bio: 'Handles organizational documentation, record-keeping, and administrative tasks to ensure smooth operations.',
   },
   {
     name: 'Ben Adams',
-    role: 'Site Manager',
-    bio: 'Handles development, collection, and communication efforts at collection sites.',
-  },
-  {
-    name: 'Kieran Keefe',
-    role: 'Site Manager',
-    bio: 'Oversees development, collection, and communication operations at collection sites.',
-  },
-  {
-    name: 'Grant Davis',
-    role: 'Site Manager',
-    bio: 'Coordinates development, collection, and communication activities at collection sites.',
-  },
-  {
-    name: 'Cade Rinehart',
-    role: 'Site Manager',
-    bio: 'Manages development, collection, and communication at collection sites.',
+    role: 'Community Ambassador',
+    bio: 'Builds relationships with local organizations and community members, spreading awareness about our mission and expanding our network of support.',
   },
   {
     name: 'Owen Stoddard',
     role: 'Graphic Designer',
-    bio: 'Manages development, collection, and communication at collection sites.',
+    bio: 'Creates visual content and designs that communicate our mission and engage the community through compelling graphics and branding.',
   },
 ]
 
