@@ -119,8 +119,6 @@ export default function UpcomingEvents() {
               </motion.div>
             </div>
           </div>
-        </motion.div>
-      </div>
     </section>
   )
 }
