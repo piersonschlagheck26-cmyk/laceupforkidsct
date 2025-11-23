@@ -64,7 +64,7 @@ export default function DonationCounter({
   return (
     <section className="relative py-16 sm:py-20 md:py-24 lg:py-28 overflow-hidden shadow-2xl">
       {/* Background image */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 opacity-90">
         <Image
           src="/images/hero_background.jpeg"
           alt="Background"
@@ -72,8 +72,6 @@ export default function DonationCounter({
           priority
           className="object-cover"
         />
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/80 via-primary-400/80 to-accent-500/80"></div>
       </div>
 
       <div className="container-custom relative z-10">
