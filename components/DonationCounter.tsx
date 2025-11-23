@@ -70,8 +70,8 @@ export default function DonationCounter({
           alt="Background"
           fill
           priority
-          className="object-cover"
-          style={{ objectPosition: 'center 60%' }}
+          className="object-contain"
+          style={{ objectPosition: 'center bottom' }}
         />
       </div>
 
