@@ -220,7 +220,7 @@ export default function HowItWorks() {
                   className="object-cover"
                 />
               </div>
-              <p className="text-sm font-semibold text-gray-700">sorting!</p>
+              <p className="text-sm font-semibold text-gray-700">Sorting!</p>
             </div>
             <div className="text-center">
               <div className="relative w-full aspect-square mb-3 rounded-lg overflow-hidden shadow-lg">
@@ -231,7 +231,7 @@ export default function HowItWorks() {
                   className="object-cover"
                 />
               </div>
-              <p className="text-sm font-semibold text-gray-700">packing</p>
+              <p className="text-sm font-semibold text-gray-700">Packing</p>
             </div>
             <div className="text-center">
               <div className="relative w-full aspect-square mb-3 rounded-lg overflow-hidden shadow-lg">
@@ -242,7 +242,7 @@ export default function HowItWorks() {
                   className="object-cover"
                 />
               </div>
-              <p className="text-sm font-semibold text-gray-700">most recent donation</p>
+              <p className="text-sm font-semibold text-gray-700">Most Recent Donation</p>
             </div>
           </div>
         </motion.div>
