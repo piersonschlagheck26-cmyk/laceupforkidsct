@@ -71,6 +71,7 @@ export default function DonationCounter({
           fill
           priority
           className="object-cover"
+          style={{ objectPosition: 'center 60%' }}
         />
       </div>
 
@@ -91,7 +92,7 @@ export default function DonationCounter({
             <span 
               className="relative inline-block font-extrabold text-white"
               style={{
-                fontSize: 'clamp(8rem, 16vw, 16rem)',
+                fontSize: 'clamp(6rem, 12vw, 12rem)',
                 lineHeight: '1',
                 textShadow: '0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4), 0 6px 30px rgba(0, 0, 0, 0.5), 0 3px 12px rgba(0, 0, 0, 0.6)',
                 fontVariantNumeric: 'tabular-nums',
