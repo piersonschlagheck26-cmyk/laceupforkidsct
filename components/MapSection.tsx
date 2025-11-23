@@ -45,7 +45,7 @@ export default function MapSection() {
                   <div className="hidden lg:block">
                     <div className="relative w-full h-full min-h-[200px] rounded-lg overflow-hidden shadow-lg">
                       <Image
-                        src="/images/Location1.jpeg"
+                        src="/images/Location2.jpeg"
                         alt={location.name}
                         fill
                         className="object-cover"
@@ -90,7 +90,7 @@ export default function MapSection() {
                   <div className="hidden lg:block">
                     <div className="relative w-full h-full min-h-[200px] rounded-lg overflow-hidden shadow-lg">
                       <Image
-                        src="/images/Location2.jpeg"
+                        src="/images/Location1.jpeg"
                         alt={location.name}
                         fill
                         className="object-cover"

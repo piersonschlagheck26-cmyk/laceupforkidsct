@@ -26,9 +26,11 @@ export default function UpcomingEvents() {
               Come visit us at our upcoming events to learn more about our mission and make a difference
             </p>
           </div>
+        </motion.div>
+      </div>
 
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6 items-stretch">
+      <div className="w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr_300px] gap-0 items-stretch">
               {/* Left Image */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
@@ -36,7 +38,7 @@ export default function UpcomingEvents() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="hidden lg:block"
               >
-                <div className="relative w-full h-full min-h-[400px] rounded-lg overflow-hidden shadow-lg">
+                <div className="relative w-full h-full min-h-[400px] overflow-hidden">
                   <Image
                     src="/images/Events1.jpeg"
                     alt="Event"
@@ -47,7 +49,7 @@ export default function UpcomingEvents() {
               </motion.div>
 
               {/* Events Cards */}
-              <div className="space-y-6">
+              <div className="space-y-6 px-6 lg:px-8 py-6">
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -106,7 +108,7 @@ export default function UpcomingEvents() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="hidden lg:block"
               >
-                <div className="relative w-full h-full min-h-[400px] rounded-lg overflow-hidden shadow-lg">
+                <div className="relative w-full h-full min-h-[400px] overflow-hidden">
                   <Image
                     src="/images/Events2.jpeg"
                     alt="Event"
