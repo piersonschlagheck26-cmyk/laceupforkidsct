@@ -62,28 +62,22 @@ export default function DonationCounter({
   const formattedCount = count.toLocaleString()
 
   return (
-    <section className="relative bg-gradient-to-br from-primary-500 via-primary-400 to-accent-500 py-16 sm:py-20 md:py-24 lg:py-28 overflow-hidden shadow-2xl">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-15">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+    <section className="relative py-16 sm:py-20 md:py-24 lg:py-28 overflow-hidden shadow-2xl">
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/hero_background.jpeg"
+          alt="Background"
+          fill
+          priority
+          className="object-cover"
+        />
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/80 via-primary-400/80 to-accent-500/80"></div>
       </div>
 
       <div className="container-custom relative z-10">
         <div className="text-center">
-          {/* Logo */}
-          <div className="mb-6 sm:mb-8 md:mb-10 flex justify-center">
-            <div className="relative w-24 h-30 sm:w-28 sm:h-36 md:w-32 md:h-40 lg:w-36 lg:h-44 drop-shadow-2xl">
-              <Image
-                src="/assets/logo.png"
-                alt="Lace Up for Kids logo"
-                fill
-                priority
-                className="object-contain"
-              />
-            </div>
-          </div>
-
           {/* Large Counter Number */}
           <div className="mb-6 sm:mb-8 md:mb-10 relative inline-block">
             {/* Radial gradient background behind numbers - circular fade blending into background */}
