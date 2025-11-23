@@ -3,6 +3,7 @@
 import { useRef, useState, useMemo, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
+import Image from 'next/image'
 
   const steps = [
     {
@@ -201,6 +202,50 @@ export default function HowItWorks() {
             </div>
           </div>
         </div>
+
+        {/* Images Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-16 max-w-5xl mx-auto"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="relative w-full aspect-square mb-3 rounded-lg overflow-hidden shadow-lg">
+                <Image
+                  src="/images/sorting.jpeg"
+                  alt="Sorting"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <p className="text-sm font-semibold text-gray-700">sorting!</p>
+            </div>
+            <div className="text-center">
+              <div className="relative w-full aspect-square mb-3 rounded-lg overflow-hidden shadow-lg">
+                <Image
+                  src="/images/packing.jpeg"
+                  alt="Packing"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <p className="text-sm font-semibold text-gray-700">packing</p>
+            </div>
+            <div className="text-center">
+              <div className="relative w-full aspect-square mb-3 rounded-lg overflow-hidden shadow-lg">
+                <Image
+                  src="/images/bags.jpeg"
+                  alt="Bags"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <p className="text-sm font-semibold text-gray-700">most recent donation</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   )
