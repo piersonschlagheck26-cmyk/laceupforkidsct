@@ -28,7 +28,7 @@ export default function UpcomingEvents() {
           </div>
 
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6 items-stretch">
               {/* Left Image */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
@@ -36,7 +36,7 @@ export default function UpcomingEvents() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="hidden lg:block"
               >
-                <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-lg">
+                <div className="relative w-full h-full min-h-[400px] rounded-lg overflow-hidden shadow-lg">
                   <Image
                     src="/images/Events1.jpeg"
                     alt="Event"
@@ -106,7 +106,7 @@ export default function UpcomingEvents() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="hidden lg:block"
               >
-                <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-lg">
+                <div className="relative w-full h-full min-h-[400px] rounded-lg overflow-hidden shadow-lg">
                   <Image
                     src="/images/Events2.jpeg"
                     alt="Event"

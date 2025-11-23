@@ -37,18 +37,15 @@ export default function MapSection() {
 
         <div className="max-w-6xl mx-auto space-y-6">
           {locations.map((location, index) => {
-            // Only show images for first two locations
-            const showImage = index < 2
-            const imagePath = index === 0 ? '/images/Location1.jpeg' : index === 1 ? '/images/Location2.jpeg' : null
-
-            if (showImage) {
+            if (index === 0) {
+              // Location 1: Image on left
               return (
-                <div key={location.name} className="grid grid-cols-1 lg:grid-cols-[1fr_2fr_1fr] gap-6 items-start">
+                <div key={location.name} className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6 items-stretch">
                   {/* Left Image */}
                   <div className="hidden lg:block">
-                    <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-lg">
+                    <div className="relative w-full h-full min-h-[200px] rounded-lg overflow-hidden shadow-lg">
                       <Image
-                        src={imagePath!}
+                        src="/images/Location1.jpeg"
                         alt={location.name}
                         fill
                         className="object-cover"
@@ -69,12 +66,31 @@ export default function MapSection() {
                     <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
                     <p className="text-gray-800 leading-relaxed">{location.description}</p>
                   </div>
+                </div>
+              )
+            } else if (index === 1) {
+              // Location 2: Image on right
+              return (
+                <div key={location.name} className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 items-stretch">
+                  {/* Location Card */}
+                  <div className={`card text-left ${location.comingSoon ? 'border-2 border-accent-400 bg-accent-50/30' : ''}`}>
+                    <div className="flex items-start justify-between mb-1">
+                      <h3 className="text-2xl font-bold text-gray-900">{location.name}</h3>
+                      {location.comingSoon && (
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-accent-400 text-ember-900 uppercase tracking-wide">
+                          COMING SOON
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-accent-600 font-semibold mb-2">{location.address}</p>
+                    <p className="text-gray-800 leading-relaxed">{location.description}</p>
+                  </div>
 
                   {/* Right Image */}
                   <div className="hidden lg:block">
-                    <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-lg">
+                    <div className="relative w-full h-full min-h-[200px] rounded-lg overflow-hidden shadow-lg">
                       <Image
-                        src={imagePath!}
+                        src="/images/Location2.jpeg"
                         alt={location.name}
                         fill
                         className="object-cover"
