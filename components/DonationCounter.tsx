@@ -64,14 +64,19 @@ export default function DonationCounter({
   return (
     <section className="relative pt-20 pb-16 sm:pt-24 sm:pb-20 md:pt-28 md:pb-24 lg:pt-32 lg:pb-28 overflow-hidden shadow-2xl">
       {/* Background image */}
-      <div className="absolute inset-0 opacity-90">
+      <div className="absolute inset-0 opacity-90 overflow-hidden">
         <Image
           src="/images/hero_background.jpeg"
           alt="Background"
           fill
           priority
-          className="object-cover w-full h-full"
-          style={{ objectPosition: 'center bottom' }}
+          className="object-contain"
+          style={{ 
+            objectPosition: 'center bottom',
+            objectFit: 'contain',
+            height: '100%',
+            width: '100%'
+          }}
         />
       </div>
 
