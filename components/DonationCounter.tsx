@@ -62,7 +62,7 @@ export default function DonationCounter({
   const formattedCount = count.toLocaleString()
 
   return (
-    <section className="relative pt-20 pb-12 sm:pt-24 sm:pb-16 md:pt-28 md:pb-20 overflow-hidden" style={{ marginTop: '80px' }}>
+    <section className="relative pt-20 pb-6 sm:pt-24 sm:pb-8 md:pt-28 md:pb-10 overflow-hidden" style={{ marginTop: '80px' }}>
       {/* Background image */}
       <div className="absolute inset-0 opacity-90 overflow-hidden">
         <Image
