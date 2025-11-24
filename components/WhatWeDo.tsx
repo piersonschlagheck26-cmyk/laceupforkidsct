@@ -33,7 +33,7 @@ export default function WhatWeDo() {
         </svg>
       ),
       title: 'Support Families',
-      description: 'All net proceeds go directly to RMH CTMA to help families in need.',
+      description: 'All net proceeds go directly to Ronald McDonald House of Connecticut and Massachusetts to help families in need.',
     },
   ]
 
@@ -57,7 +57,7 @@ export default function WhatWeDo() {
             What We Do
           </h2>
           <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed px-2">
-            Lace Up for Kids is a teen-led nonprofit that transforms gently used shoes into meaningful support for families. We collect shoes that would otherwise end up in landfills, partner with organizations to trade them for funds, and donate 100% of the net proceeds to RMH CTMA.
+            Lace Up for Kids is a teen-led nonprofit that transforms gently used shoes into meaningful support for families. We collect shoes that would otherwise end up in landfills, partner with organizations to trade them for funds, and donate 100% of the net proceeds to Ronald McDonald House of Connecticut and Massachusetts.
           </p>
         </motion.div>
 
