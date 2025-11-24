@@ -66,9 +66,9 @@ export default function WhoWeAre() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16 sm:mb-20"
+          className="text-center mb-12 sm:mb-14"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Who We Are
           </h2>
           <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed px-2">

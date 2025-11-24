@@ -66,16 +66,15 @@ export default function DonationCounter({
       {/* Background image */}
       <div className="absolute inset-0 opacity-90 overflow-hidden">
         <Image
-          src="/images/hero_background.jpeg"
+          src="/images/hero_new.JPG"
           alt="Background"
           fill
           priority
-          className="object-contain"
+          className="object-cover w-full"
           style={{ 
-            objectPosition: 'center bottom',
-            objectFit: 'contain',
-            height: '100%',
-            width: '100%'
+            objectPosition: 'center center',
+            width: '100%',
+            height: '100%'
           }}
         />
       </div>

@@ -48,12 +48,12 @@ export default function WhatWeDo() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16 sm:mb-20"
+          className="text-center mb-12 sm:mb-14"
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-6">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-4">
             Our Impact
           </span>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             What We Do
           </h2>
           <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed px-2">

@@ -20,11 +20,11 @@ export default function UpcomingEvents() {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mx-auto"
         >
-          <div className="text-center mb-16 sm:mb-20">
-            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-accent-100 text-accent-700 uppercase tracking-wider mb-6">
+          <div className="text-center mb-12 sm:mb-14">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-accent-100 text-accent-700 uppercase tracking-wider mb-4">
               Join Us
             </span>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">Upcoming Events</h2>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">Upcoming Events</h2>
             <p className="text-lg sm:text-xl text-gray-700 leading-relaxed px-2">
               Come visit us at our upcoming events to learn more about our mission and make a difference
             </p>
@@ -41,7 +41,7 @@ export default function UpcomingEvents() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="hidden lg:block"
               >
-                <div className="relative w-full h-full min-h-[400px] overflow-hidden">
+                <div className="relative w-full h-full min-h-[400px] overflow-hidden rounded-2xl">
                   <Image
                     src="/images/Events1.jpeg"
                     alt="Event"
@@ -111,7 +111,7 @@ export default function UpcomingEvents() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="hidden lg:block"
               >
-                <div className="relative w-full h-full min-h-[400px] overflow-hidden">
+                <div className="relative w-full h-full min-h-[400px] overflow-hidden rounded-2xl">
                   <Image
                     src="/images/Events2.jpeg"
                     alt="Event"
