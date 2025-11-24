@@ -38,7 +38,7 @@ export default function WhatWeDo() {
   ]
 
   return (
-    <section id="what-we-do" ref={ref} className="relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 lg:pt-14 pb-16 sm:pb-20 lg:pb-28">
+    <section id="what-we-do" ref={ref} className="relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 lg:pt-14 pb-8 sm:pb-10 lg:pb-14">
       {/* Background with smooth gradient transition */}
       <div className="absolute inset-0 bg-gradient-to-b from-white via-primary-50/30 to-accent-50/20"></div>
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent"></div>

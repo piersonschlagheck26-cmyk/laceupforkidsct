@@ -77,7 +77,7 @@ export default function FAQ() {
   }
 
   return (
-    <section id="faq" ref={ref} className="relative section-padding">
+    <section id="faq" ref={ref} className="relative px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 lg:pt-14 pb-16 sm:pb-20 lg:pb-28">
       {/* Background with smooth gradient transition */}
       <div className="absolute inset-0 bg-gradient-to-b from-accent-50/20 via-white to-primary-50/30"></div>
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-accent-50/20 to-transparent"></div>
@@ -89,9 +89,6 @@ export default function FAQ() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 sm:mb-14"
         >
-          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-4">
-            Questions
-          </span>
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4">
             Frequently Asked Questions
           </h2>
