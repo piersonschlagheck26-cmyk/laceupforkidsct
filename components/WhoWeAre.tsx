@@ -57,8 +57,11 @@ export default function WhoWeAre() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="who-we-are" ref={ref} className="section-padding bg-white">
-      <div className="container-custom">
+    <section id="who-we-are" ref={ref} className="section-padding relative">
+      {/* Background with smooth gradient transition */}
+      <div className="absolute inset-0 bg-gradient-to-b from-accent-50/30 via-white to-primary-50/20"></div>
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-accent-50/30 to-transparent"></div>
+      <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}

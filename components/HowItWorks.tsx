@@ -97,9 +97,12 @@ export default function HowItWorks() {
   const progressPercent = sliderValue
 
   return (
-    <section id="how-it-works" ref={ref} className="relative section-padding bg-white">
+    <section id="how-it-works" ref={ref} className="relative section-padding">
+      {/* Background with smooth gradient transition */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-50 via-accent-50/20 to-white"></div>
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-gray-50 to-transparent"></div>
 
-      <div className="container-custom relative">
+      <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}

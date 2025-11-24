@@ -19,8 +19,8 @@ export default function Hero() {
       id="home"
       className="relative overflow-hidden"
     >
-      {/* Background */}
-      <div className="absolute inset-0 z-0 bg-white">
+      {/* Background with smooth gradient */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-primary-50 via-white to-white">
       </div>
 
       {/* Content */}

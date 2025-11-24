@@ -23,8 +23,11 @@ const locations = [
 
 export default function MapSection() {
   return (
-    <section id="drop-off" className="section-padding bg-white">
-      <div className="container-custom">
+    <section id="drop-off" className="section-padding relative">
+      {/* Background with smooth gradient transition */}
+      <div className="absolute inset-0 bg-gradient-to-b from-primary-50/30 via-white to-gray-50"></div>
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-primary-50/30 to-transparent"></div>
+      <div className="container-custom relative z-10">
         <div className="max-w-4xl mx-auto text-center mb-10 sm:mb-12">
           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-3 sm:mb-4">
             Donation Drop-Off Points

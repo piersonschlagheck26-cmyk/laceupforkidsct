@@ -8,9 +8,12 @@ export default function OurMission() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="mission" ref={ref} className="relative section-padding bg-white">
+    <section id="mission" ref={ref} className="relative section-padding">
+      {/* Background with smooth gradient transition */}
+      <div className="absolute inset-0 bg-gradient-to-b from-accent-50/20 via-white to-primary-50/30"></div>
+      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-accent-50/20 to-transparent"></div>
 
-      <div className="container-custom relative">
+      <div className="container-custom relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
