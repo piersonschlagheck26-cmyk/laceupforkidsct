@@ -5,6 +5,7 @@ import Navigation from '@/components/Navigation'
 import DonationCounter from '@/components/DonationCounter'
 import Hero from '@/components/Hero'
 import WhatWeDo from '@/components/WhatWeDo'
+import FAQ from '@/components/FAQ'
 import Footer from '@/components/Footer'
 
 export default function Home() {
@@ -37,6 +38,7 @@ export default function Home() {
       <DonationCounter targetCount={68} />
       <Hero />
       <WhatWeDo />
+      <FAQ />
       <Footer />
     </main>
   )
