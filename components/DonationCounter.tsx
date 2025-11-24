@@ -72,7 +72,7 @@ export default function DonationCounter({
           priority
           className="object-cover w-full"
           style={{ 
-            objectPosition: 'center center',
+            objectPosition: 'center top',
             width: '100%',
             height: '100%'
           }}
