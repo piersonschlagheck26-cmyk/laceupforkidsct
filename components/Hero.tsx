@@ -25,7 +25,7 @@ export default function Hero() {
       <div className="container-custom px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 lg:pt-12 pb-8 sm:pb-10 lg:pb-14 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-5 leading-tight md:whitespace-nowrap">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-4 sm:mb-5 leading-tight md:whitespace-nowrap text-center">
             Turning Sneakers into Support
           </h1>
 
