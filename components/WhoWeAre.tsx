@@ -29,7 +29,7 @@ const crewMembers = [
   {
     name: 'Lewis Thoreen',
     role: 'Secretary',
-    bio: 'Handles organizational documentation, record-keeping, and administrative tasks to ensure smooth operations.',
+    bio: 'Lewis, a GHS class of 2027 student and competitive runner, is passionate about recycling shoes for those in need. He jumped on joining Lace Up For Kids because it is an avenue to raise awareness about how even one pair of shoes can make a meaningful difference.',
     image: '/images/LEWIS_headshot.JPG',
   },
   {
