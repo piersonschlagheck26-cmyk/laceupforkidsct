@@ -17,12 +17,12 @@ export default function UpcomingEvents() {
           transition={{ duration: 0.6 }}
           className="max-w-4xl mx-auto"
         >
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700 uppercase tracking-wider mb-4">
+          <div className="text-center mb-10 sm:mb-12">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700 uppercase tracking-wider mb-3 sm:mb-4">
               Join Us
             </span>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Upcoming Events</h2>
-            <p className="text-lg text-gray-800">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Upcoming Events</h2>
+            <p className="text-base sm:text-lg text-gray-700 leading-relaxed px-2">
               Come visit us at our upcoming events to learn more about our mission and make a difference
             </p>
           </div>

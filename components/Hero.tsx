@@ -27,21 +27,21 @@ export default function Hero() {
       <div className="container-custom section-padding relative z-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
             Turning Sneakers into Support
           </h1>
 
           {/* Tagline */}
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 sm:mb-10 md:mb-12 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 md:mb-10 leading-relaxed max-w-2xl mx-auto px-2">
             Lace Up for Kids recycles gently used shoes and transforms them into hope for families staying at Ronald McDonald House.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-12 sm:mb-14 md:mb-16 px-4">
-            <button onClick={handleDonateClick} className="btn-primary text-base sm:text-lg px-5 sm:px-6 py-2.5 sm:py-3 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch sm:items-center mb-8 sm:mb-10 md:mb-12 px-2">
+            <button onClick={handleDonateClick} className="btn-primary w-full sm:w-auto">
               Donate Now
             </button>
-            <button onClick={scrollToHowItWorks} className="btn-secondary text-base sm:text-lg px-5 sm:px-6 py-2.5 sm:py-3 w-full sm:w-auto">
+            <button onClick={scrollToHowItWorks} className="btn-secondary w-full sm:w-auto">
               See How It Works
             </button>
           </div>

@@ -15,17 +15,17 @@ export default function OurMission() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-10 sm:mb-12"
         >
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700 uppercase tracking-wider mb-4">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700 uppercase tracking-wider mb-3 sm:mb-4">
             Why We Lace Up
           </span>
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Our Mission
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {/* Lace Up for Kids Mission */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -41,7 +41,7 @@ export default function OurMission() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900">Lace Up for Kids</h3>
             </div>
-            <p className="text-gray-800 leading-relaxed">
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
               Our mission is to empower young people to make a tangible difference in their communities by collecting and repurposing shoes that would otherwise be discarded. We believe that small actions can create big change, and by working together, we can support families facing difficult times while also reducing waste.
             </p>
           </motion.div>
@@ -61,7 +61,7 @@ export default function OurMission() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900">Ronald McDonald House of Connecticut and Massachusetts</h3>
             </div>
-            <p className="text-gray-600 leading-relaxed mb-4">
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
               RMHC-CTMA provides a home away from home for families with seriously ill children receiving treatment at nearby hospitals. With a house in New Haven, Connecticut, and additional locations throughout the region, they offer comfort, support, and resources to help families stay close to their children during medical crises, reducing the financial and emotional burden of extended hospital stays.
             </p>
             <a

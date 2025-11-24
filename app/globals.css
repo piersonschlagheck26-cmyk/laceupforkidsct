@@ -9,12 +9,25 @@
   
   body {
     @apply bg-white text-gray-900;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+    line-height: 1.2;
+  }
+  
+  p {
+    line-height: 1.7;
   }
 }
 
 @layer components {
   .section-padding {
-    @apply px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24;
+    @apply px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20;
   }
   
   .container-custom {
@@ -22,11 +35,12 @@
   }
   
   .btn-primary {
-    @apply font-semibold py-2.5 px-6 rounded-lg transition-all duration-200;
+    @apply font-semibold py-3 px-6 sm:py-2.5 sm:px-6 rounded-lg transition-all duration-200 text-base;
     background: #e44722;
     color: #ffffff;
     border: none;
     box-shadow: 0 2px 8px rgba(228, 71, 34, 0.2);
+    min-height: 44px; /* Touch target size */
   }
   
   .btn-primary:hover {
@@ -36,11 +50,12 @@
   }
   
   .btn-secondary {
-    @apply font-semibold py-2.5 px-6 rounded-lg transition-all duration-200;
+    @apply font-semibold py-3 px-6 sm:py-2.5 sm:px-6 rounded-lg transition-all duration-200 text-base;
     background: #ffffff;
     color: #e44722;
     border: 2px solid #e44722;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    min-height: 44px; /* Touch target size */
   }
   
   .btn-secondary:hover {
@@ -52,7 +67,7 @@
   }
   
   .card {
-    @apply relative bg-white rounded-xl shadow-sm p-6 sm:p-8 transition-all duration-200 hover:shadow-md border border-gray-100;
+    @apply relative bg-white rounded-xl shadow-sm p-5 sm:p-6 lg:p-8 transition-all duration-200 hover:shadow-md border border-gray-100;
   }
   
   .card:hover {

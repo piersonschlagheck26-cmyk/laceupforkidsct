@@ -62,7 +62,7 @@ export default function DonationCounter({
   const formattedCount = count.toLocaleString()
 
   return (
-    <section className="relative pt-20 pb-16 sm:pt-24 sm:pb-20 md:pt-28 md:pb-24 lg:pt-32 lg:pb-28 overflow-hidden shadow-2xl">
+    <section className="relative pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-24 md:pb-20 overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0 opacity-90 overflow-hidden">
         <Image
