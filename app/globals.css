@@ -27,7 +27,7 @@
 
 @layer components {
   .section-padding {
-    @apply px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20;
+    @apply px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28;
   }
   
   .container-custom {
@@ -35,7 +35,7 @@
   }
   
   .btn-primary {
-    @apply font-semibold py-3 px-6 sm:py-2.5 sm:px-6 rounded-lg transition-all duration-200 text-base;
+    @apply font-semibold py-3 px-8 sm:py-3 sm:px-8 rounded-xl transition-all duration-200 text-base;
     background: #e44722;
     color: #ffffff;
     border: none;
@@ -50,7 +50,7 @@
   }
   
   .btn-secondary {
-    @apply font-semibold py-3 px-6 sm:py-2.5 sm:px-6 rounded-lg transition-all duration-200 text-base;
+    @apply font-semibold py-3 px-8 sm:py-3 sm:px-8 rounded-xl transition-all duration-200 text-base;
     background: #ffffff;
     color: #e44722;
     border: 2px solid #e44722;
@@ -67,7 +67,7 @@
   }
   
   .card {
-    @apply relative bg-white rounded-xl shadow-sm p-5 sm:p-6 lg:p-8 transition-all duration-200 hover:shadow-md border border-gray-100;
+    @apply relative bg-white rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10 transition-all duration-200 hover:shadow-md border border-gray-100;
   }
   
   .card:hover {

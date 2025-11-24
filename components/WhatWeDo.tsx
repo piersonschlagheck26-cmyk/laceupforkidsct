@@ -48,20 +48,20 @@ export default function WhatWeDo() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10 sm:mb-12"
+          className="text-center mb-16 sm:mb-20"
         >
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-3 sm:mb-4">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-6">
             Our Impact
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
             What We Do
           </h2>
-          <p className="text-base sm:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed px-2">
+          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed px-2">
             Lace Up for Kids is a teen-led nonprofit that transforms gently used shoes into meaningful support for families. We collect shoes that would otherwise end up in landfills, partner with organizations to trade them for funds, and donate 100% of the net proceeds to RMH CTMA.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
           {features.map((feature, index) => (
             <motion.div
               key={index}
@@ -70,11 +70,11 @@ export default function WhatWeDo() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="card text-center"
             >
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500 text-white">
+              <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-primary-500 text-white">
                 {feature.icon}
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{feature.description}</p>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">{feature.title}</h3>
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed">{feature.description}</p>
             </motion.div>
           ))}
         </div>

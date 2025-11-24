@@ -9,7 +9,7 @@ interface NavigationProps {
 }
 
 const NAV_LINKS = [
-  { href: '/', label: 'Home', isPage: false },
+  { href: '/', label: 'Home', isPage: true },
   { href: '/mission', label: 'Mission', isPage: true },
   { href: '/how-it-works', label: 'Process', isPage: true },
   { href: '/drop-off', label: 'Drop-off', isPage: true },

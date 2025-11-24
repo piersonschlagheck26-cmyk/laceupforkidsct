@@ -28,17 +28,17 @@ export default function MapSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-primary-50/30 via-white to-gray-50"></div>
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-primary-50/30 to-transparent"></div>
       <div className="container-custom relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-10 sm:mb-12">
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-3 sm:mb-4">
+        <div className="max-w-4xl mx-auto text-center mb-16 sm:mb-20">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-6">
             Donation Drop-Off Points
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">Where to Bring Your Shoes</h2>
-          <p className="text-base sm:text-lg text-gray-700 leading-relaxed px-2">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">Where to Bring Your Shoes</h2>
+          <p className="text-lg sm:text-xl text-gray-700 leading-relaxed px-2">
             These are our current Lace Up for Kids donation boxes in Guilford, Connecticut. Drop your gently used sneakers at either location anytime.
           </p>
         </div>
 
-        <div className="max-w-6xl mx-auto space-y-5 sm:space-y-6">
+        <div className="max-w-6xl mx-auto space-y-8 sm:space-y-10">
           {locations.map((location, index) => {
             if (index === 0) {
               // Location 1: Image on left
