@@ -50,30 +50,9 @@ export default function Navigation({ activeSection }: NavigationProps) {
   }
 
   return (
-    <nav className="fixed top-6 left-0 right-0 z-50 px-4 sm:px-6 pointer-events-none">
-      <div
-        className={`mx-auto max-w-6xl rounded-3xl border backdrop-blur-3xl transition-all duration-300 pointer-events-auto relative ${
-          isScrolled
-            ? 'border-white/50 shadow-[0_12px_48px_rgba(0,0,0,0.15)]'
-            : 'border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.12)]'
-        }`}
-        style={{
-          background: isScrolled
-            ? 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.5) 100%)'
-            : 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.45) 100%)',
-          boxShadow: isScrolled 
-            ? '0 12px 48px 0 rgba(31, 38, 135, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.4) inset, 0 0 60px rgba(255, 255, 255, 0.1)'
-            : '0 8px 32px 0 rgba(31, 38, 135, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.3) inset, 0 0 40px rgba(255, 255, 255, 0.08)'
-        }}
-    >
-        {/* Liquid glass gradient overlay */}
-        <div 
-          className="absolute inset-0 rounded-3xl pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 40%, rgba(255, 255, 255, 0.1) 70%, rgba(255, 255, 255, 0.25) 100%)',
-          }}
-        />
-        <div className="px-5 py-4 sm:px-8">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="py-4">
         <div className="flex items-center justify-between">
           {/* Logo and Site Name */}
           <Link
@@ -94,13 +73,13 @@ export default function Navigation({ activeSection }: NavigationProps) {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-8">
               {NAV_LINKS.map((link) => (
                 link.isPage ? (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="text-sm font-semibold transition-colors text-black hover:text-accent-600"
+                    className="text-sm font-medium text-gray-700 hover:text-accent-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -108,10 +87,10 @@ export default function Navigation({ activeSection }: NavigationProps) {
                   <button
                     key={link.href}
                     onClick={() => scrollToSection(link.href)}
-                    className={`text-sm font-semibold transition-colors ${
+                    className={`text-sm font-medium transition-colors ${
                       activeSection === link.href.replace('#', '').replace('/', '')
                         ? 'text-accent-600'
-                        : 'text-black hover:text-accent-600'
+                        : 'text-gray-700 hover:text-accent-600'
                     }`}
                   >
                     {link.label}
@@ -152,14 +131,14 @@ export default function Navigation({ activeSection }: NavigationProps) {
 
         {/* Mobile Menu */}
         {isOpen && (
-            <div className="lg:hidden mt-4 pb-1 space-y-3">
+            <div className="lg:hidden mt-4 pb-2 space-y-1 border-t border-gray-200 pt-4">
               {NAV_LINKS.map((link) => (
                 link.isPage ? (
                   <Link
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsOpen(false)}
-                    className="relative block w-full text-left py-2 px-4 rounded-2xl backdrop-blur-xl transition-all duration-300 text-black hover:bg-white/20 border border-transparent hover:border-white/20"
+                    className="block py-2 px-4 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -167,16 +146,11 @@ export default function Navigation({ activeSection }: NavigationProps) {
                   <button
                     key={link.href}
                     onClick={() => scrollToSection(link.href)}
-                    className={`relative block w-full text-left py-2 px-4 rounded-2xl backdrop-blur-xl transition-all duration-300 ${
+                    className={`block w-full text-left py-2 px-4 rounded-lg transition-colors ${
                       activeSection === link.href.replace('#', '').replace('/', '')
-                        ? 'bg-white/25 border border-white/30 text-accent-700 shadow-lg'
-                        : 'text-black hover:bg-white/20 border border-transparent hover:border-white/20'
+                        ? 'bg-gray-100 text-accent-600 font-semibold'
+                        : 'text-gray-700 hover:bg-gray-50'
                     }`}
-                    style={{
-                      boxShadow: activeSection === link.href.replace('#', '').replace('/', '')
-                        ? '0 4px 16px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
-                        : 'none'
-                    }}
                   >
                     {link.label}
                   </button>

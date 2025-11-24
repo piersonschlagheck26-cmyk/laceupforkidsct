@@ -19,32 +19,21 @@ export default function Hero() {
       id="home"
       className="relative overflow-hidden"
     >
-      {/* Background with gradient overlay */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary-100 via-white to-accent-50">
-        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-[0.07]"></div>
-        <div className="absolute -top-32 -left-24 w-72 h-72 bg-gradient-to-br from-accent-200/70 to-primary-200/40 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-32 -right-24 w-72 h-72 bg-gradient-to-tr from-primary-300/60 to-accent-200/50 rounded-full blur-3xl"></div>
+      {/* Background */}
+      <div className="absolute inset-0 z-0 bg-white">
       </div>
 
       {/* Content */}
       <div className="container-custom section-padding relative z-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-gray-900 mb-4 sm:mb-5 md:mb-6 relative px-2 sm:px-4">
-            <span className="relative z-10 block leading-tight sm:leading-snug md:leading-normal" style={{
-              textShadow: '0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 255, 255, 0.7), 0 0 60px rgba(255, 255, 255, 0.5), 0 2px 4px rgba(0, 0, 0, 0.1)'
-            }}>
-              Turning Sneakers into Support
-            </span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 sm:mb-8 leading-tight">
+            Turning Sneakers into Support
           </h1>
 
           {/* Tagline */}
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-800 mb-6 sm:mb-8 md:mb-10 font-medium leading-relaxed max-w-2xl mx-auto relative px-4 sm:px-6 md:px-8">
-            <span className="relative z-10 block" style={{
-              textShadow: '0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 45px rgba(255, 255, 255, 0.4), 0 1px 2px rgba(0, 0, 0, 0.1)'
-            }}>
-              Lace Up for Kids recycles gently used shoes and transforms them into hope for families staying at Ronald McDonald House.
-            </span>
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-8 sm:mb-10 md:mb-12 leading-relaxed max-w-2xl mx-auto">
+            Lace Up for Kids recycles gently used shoes and transforms them into hope for families staying at Ronald McDonald House.
           </p>
 
           {/* CTAs */}

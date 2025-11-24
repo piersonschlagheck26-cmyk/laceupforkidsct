@@ -97,10 +97,7 @@ export default function HowItWorks() {
   const progressPercent = sliderValue
 
   return (
-    <section id="how-it-works" ref={ref} className="relative section-padding overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-ember-50" />
-      <div className="absolute -top-32 right-0 w-64 h-64 bg-accent-200/30 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary-200/25 rounded-full blur-[120px]" />
+    <section id="how-it-works" ref={ref} className="relative section-padding bg-white">
 
       <div className="container-custom relative">
         <motion.div

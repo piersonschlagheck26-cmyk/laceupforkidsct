@@ -18,7 +18,7 @@ export default function UpcomingEvents() {
           className="max-w-4xl mx-auto"
         >
           <div className="text-center mb-12">
-            <span className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold bg-accent-200/80 text-ember-900 uppercase tracking-wider mb-4">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-accent-100 text-accent-700 uppercase tracking-wider mb-4">
               Join Us
             </span>
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Upcoming Events</h2>

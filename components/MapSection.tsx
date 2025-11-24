@@ -23,10 +23,10 @@ const locations = [
 
 export default function MapSection() {
   return (
-    <section id="drop-off" className="section-padding bg-gradient-to-br from-white via-primary-50/60 to-accent-50/40">
+    <section id="drop-off" className="section-padding bg-white">
       <div className="container-custom">
         <div className="max-w-4xl mx-auto text-center mb-12">
-          <span className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold bg-primary-200/80 text-ember-900 uppercase tracking-wider mb-4">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-4">
             Donation Drop-Off Points
           </span>
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Where to Bring Your Shoes</h2>

@@ -38,10 +38,7 @@ export default function WhatWeDo() {
   ]
 
   return (
-    <section id="what-we-do" ref={ref} className="relative section-padding overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-primary-50 to-accent-50" />
-      <div className="absolute -top-20 -left-16 w-60 h-60 bg-primary-200/40 rounded-full blur-3xl" />
-      <div className="absolute -bottom-28 right-10 w-72 h-72 bg-accent-200/30 rounded-full blur-3xl" />
+    <section id="what-we-do" ref={ref} className="relative section-padding bg-gray-50">
 
       <div className="container-custom relative">
         <motion.div
@@ -50,7 +47,7 @@ export default function WhatWeDo() {
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <span className="inline-flex items-center px-4 py-1 rounded-full text-sm font-semibold bg-primary-200/70 text-ember-900 uppercase tracking-wider mb-4">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-700 uppercase tracking-wider mb-4">
             Our Impact
           </span>
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
@@ -70,7 +67,7 @@ export default function WhatWeDo() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="card text-center"
             >
-              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-accent-400 text-white shadow-lg">
+              <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500 text-white">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
