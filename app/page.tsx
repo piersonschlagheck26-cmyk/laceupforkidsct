@@ -5,11 +5,6 @@ import Navigation from '@/components/Navigation'
 import DonationCounter from '@/components/DonationCounter'
 import Hero from '@/components/Hero'
 import WhatWeDo from '@/components/WhatWeDo'
-import OurMission from '@/components/OurMission'
-import HowItWorks from '@/components/HowItWorks'
-import WhoWeAre from '@/components/WhoWeAre'
-import MapSection from '@/components/MapSection'
-import UpcomingEvents from '@/components/UpcomingEvents'
 import Footer from '@/components/Footer'
 
 export default function Home() {
@@ -17,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['home', 'what-we-do', 'mission', 'how-it-works', 'who-we-are']
+      const sections = ['home', 'what-we-do']
       const scrollPosition = window.scrollY + 100
 
       for (const section of sections) {
@@ -42,11 +37,6 @@ export default function Home() {
       <DonationCounter targetCount={68} />
       <Hero />
       <WhatWeDo />
-      <OurMission />
-      <HowItWorks />
-      <MapSection />
-      <UpcomingEvents />
-      <WhoWeAre />
       <Footer />
     </main>
   )

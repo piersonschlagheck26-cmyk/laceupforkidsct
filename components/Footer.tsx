@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Footer() {
   const handleDonateClick = () => {
@@ -41,24 +42,34 @@ export default function Footer() {
             <h3 className="text-white font-bold mb-4 uppercase tracking-wide">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#what-we-do" className="hover:text-primary-200 transition-colors">
+                <Link href="/#what-we-do" className="hover:text-primary-200 transition-colors">
                   What We Do
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#how-it-works" className="hover:text-primary-200 transition-colors">
+                <Link href="/how-it-works" className="hover:text-primary-200 transition-colors">
                   How It Works
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#mission" className="hover:text-primary-200 transition-colors">
+                <Link href="/mission" className="hover:text-primary-200 transition-colors">
                   Our Mission
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#who-we-are" className="hover:text-primary-200 transition-colors">
+                <Link href="/team" className="hover:text-primary-200 transition-colors">
                   Who We Are
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/drop-off" className="hover:text-primary-200 transition-colors">
+                  Drop-off Locations
+                </Link>
+              </li>
+              <li>
+                <Link href="/events" className="hover:text-primary-200 transition-colors">
+                  Events
+                </Link>
               </li>
             </ul>
           </div>

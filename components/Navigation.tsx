@@ -9,12 +9,12 @@ interface NavigationProps {
 }
 
 const NAV_LINKS = [
-  { href: '#home', label: 'Home' },
-  { href: '#what-we-do', label: 'Impact' },
-  { href: '#mission', label: 'Mission' },
-  { href: '#how-it-works', label: 'Process' },
-  { href: '#drop-off', label: 'Drop-off' },
-  { href: '#who-we-are', label: 'Team' },
+  { href: '/', label: 'Home', isPage: false },
+  { href: '/mission', label: 'Mission', isPage: true },
+  { href: '/how-it-works', label: 'Process', isPage: true },
+  { href: '/drop-off', label: 'Drop-off', isPage: true },
+  { href: '/events', label: 'Events', isPage: true },
+  { href: '/team', label: 'Team', isPage: true },
 ]
 
 export default function Navigation({ activeSection }: NavigationProps) {
@@ -30,11 +30,18 @@ export default function Navigation({ activeSection }: NavigationProps) {
   }, [])
 
   const scrollToSection = (href: string) => {
-    const id = href.replace('#', '')
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+    if (href === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       setIsOpen(false)
+      return
+    }
+    if (href.startsWith('#')) {
+      const id = href.replace('#', '')
+      const element = document.getElementById(id)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+        setIsOpen(false)
+      }
     }
   }
 
@@ -70,12 +77,8 @@ export default function Navigation({ activeSection }: NavigationProps) {
         <div className="flex items-center justify-between">
           {/* Logo and Site Name */}
           <Link
-            href="#home"
-            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-              e.preventDefault()
-              scrollToSection('#home')
-            }}
-              className="flex items-center space-x-3 hover:opacity-90 transition-opacity"
+            href="/"
+            className="flex items-center space-x-3 hover:opacity-90 transition-opacity"
           >
               <div className="relative w-12 h-12 drop-shadow-lg">
                 <Image
@@ -93,17 +96,27 @@ export default function Navigation({ activeSection }: NavigationProps) {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-6">
               {NAV_LINKS.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => scrollToSection(link.href)}
-                  className={`text-sm font-semibold transition-colors ${
-                  activeSection === link.href.replace('#', '')
-                      ? 'text-accent-600'
-                      : 'text-black hover:text-accent-600'
-                }`}
-              >
-                {link.label}
-              </button>
+                link.isPage ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-semibold transition-colors text-black hover:text-accent-600"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={link.href}
+                    onClick={() => scrollToSection(link.href)}
+                    className={`text-sm font-semibold transition-colors ${
+                      activeSection === link.href.replace('#', '').replace('/', '')
+                        ? 'text-accent-600'
+                        : 'text-black hover:text-accent-600'
+                    }`}
+                  >
+                    {link.label}
+                  </button>
+                )
             ))}
             <button
               onClick={handleDonateClick}
@@ -141,22 +154,33 @@ export default function Navigation({ activeSection }: NavigationProps) {
         {isOpen && (
             <div className="lg:hidden mt-4 pb-1 space-y-3">
               {NAV_LINKS.map((link) => (
-              <button
-                key={link.href}
-                onClick={() => scrollToSection(link.href)}
-                  className={`relative block w-full text-left py-2 px-4 rounded-2xl backdrop-blur-xl transition-all duration-300 ${
-                  activeSection === link.href.replace('#', '')
-                      ? 'bg-white/25 border border-white/30 text-accent-700 shadow-lg'
-                      : 'text-black hover:bg-white/20 border border-transparent hover:border-white/20'
-                }`}
-                  style={{
-                    boxShadow: activeSection === link.href.replace('#', '')
-                      ? '0 4px 16px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
-                      : 'none'
-                  }}
-              >
-                {link.label}
-              </button>
+                link.isPage ? (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="relative block w-full text-left py-2 px-4 rounded-2xl backdrop-blur-xl transition-all duration-300 text-black hover:bg-white/20 border border-transparent hover:border-white/20"
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={link.href}
+                    onClick={() => scrollToSection(link.href)}
+                    className={`relative block w-full text-left py-2 px-4 rounded-2xl backdrop-blur-xl transition-all duration-300 ${
+                      activeSection === link.href.replace('#', '').replace('/', '')
+                        ? 'bg-white/25 border border-white/30 text-accent-700 shadow-lg'
+                        : 'text-black hover:bg-white/20 border border-transparent hover:border-white/20'
+                    }`}
+                    style={{
+                      boxShadow: activeSection === link.href.replace('#', '').replace('/', '')
+                        ? '0 4px 16px 0 rgba(31, 38, 135, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset'
+                        : 'none'
+                    }}
+                  >
+                    {link.label}
+                  </button>
+                )
             ))}
             <button
               onClick={handleDonateClick}

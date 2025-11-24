@@ -93,9 +93,9 @@ export default function WhoWeAre() {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-4xl font-bold">
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </div>
+                  <div className="w-full h-full bg-gradient-to-br from-primary-400 to-accent-400 flex items-center justify-center text-white text-4xl font-bold">
+                    {member.name.split(' ').map(n => n[0]).join('')}
+                  </div>
                   )}
                 </div>
               </div>
