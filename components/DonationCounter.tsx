@@ -80,7 +80,7 @@ export default function DonationCounter({
       </div>
 
       <div className="container-custom relative z-10">
-        <div className="text-center">
+        <div className="text-center pt-8 sm:pt-12 md:pt-16">
           {/* Large Counter Number */}
           <div className="mb-6 sm:mb-8 md:mb-10 relative inline-block">
             {/* Radial gradient background behind numbers - circular fade blending into background */}
@@ -96,7 +96,7 @@ export default function DonationCounter({
             <span 
               className="relative inline-block font-extrabold text-white"
               style={{
-                fontSize: 'clamp(6rem, 12vw, 12rem)',
+                fontSize: 'clamp(5rem, 10vw, 10rem)',
                 lineHeight: '1',
                 textShadow: '0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 60px rgba(255, 255, 255, 0.4), 0 6px 30px rgba(0, 0, 0, 0.5), 0 3px 12px rgba(0, 0, 0, 0.6)',
                 fontVariantNumeric: 'tabular-nums',
